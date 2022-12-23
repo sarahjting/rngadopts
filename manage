@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# this is just a helper script
+
+docker compose exec web python3 manage.py "$@"
