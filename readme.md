@@ -1,10 +1,10 @@
 # rngadopt
 
-babby's first python project!! learning django
+babby's first python project!! learning django and also relearning react apparently lol
 
 FlightRising-style colorwheel RNG pet generator. 
 
-- Dead simple to install docker compose setup for local dev with Python3 + Postgres
+- Dead simple to install docker compose setup for local dev with Django + Vite + Postgres
 
 # Setup
 1. Set up your `.env` --
@@ -19,9 +19,10 @@ FlightRising-style colorwheel RNG pet generator.
     ```
     ./manage createsuperuser
     ```
-3. Go to https://localhost:8000/admin -- This admin panel is for the superadmin only. 
+3. Your admin account can use the following admin panel -- https://localhost:8000/admin 
 
 # References
-- [Django docker setup](https://github.com/docker/awesome-compose/tree/master/official-documentation-samples/django/)
+- [Django Docker setup](https://github.com/docker/awesome-compose/tree/master/official-documentation-samples/django/)
 - [Django tutorial](https://docs.djangoproject.com/en/4.1/intro/tutorial01/)
 - [LearnDjango](https://learndjango.com/)
+- [Django/React Boilerplate](https://gist.github.com/lucianoratamero/7fc9737d24229ea9219f0987272896a2)
