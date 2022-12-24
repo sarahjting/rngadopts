@@ -1,5 +1,3 @@
-# syntax=docker/dockerfile:1
-
 FROM node:19.3-alpine As npm
 WORKDIR /usr/src/app
 COPY frontend/ ./
