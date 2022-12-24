@@ -11,6 +11,10 @@ if [ $# -gt 0 ];then
     elif [ "$1" == "pip" ]; then
         shift 1
         $EXEC_WEB pip "$@"
+        
+    elif [ "$1" == "npm" ]; then
+        shift 1
+        $EXEC_NPM npm "$@"
 
     elif [ "$1" == "dev" ]; then
         $EXEC_NPM npm install
