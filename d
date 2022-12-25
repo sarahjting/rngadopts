@@ -24,6 +24,9 @@ if [ $# -gt 0 ];then
         $EXEC_NPM npm install 
         docker compose run -e mode=production npm npm run build
 
+    elif [ "$1" == "expose" ]; then
+        docker compose run --rm expose
+
     else
         $EXEC_WEB "$@"
     fi

@@ -21,6 +21,21 @@ FlightRising-style colorwheel RNG pet generator.
     ```
 3. Your admin account can use the following admin panel -- https://localhost:8000/admin 
 
+# Expose
+This project is compatible with Expose, if you have an Expose server.
+
+1. Update your `.env` values --
+  ```
+  EXPOSE_SERVER_HOST=sharedwithexpose.com
+  EXPOSE_SERVER_PORT=443
+  EXPOSE_SUBDOMAIN=rngadopts
+  EXPOSE_TOKEN=<FILL IN YOUR AUTH TOKEN>
+  ```
+2. While the project is running, expose the server --  
+  ```
+  ./d expose
+  ```
+
 # References
 - [Django Docker setup](https://github.com/docker/awesome-compose/tree/master/official-documentation-samples/django/)
 - [Django tutorial](https://docs.djangoproject.com/en/4.1/intro/tutorial01/)

@@ -9,6 +9,8 @@ services:
       - POSTGRES_DB=rngadopts
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+    networks:
+      - web
   web:
     build: .
     command: python manage.py runserver 0.0.0.0:8000
@@ -26,6 +28,9 @@ services:
       - ".env"
     depends_on:
       - db
+    networks:
+      - web
+      - expose
   npm:
     image: node:19.3-alpine
     volumes:
@@ -35,3 +40,17 @@ services:
       - "5173:5173"
     profiles:
       - donotstart
+  expose:
+    build: ./docker/expose
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    profiles:
+      - donotstart
+    command: share web:8000 --server-host=${EXPOSE_SERVER_HOST:-sharedwithexpose.com} --server-port=${EXPOSE_SERVER_PORT:-443} --subdomain=${EXPOSE_SUBDOMAIN:-rngadopts} --auth=${EXPOSE_TOKEN}
+    networks:
+      - expose
+networks:
+  expose:
+    driver: bridge
+  web:
+    driver: bridge
