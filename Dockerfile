@@ -4,7 +4,7 @@ COPY frontend/ ./
 RUN npm install
 RUN mode=production npm run build
 
-FROM python:3 as production
+FROM python:3.11.1-bullseye as production
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 WORKDIR /code
