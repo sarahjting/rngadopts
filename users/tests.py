@@ -1,9 +1,29 @@
+from django.urls import reverse
 from django.test import TestCase
 
 from users.models import DiscordUser, User
 
 
-class UserModelTest(TestCase):
+class UserMeViewTests(TestCase):
+
+    def test_not_logged_in(self):
+        response = self.client.get(reverse('users:me'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, None)
+
+    def test_logged_in(self):
+        user = User.objects.create()
+        self.client.force_login(user)
+        response = self.client.get(reverse('users:me'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {
+            'id': user.id,
+            'username': user.username,
+            'is_discord_verified': False,
+        })
+
+
+class UserModelTests(TestCase):
 
     def test_is_discord_verified_returns_false_when_not_discord_verified(self):
         user = User()
