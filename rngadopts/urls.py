@@ -19,8 +19,8 @@ from django.views.generic.base import TemplateView
 
 urlpatterns = [
     path('', include('frontend.urls')),
-    path("auth/", include("users.urls.auth")),
-    path("auth/", include("django.contrib.auth.urls")),
+    path('auth/', include('users.urls.auth')),
+    path('auth/', include('django.contrib.auth.urls')),
     # 4 arguments: route pattern, view, kwargs, name
     path('admin/', admin.site.urls),
     path('api/users/', include('users.urls.api', namespace='users')),
