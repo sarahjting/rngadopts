@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'frontend',
     'users',
     'adopts',
+    'colors',
 ]
 
 MIDDLEWARE = [

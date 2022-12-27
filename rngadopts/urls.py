@@ -25,6 +25,7 @@ urlpatterns = [
     # 4 arguments: route pattern, view, kwargs, name
     path('admin/', admin.site.urls),
 
+    path('', include('colors.urls', namespace='colors')),
     path('', include('adopts.urls', namespace='adopts')),
     path('', include('users.urls.users', namespace='users')),
 ]
