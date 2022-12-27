@@ -92,42 +92,45 @@ class AdoptApiIndexTests(TestCase):
 
 
 class AdoptApiCreateTests(TestCase):
+    def _post(self, user=None, data={}):
+        client = APIClient()
+
+        if user:
+            client.force_login(user)
+
+        return client.post(reverse('adopts:api'), {
+            'name': 'Foo',
+            'short_name': 'foo',
+        } | data)
 
     def test_fails_when_unauthenticated(self):
-        client = APIClient()
-        response = client.post(reverse('adopts:api'))
+        response = self._post()
         self.assertEqual(response.status_code, 403)
 
     def test_fails_when_setting_disabled(self):
         settings.RNGADOPTS_ADOPT_CREATION_ENABLED = False
-        client = APIClient()
 
         user = UserFactory()
-        client.force_login(user)
-
-        response = client.post(reverse('adopts:api'), {
-            'name': 'Foo',
-            'short_name': 'foo',
-        })
+        response = self._post(user)
 
         self.assertEqual(response.status_code, 403)
-        self.assertEqual(user.adopts.filter(
-            name='Foo', short_name='foo').exists(), False)
+        self.assertEqual(user.adopts.count(), 0)
 
     def test_creates_adopt(self):
-        client = APIClient()
-
         user = UserFactory()
-        client.force_login(user)
-
-        response = client.post(reverse('adopts:api'), {
-            'name': 'Foo',
-            'short_name': 'foo',
-        })
+        response = self._post(user)
 
         self.assertEqual(response.status_code, 201)
         adopt = user.adopts.filter(name='Foo', short_name='foo').get()
         self.assertEqual(response.data, AdoptSerializer(adopt).data)
+
+    def test_fails_when_slug_nonunique(self):
+        user = UserFactory()
+        other_adopt = AdoptFactory(short_name='foo')
+
+        response = self._post(user)
+
+        self.assertEqual(response.status_code, 403)
 
 
 class AdoptApiViewTests(TestCase):

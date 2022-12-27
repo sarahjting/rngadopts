@@ -2,6 +2,7 @@ from adopts.models import Adopt, AdoptLayer
 from colors.models import ColorPool
 from colors.serializers import ColorPoolSerializer
 from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
 
 
 class AdoptListSerializer(serializers.ModelSerializer):
@@ -44,6 +45,8 @@ class AdoptSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'short_name',
                   'logs_count', 'layers_count', 'genes_count', 'date_updated', 'adopt_layers']
     id = serializers.ReadOnlyField()
+    short_name = serializers.SlugField(
+        validators=[UniqueValidator(queryset=Adopt.objects)])
     logs_count = serializers.ReadOnlyField()
     layers_count = serializers.ReadOnlyField()
     genes_count = serializers.ReadOnlyField()
