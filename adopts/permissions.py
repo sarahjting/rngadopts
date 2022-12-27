@@ -1,4 +1,5 @@
-from adopts.models import Adopt
+from adopts.models import Adopt, AdoptMod
+from genes.models import GenePool
 from rest_framework import permissions
 
 
@@ -19,8 +20,15 @@ class IsAdoptMod(permissions.IsAuthenticated):
         if request.user.is_superuser:
             return True
 
+        adopt_id = view.kwargs.get('adopt_id', None)
+        gene_pool_id = view.kwargs.get('gene_pool_id', None)
+
+        # verify that the gene pool actually belongs to the adoptable
+        if gene_pool_id:
+            if not GenePool.objects.filter(id=gene_pool_id, adopt_id=adopt_id).exists():
+                return False
+
         try:
-            return Adopt.objects.get(id=view.kwargs.get('adopt_id')).mods.filter(
-                pk=request.user.id).exists()
+            return AdoptMod.objects.filter(adopt_id=adopt_id, mod_id=request.user.id).exists()
         except Adopt.DoesNotExist:
             return False

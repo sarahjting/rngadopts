@@ -28,4 +28,5 @@ urlpatterns = [
     path('', include('colors.urls', namespace='colors')),
     path('', include('adopts.urls', namespace='adopts')),
     path('', include('users.urls.users', namespace='users')),
+    path('', include('genes.urls', namespace='genes')),
 ]

@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'users',
     'adopts',
     'colors',
+    'genes',
 ]
 
 MIDDLEWARE = [

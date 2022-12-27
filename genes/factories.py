@@ -1,0 +1,22 @@
+from adopts.factories import AdoptFactory
+from colors.factories import ColorPoolFactory
+import factory
+from .models import Gene, GenePool
+
+
+class GenePoolFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = GenePool
+
+    name = factory.Faker('word')
+    type = 'basic'
+    adopt = factory.SubFactory(AdoptFactory)
+    color_pool = factory.SubFactory(ColorPoolFactory)
+
+
+class GeneFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Gene
+
+    name = factory.Faker('word')
+    gene_pool = factory.SubFactory(GenePoolFactory)
