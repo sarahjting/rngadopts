@@ -1,5 +1,4 @@
 from django.urls import path
-
 from adopts.views import AdoptApiView, AdoptApiDetailView
 
 app_name = 'adopts'
