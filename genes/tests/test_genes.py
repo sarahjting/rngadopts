@@ -1,7 +1,7 @@
 from adopts.factories import AdoptFactory
 from colors.factories import ColorPoolFactory
 from genes.factories import GeneFactory, GenePoolFactory
-from genes.serializers import GenePoolSerializer, GeneSerializer
+from genes.serializers import GenePoolSerializer, GeneSerializer, GeneListSerializer
 from django.conf import settings
 from django.test import TestCase
 from django.urls import reverse
@@ -28,6 +28,18 @@ class GeneSerializerTest(TestCase):
             'color_pool_id': None,
             'color_pool': None,
             'gene_pool': GenePoolSerializer(gene.gene_pool).data,
+            'name': gene.name,
+            'weight': gene.weight,
+            'date_updated': gene.date_updated.strftime(settings.DATETIME_FORMAT),
+        })
+
+
+class GeneListSerializerTest(TestCase):
+    def test_serializes(self):
+        gene = GeneFactory()
+        self.assertEqual(GeneListSerializer(gene).data, {
+            'id': gene.id,
+            'color_pool': None,
             'name': gene.name,
             'weight': gene.weight,
             'date_updated': gene.date_updated.strftime(settings.DATETIME_FORMAT),
@@ -73,8 +85,8 @@ class GeneApiIndexTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, [
-            GeneSerializer(gene_1).data,
-            GeneSerializer(gene_2).data,
+            GeneListSerializer(gene_1).data,
+            GeneListSerializer(gene_2).data,
         ])
 
     def test_fails_when_unauthorized(self):

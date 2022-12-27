@@ -9,7 +9,7 @@ from django.urls import reverse
 from django.utils import timezone
 from genes.factories import GenePoolFactory
 from genes.models import GenePool
-from genes.serializers import GenePoolSerializer
+from genes.serializers import GenePoolSerializer, GenePoolListSerializer
 from rest_framework.test import APIClient
 from users.factories import UserFactory
 
@@ -30,6 +30,20 @@ class GenePoolSerializerTests(TestCase):
             'id': gene_pool.id,
             'adopt': AdoptSerializer(gene_pool.adopt).data,
             'color_pool_id': gene_pool.color_pool_id,
+            'color_pool': ColorPoolSerializer(gene_pool.color_pool).data,
+            'name': gene_pool.name,
+            'type': gene_pool.type,
+            'genes_count': gene_pool.genes_count,
+            'genes_weight_total': gene_pool.genes_weight_total,
+            'date_updated': gene_pool.date_updated.strftime(settings.DATETIME_FORMAT),
+        })
+
+
+class GenePoolListSerializerTests(TestCase):
+    def test_serializes(self):
+        gene_pool = GenePoolFactory()
+        self.assertEqual(GenePoolListSerializer(gene_pool).data, {
+            'id': gene_pool.id,
             'color_pool': ColorPoolSerializer(gene_pool.color_pool).data,
             'name': gene_pool.name,
             'type': gene_pool.type,
@@ -74,8 +88,8 @@ class GenePoolApiIndexTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, [
-            GenePoolSerializer(gene_pool_1).data,
-            GenePoolSerializer(gene_pool_2).data,
+            GenePoolListSerializer(gene_pool_1).data,
+            GenePoolListSerializer(gene_pool_2).data,
         ])
 
     def test_fails_when_unauthorized(self):

@@ -5,6 +5,18 @@ from genes.models import Gene, GenePool
 from rest_framework import serializers
 
 
+class GenePoolListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GenePool
+        fields = ['id', 'color_pool', 'name', 'type',
+                  'genes_count', 'genes_weight_total', 'date_updated']
+
+    id = serializers.ReadOnlyField()
+    genes_count = serializers.ReadOnlyField()
+    genes_weight_total = serializers.ReadOnlyField()
+    color_pool = ColorPoolSerializer(read_only=True)
+
+
 class GenePoolSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -33,6 +45,15 @@ class GenePoolSerializer(serializers.ModelSerializer):
     color_pool = ColorPoolSerializer(read_only=True)
     genes_count = serializers.ReadOnlyField()
     genes_weight_total = serializers.ReadOnlyField()
+
+
+class GeneListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Gene
+        fields = ['id', 'color_pool', 'name', 'weight', 'date_updated']
+
+    id = serializers.ReadOnlyField()
+    color_pool = ColorPoolSerializer(read_only=True, allow_null=True)
 
 
 class GeneSerializer(serializers.ModelSerializer):

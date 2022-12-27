@@ -1,5 +1,5 @@
 from adopts.permissions import IsAdoptMod
-from genes.serializers import GenePoolSerializer, GeneSerializer
+from genes.serializers import GenePoolSerializer, GenePoolListSerializer, GeneSerializer, GeneListSerializer
 from genes.models import GenePool, Gene
 from django.utils import timezone
 from rest_framework import status, generics
@@ -8,7 +8,7 @@ from users.mixins import ApiLoginRequiredMixin
 
 
 class GenePoolApiView(generics.ListCreateAPIView):
-    serializer_class = GenePoolSerializer
+    serializer_class = GenePoolListSerializer
     permission_classes = [IsAdoptMod]
 
     def get_queryset(self):
@@ -45,7 +45,7 @@ class GenePoolApiDetailView(ApiLoginRequiredMixin, generics.RetrieveUpdateDestro
 
 
 class GeneApiView(generics.ListCreateAPIView):
-    serializer_class = GeneSerializer
+    serializer_class = GeneListSerializer
     permission_classes = [IsAdoptMod]
 
     def get_queryset(self):

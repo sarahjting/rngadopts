@@ -1,5 +1,5 @@
 from adopts.permissions import IsAdoptMod
-from colors.serializers import ColorPoolSerializer
+from colors.serializers import ColorPoolSerializer, ColorPoolListSerializer
 from colors.models import ColorPool
 from django.utils import timezone
 from rest_framework import status, generics
@@ -8,7 +8,7 @@ from users.mixins import ApiLoginRequiredMixin
 
 
 class ColorPoolApiView(ApiLoginRequiredMixin, generics.ListCreateAPIView):
-    serializer_class = ColorPoolSerializer
+    serializer_class = ColorPoolListSerializer
     permission_classes = [IsAdoptMod]
 
     def get_queryset(self):

@@ -3,7 +3,7 @@ from adopts.factories import AdoptFactory
 from adopts.models import Adopt
 from colors.factories import ColorPoolFactory
 from colors.models import ColorPool
-from colors.serializers import ColorPoolSerializer
+from colors.serializers import ColorPoolSerializer, ColorPoolListSerializer
 from adopts.serializers import AdoptSerializer
 from django.conf import settings
 from django.test import TestCase
@@ -31,6 +31,17 @@ class ColorPoolSerializerTests(TestCase):
             'date_updated': color_pool.date_updated.strftime(settings.DATETIME_FORMAT),
             'colors': color_pool.colors,
             'adopt': AdoptSerializer(color_pool.adopt).data,
+        })
+
+
+class ColorPoolListSerializerTests(TestCase):
+    def test_serializes(self):
+        color_pool = ColorPoolFactory()
+        self.assertEqual(ColorPoolListSerializer(color_pool).data, {
+            'id': color_pool.id,
+            'name': color_pool.name,
+            'date_updated': color_pool.date_updated.strftime(settings.DATETIME_FORMAT),
+            'colors': color_pool.colors,
         })
 
 
@@ -69,8 +80,8 @@ class ColorPoolApiIndexTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, [
-            ColorPoolSerializer(color_pool_1).data,
-            ColorPoolSerializer(color_pool_2).data,
+            ColorPoolListSerializer(color_pool_1).data,
+            ColorPoolListSerializer(color_pool_2).data,
         ])
 
     def test_fails_when_unauthorized(self):
