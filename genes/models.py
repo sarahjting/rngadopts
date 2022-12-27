@@ -1,5 +1,5 @@
 from django.db import models
-
+from os.path import splitext
 from adopts.models import Adopt
 from colors.models import ColorPool
 
@@ -41,10 +41,14 @@ class Gene(models.Model):
         return self.name
 
 
+def gene_layer_to_image_path(obj, filename):
+    return f'adopts/{obj.adopt_id}/genes/{obj.gene_id}/{obj.id}{splitext(filename)[1]}'
+
+
 class GeneLayer(models.Model):
     gene = models.ForeignKey(
         Gene, on_delete=models.RESTRICT, related_name='gene_layers')
-    image = models.ImageField(null=True)
+    image = models.ImageField(null=True, upload_to=gene_layer_to_image_path)
     type = models.CharField(
         max_length=20,
         choices=[('static_over', 'Static image on top of adopt (eg. tert lines)'), ('shading', 'Shading (eg. tert shading -- dropshadows also work)'),

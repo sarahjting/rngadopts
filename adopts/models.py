@@ -1,5 +1,6 @@
-from django.db import models
 from colors.models import ColorPool
+from django.db import models
+from os.path import splitext
 from users.models import User
 
 
@@ -21,10 +22,14 @@ class Adopt(models.Model):
         return f"{self.name} ({self.short_name})"
 
 
+def adopt_layer_to_image_path(obj, filename):
+    return f'adopts/{obj.adopt_id}/layers/{obj.id}{splitext(filename)[1]}'
+
+
 class AdoptLayer(models.Model):
     adopt = models.ForeignKey(
         Adopt, on_delete=models.RESTRICT, related_name='adopt_layers')
-    image = models.ImageField(null=True)
+    image = models.ImageField(null=True, upload_to=adopt_layer_to_image_path)
     type = models.CharField(
         max_length=20,
         choices=[('static', 'Static image (eg. lines, eye whites)'), ('shading', 'Shading'),
