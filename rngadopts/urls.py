@@ -23,5 +23,7 @@ urlpatterns = [
     path('auth/', include('django.contrib.auth.urls')),
     # 4 arguments: route pattern, view, kwargs, name
     path('admin/', admin.site.urls),
+
+    path('api/adopts/', include('adopts.urls.api', namespace='adopts')),
     path('api/users/', include('users.urls.api', namespace='users')),
 ]

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'frontend',
     'users',
     'adopts',
@@ -124,6 +125,8 @@ USE_L10N = True
 
 USE_TZ = True
 
+DATETIME_FORMAT = '%Y-%m-%dT%H:%M:%S'
+
 # Vite setup
 
 VITE_APP_DIR = BASE_DIR / "frontend"
@@ -147,3 +150,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = "users.User"
 LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "home"
+
+# Rest framework
+REST_FRAMEWORK = {
+    'DATETIME_FORMAT': DATETIME_FORMAT
+}

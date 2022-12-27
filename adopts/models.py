@@ -1,5 +1,4 @@
 from django.db import models
-
 from users.models import User
 
 
@@ -10,10 +9,12 @@ class Adopt(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
     date_deleted = models.DateTimeField(null=True)
-    mods = models.ManyToManyField(User, through='AdoptMod')
+    mods = models.ManyToManyField(
+        User, through='AdoptMod', related_name='adopts'
+    )
 
     def __str__(self):
-        return f"{self.short_name} (#{self.name})"
+        return f"{self.name} ({self.short_name})"
 
 
 class AdoptLog(models.Model):
