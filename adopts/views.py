@@ -1,5 +1,6 @@
 from adopts.serializers import AdoptSerializer
 from adopts.models import Adopt
+from django.conf import settings
 from django.utils import timezone
 from rest_framework import status, generics
 from rest_framework.response import Response
@@ -13,6 +14,9 @@ class AdoptApiView(ApiLoginRequiredMixin, generics.ListCreateAPIView):
         return self.request.user.adopts.filter(date_deleted=None).order_by('name')
 
     def post(self, request):
+        if not settings.RNGADOPTS_ADOPT_CREATION_ENABLED:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
         serializer = AdoptSerializer(data=request.data)
 
         if not serializer.is_valid():

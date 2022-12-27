@@ -6,7 +6,6 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 from rest_framework.test import APIClient
-from time import timezone
 from users.factories import UserFactory
 
 
@@ -79,6 +78,22 @@ class AdoptApiCreateTests(TestCase):
         client = APIClient()
         response = client.post(reverse('adopts:api'))
         self.assertEqual(response.status_code, 403)
+
+    def test_fails_when_setting_disabled(self):
+        settings.RNGADOPTS_ADOPT_CREATION_ENABLED = False
+        client = APIClient()
+
+        user = UserFactory()
+        client.force_login(user)
+
+        response = client.post(reverse('adopts:api'), {
+            'name': 'Foo',
+            'short_name': 'foo',
+        })
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(user.adopts.filter(
+            name='Foo', short_name='foo').exists(), False)
 
     def test_creates_adopt(self):
         client = APIClient()
