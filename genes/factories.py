@@ -20,6 +20,7 @@ class GeneFactory(factory.django.DjangoModelFactory):
 
     name = factory.Faker('word')
     gene_pool = factory.SubFactory(GenePoolFactory)
+    adopt = factory.SubFactory(AdoptFactory)
 
 
 class GeneLayerFactory(factory.django.DjangoModelFactory):
@@ -27,3 +28,4 @@ class GeneLayerFactory(factory.django.DjangoModelFactory):
         model = GeneLayer
 
     gene = factory.SubFactory(GeneFactory)
+    adopt = factory.SubFactory(AdoptFactory)

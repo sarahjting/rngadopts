@@ -58,7 +58,7 @@ class GeneApiView(ApiLoginRequiredMixin, generics.ListCreateAPIView):
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        adopt = serializer.save(gene_pool_id=gene_pool_id)
+        adopt = serializer.save(gene_pool_id=gene_pool_id, adopt_id=adopt_id)
 
         return Response(GeneSerializer(adopt).data, status=status.HTTP_201_CREATED)
 
@@ -92,7 +92,7 @@ class GeneLayerApiView(ApiLoginRequiredMixin, generics.CreateAPIView):
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        gene_layer = serializer.save()
+        gene_layer = serializer.save(adopt_id=adopt_id)
 
         return Response(GeneLayerSerializer(gene_layer).data, status=status.HTTP_201_CREATED)
 
