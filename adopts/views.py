@@ -40,6 +40,6 @@ class AdoptApiDetailView(generics.RetrieveUpdateDestroyAPIView):
             adopt.date_deleted = timezone.now()
             adopt.save()
 
-            return Response(AdoptSerializer(adopt).data, status=status.HTTP_202_ACCEPTED)
+            return Response(status=status.HTTP_202_ACCEPTED)
         except Adopt.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)

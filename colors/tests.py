@@ -36,7 +36,7 @@ class ColorPoolSerializerTests(TestCase):
 
 class ColorPoolApiIndexTests(TestCase):
 
-    def test_fails_when_not_authenticated(self):
+    def test_fails_when_unauthenticated(self):
         adopt = AdoptFactory()
         client = APIClient()
         response = client.get(color_pool_endpoint(adopt))
@@ -87,7 +87,7 @@ class ColorPoolApiIndexTests(TestCase):
 
 class ColorPoolApiCreateTests(TestCase):
 
-    def test_fails_when_not_authenticated(self):
+    def test_fails_when_unauthenticated(self):
         adopt = AdoptFactory()
 
         client = APIClient()
@@ -115,7 +115,7 @@ class ColorPoolApiCreateTests(TestCase):
 
 class ColorPoolApiUpdateTests(TestCase):
 
-    def test_fails_when_not_authenticated(self):
+    def test_fails_when_unauthenticated(self):
         color_pool = ColorPoolFactory()
 
         client = APIClient()
@@ -145,7 +145,7 @@ class ColorPoolApiUpdateTests(TestCase):
             id=color_pool.id, name='Foo', colors=['foo']).get()
         self.assertEqual(response.data, ColorPoolSerializer(color_pool).data)
 
-    def test_does_not_update_when_unauthorized(self):
+    def test_fails_when_unauthorized(self):
         user = UserFactory()
         adopt = AdoptFactory()
         color_pool = ColorPoolFactory(adopt=adopt)
@@ -165,7 +165,7 @@ class ColorPoolApiUpdateTests(TestCase):
 
 class ColorPoolApiDeleteTests(TestCase):
 
-    def test_fails_when_not_authenticated(self):
+    def test_fails_when_unauthenticated(self):
         color_pool = ColorPoolFactory()
 
         client = APIClient()
@@ -173,7 +173,7 @@ class ColorPoolApiDeleteTests(TestCase):
 
         self.assertEqual(response.status_code, 403)
 
-    def test_deletes_my_ColorPool(self):
+    def test_deletes_color_pools(self):
         user = UserFactory()
         adopt = AdoptFactory(mods=(user,))
         color_pool = ColorPoolFactory(adopt=adopt)
@@ -187,7 +187,7 @@ class ColorPoolApiDeleteTests(TestCase):
         self.assertEqual(ColorPool.objects.filter(
             id=color_pool.id).exclude(date_deleted=None).count(), 1)
 
-    def test_does_not_delete_other_ColorPools(self):
+    def test_fails_when_unauthorized(self):
         user = UserFactory()
         adopt = AdoptFactory()
         color_pool = ColorPoolFactory(adopt=adopt)
