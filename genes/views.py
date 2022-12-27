@@ -1,13 +1,13 @@
 from adopts.permissions import IsAdoptMod
-from genes.serializers import GenePoolSerializer, GenePoolListSerializer, GeneSerializer, GeneListSerializer
-from genes.models import GenePool, Gene
+from genes.serializers import GeneLayerSerializer, GenePoolSerializer, GenePoolListSerializer, GeneSerializer, GeneListSerializer
+from genes.models import GeneLayer, GenePool, Gene
 from django.utils import timezone
 from rest_framework import status, generics
 from rest_framework.response import Response
 from users.mixins import ApiLoginRequiredMixin
 
 
-class GenePoolApiView(generics.ListCreateAPIView):
+class GenePoolApiView(ApiLoginRequiredMixin, generics.ListCreateAPIView):
     serializer_class = GenePoolListSerializer
     permission_classes = [IsAdoptMod]
 
@@ -44,7 +44,7 @@ class GenePoolApiDetailView(ApiLoginRequiredMixin, generics.RetrieveUpdateDestro
             return Response(status=status.HTTP_404_NOT_FOUND)
 
 
-class GeneApiView(generics.ListCreateAPIView):
+class GeneApiView(ApiLoginRequiredMixin, generics.ListCreateAPIView):
     serializer_class = GeneListSerializer
     permission_classes = [IsAdoptMod]
 
@@ -79,3 +79,27 @@ class GeneApiDetailView(ApiLoginRequiredMixin, generics.RetrieveUpdateDestroyAPI
             return Response(status=status.HTTP_202_ACCEPTED)
         except Gene.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class GeneLayerApiView(ApiLoginRequiredMixin, generics.CreateAPIView):
+    serializer_class = GeneLayerSerializer
+    permission_classes = [IsAdoptMod]
+
+    def post(self, request, adopt_id):
+        serializer = GeneLayerSerializer(
+            data=request.data, context={'adopt_id': adopt_id})
+
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        gene_layer = serializer.save()
+
+        return Response(GeneLayerSerializer(gene_layer).data, status=status.HTTP_201_CREATED)
+
+
+class GeneLayerApiDetailView(ApiLoginRequiredMixin, generics.DestroyAPIView, generics.UpdateAPIView):
+    serializer_class = GeneLayerSerializer
+    permission_classes = [IsAdoptMod]
+
+    def get_queryset(self):
+        return GeneLayer.objects.filter(gene__gene_pool__adopt_id=self.kwargs.get('adopt_id'))

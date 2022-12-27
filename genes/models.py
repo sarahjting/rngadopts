@@ -39,3 +39,16 @@ class Gene(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class GeneLayer(models.Model):
+    gene = models.ForeignKey(
+        Gene, on_delete=models.RESTRICT, related_name='gene_layers')
+    image = models.ImageField(null=True)
+    type = models.CharField(
+        max_length=20,
+        choices=[('static_over', 'Static image on top of adopt (eg. tert lines)'), ('shading', 'Shading (eg. tert shading -- dropshadows also work)'),
+                 ('highlights', 'Highlights (eg. tert highlights)'), ('static_marking', 'Static image on adopt base (eg. accent/tattoo)'), ('color', 'Generate all colors from color pool (regular marking)'), ('static_under', 'Static image underneath adopt (eg. background)'),]
+    )
+    color_key = models.IntegerField(null=True)
+    sort = models.IntegerField(default=0)

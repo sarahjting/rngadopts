@@ -25,12 +25,13 @@ class GeneSerializerTest(TestCase):
         gene = GeneFactory()
         self.assertEqual(GeneSerializer(gene).data, {
             'id': gene.id,
+            'gene_pool': GenePoolSerializer(gene.gene_pool).data,
             'color_pool_id': None,
             'color_pool': None,
-            'gene_pool': GenePoolSerializer(gene.gene_pool).data,
             'name': gene.name,
             'weight': gene.weight,
             'date_updated': gene.date_updated.strftime(settings.DATETIME_FORMAT),
+            'gene_layers': [],
         })
 
 

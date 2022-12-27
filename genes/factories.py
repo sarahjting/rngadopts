@@ -1,7 +1,7 @@
 from adopts.factories import AdoptFactory
 from colors.factories import ColorPoolFactory
 import factory
-from .models import Gene, GenePool
+from .models import Gene, GeneLayer, GenePool
 
 
 class GenePoolFactory(factory.django.DjangoModelFactory):
@@ -20,3 +20,10 @@ class GeneFactory(factory.django.DjangoModelFactory):
 
     name = factory.Faker('word')
     gene_pool = factory.SubFactory(GenePoolFactory)
+
+
+class GeneLayerFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = GeneLayer
+
+    gene = factory.SubFactory(GeneFactory)
