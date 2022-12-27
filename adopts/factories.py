@@ -18,3 +18,8 @@ class AdoptFactory(factory.django.DjangoModelFactory):
         if extracted:
             for user in extracted:
                 self.mods.add(user)
+
+
+class AdoptLayerFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = models.AdoptLayer

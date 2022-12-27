@@ -1,11 +1,15 @@
 from django.db import models
+from colors.models import ColorPool
 from users.models import User
 
 
 class Adopt(models.Model):
     name = models.CharField(max_length=40)
     short_name = models.CharField(max_length=20, unique=True)
-    count = models.IntegerField(default=0)
+    logs_count = models.IntegerField(default=0)
+    layers_count = models.IntegerField(default=0)
+    genes_count = models.IntegerField(default=0)
+
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
     date_deleted = models.DateTimeField(null=True)
@@ -17,9 +21,25 @@ class Adopt(models.Model):
         return f"{self.name} ({self.short_name})"
 
 
+class AdoptLayer(models.Model):
+    adopt = models.ForeignKey(
+        Adopt, on_delete=models.RESTRICT, related_name='adopt_layers')
+    image = models.ImageField(null=True)
+    type = models.CharField(
+        max_length=20,
+        choices=[('static', 'Static image (eg. lines, eye whites)'), ('shading', 'Shading'),
+                 ('highlights', 'Highlights'), ('color', 'Generate all colors from color pool (eg. eye color)')]
+    )
+    color_pool = models.ForeignKey(
+        ColorPool, on_delete=models.RESTRICT, null=True)
+    sort = models.IntegerField(default=0)
+
+
 class AdoptLog(models.Model):
-    adopt = models.ForeignKey(Adopt, on_delete=models.RESTRICT)
-    mod = models.ForeignKey(User, on_delete=models.RESTRICT)
+    adopt = models.ForeignKey(
+        Adopt, on_delete=models.RESTRICT, related_name='adopt_logs')
+    mod = models.ForeignKey(
+        User, on_delete=models.RESTRICT, related_name='adopt_logs')
     discord_user_id = models.IntegerField(null=True, db_index=True)
     discord_guild_id = models.IntegerField(null=True, db_index=True)
     discord_channel_id = models.IntegerField(null=True, db_index=True)

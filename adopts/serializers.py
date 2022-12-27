@@ -1,10 +1,50 @@
-from adopts.models import Adopt
+from adopts.models import Adopt, AdoptLayer
+from colors.models import ColorPool
+from colors.serializers import ColorPoolSerializer
 from rest_framework import serializers
+
+
+class AdoptListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Adopt
+        fields = ['id', 'name', 'short_name',
+                  'logs_count', 'layers_count', 'genes_count', 'date_updated']
+    id = serializers.ReadOnlyField()
+    logs_count = serializers.ReadOnlyField()
+    layers_count = serializers.ReadOnlyField()
+    genes_count = serializers.ReadOnlyField()
+
+
+class AdoptLayerSerializer(serializers.ModelSerializer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if self.instance and isinstance(self.instance, AdoptLayer):
+            adopt_id = self.instance.adopt_id
+        else:
+            adopt_id = self.context.get('adopt_id', None)
+
+        if adopt_id:
+            self.fields['color_pool_id'] = serializers.PrimaryKeyRelatedField(
+                source='color_pool',
+                required=True,
+                queryset=ColorPool.objects.filter(date_deleted=None, adopt_id=adopt_id))
+
+    class Meta:
+        model = AdoptLayer
+        fields = ['id', 'image', 'type', 'color_pool', 'sort']
+
+    id = serializers.ReadOnlyField()
+    color_pool = ColorPoolSerializer(read_only=True)
 
 
 class AdoptSerializer(serializers.ModelSerializer):
     class Meta:
         model = Adopt
-        fields = ['id', 'name', 'short_name', 'count', 'date_updated']
+        fields = ['id', 'name', 'short_name',
+                  'logs_count', 'layers_count', 'genes_count', 'date_updated', 'adopt_layers']
     id = serializers.ReadOnlyField()
-    count = serializers.ReadOnlyField()
+    logs_count = serializers.ReadOnlyField()
+    layers_count = serializers.ReadOnlyField()
+    genes_count = serializers.ReadOnlyField()
+    adopt_layers = AdoptLayerSerializer(read_only=True, many=True)
