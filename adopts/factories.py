@@ -7,7 +7,7 @@ class AdoptFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.Adopt
 
-    name = factory.Faker('word')
+    name = factory.Sequence(lambda n: 'Adopt %d' % n)
     short_name = factory.LazyAttribute(lambda o: slugify(o.name))
 
     @factory.post_generation
