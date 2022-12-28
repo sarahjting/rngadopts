@@ -194,7 +194,7 @@ class AdoptApiDeleteTests(TestCase):
         response = client.delete(
             reverse('adopts:api', kwargs={'pk': adopt.id}))
 
-        self.assertEqual(response.status_code, 202)
+        self.assertEqual(response.status_code, 204)
         self.assertEqual(user.adopts.filter(
             id=adopt.id).exclude(date_deleted=None).count(), 1)
 

@@ -160,7 +160,7 @@ class ColorPoolApiDeleteTests(TestCase):
 
         response = client.delete(color_pool_endpoint(color_pool))
 
-        self.assertEqual(response.status_code, 202)
+        self.assertEqual(response.status_code, 204)
         self.assertEqual(ColorPool.objects.filter(
             id=color_pool.id).exclude(date_deleted=None).count(), 1)
 

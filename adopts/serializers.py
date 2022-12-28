@@ -28,8 +28,9 @@ class AdoptLayerSerializer(serializers.ModelSerializer):
         if adopt_id:
             self.fields['color_pool_id'] = serializers.PrimaryKeyRelatedField(
                 source='color_pool',
-                required=True,
-                queryset=ColorPool.objects.filter(date_deleted=None, adopt_id=adopt_id))
+                queryset=ColorPool.objects.filter(
+                    date_deleted=None, adopt_id=adopt_id),
+                default=None)
 
     class Meta:
         model = AdoptLayer
@@ -37,6 +38,7 @@ class AdoptLayerSerializer(serializers.ModelSerializer):
 
     id = serializers.ReadOnlyField()
     color_pool = ColorPoolSerializer(read_only=True)
+    sort = serializers.IntegerField(default=0)
 
 
 class AdoptSerializer(serializers.ModelSerializer):

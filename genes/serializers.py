@@ -37,14 +37,14 @@ class GenePoolSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GenePool
-        fields = ['id', 'adopt', 'color_pool_id', 'color_pool', 'name', 'type',
-                  'genes_count', 'genes_weight_total', 'date_updated']
+        fields = ['id', 'color_pool_id', 'color_pool', 'name', 'type',
+                  'genes_count', 'genes_weight_total', 'date_updated', 'sort']
 
     id = serializers.ReadOnlyField()
-    adopt = AdoptSerializer(read_only=True)
     color_pool = ColorPoolSerializer(read_only=True)
     genes_count = serializers.ReadOnlyField()
     genes_weight_total = serializers.ReadOnlyField()
+    sort = serializers.IntegerField(default=0)
 
 
 class GeneListSerializer(serializers.ModelSerializer):
@@ -88,14 +88,15 @@ class GeneSerializer(serializers.ModelSerializer):
             self.fields['color_pool_id'] = serializers.PrimaryKeyRelatedField(
                 source='color_pool',
                 allow_null=True,
-                queryset=ColorPool.objects.filter(date_deleted=None, adopt_id=adopt_id))
+                queryset=ColorPool.objects.filter(
+                    date_deleted=None, adopt_id=adopt_id),
+                default=None)
 
     class Meta:
         model = Gene
-        fields = ['id', 'gene_pool', 'color_pool_id',
+        fields = ['id', 'color_pool_id',
                   'color_pool', 'name', 'weight', 'date_updated', 'gene_layers']
 
     id = serializers.ReadOnlyField()
-    gene_pool = GenePoolSerializer(read_only=True)
     color_pool = ColorPoolSerializer(read_only=True, allow_null=True)
     gene_layers = GeneLayerSerializer(read_only=True, many=True)

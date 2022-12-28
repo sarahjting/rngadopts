@@ -25,7 +25,6 @@ class GeneSerializerTest(TestCase):
         gene = GeneFactory()
         self.assertEqual(GeneSerializer(gene).data, {
             'id': gene.id,
-            'gene_pool': GenePoolSerializer(gene.gene_pool).data,
             'color_pool_id': None,
             'color_pool': None,
             'name': gene.name,
@@ -233,7 +232,7 @@ class GeneApiDeleteTests(TestCase):
 
         response = self._delete(gene, user=user)
 
-        self.assertEqual(response.status_code, 202)
+        self.assertEqual(response.status_code, 204)
         self.assertEqual(Gene.objects.filter(
             id=gene.id).exclude(date_deleted=None).count(), 1)
 

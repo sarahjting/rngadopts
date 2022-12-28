@@ -28,7 +28,6 @@ class GenePoolSerializerTests(TestCase):
         gene_pool = GenePoolFactory()
         self.assertEqual(GenePoolSerializer(gene_pool).data, {
             'id': gene_pool.id,
-            'adopt': AdoptSerializer(gene_pool.adopt).data,
             'color_pool_id': gene_pool.color_pool_id,
             'color_pool': ColorPoolSerializer(gene_pool.color_pool).data,
             'name': gene_pool.name,
@@ -36,6 +35,7 @@ class GenePoolSerializerTests(TestCase):
             'genes_count': gene_pool.genes_count,
             'genes_weight_total': gene_pool.genes_weight_total,
             'date_updated': gene_pool.date_updated.strftime(settings.DATETIME_FORMAT),
+            'sort': 0,
         })
 
 
@@ -219,7 +219,7 @@ class GenePoolApiDeleteTests(TestCase):
 
         response = self._delete(gene_pool, user=user)
 
-        self.assertEqual(response.status_code, 202)
+        self.assertEqual(response.status_code, 204)
         self.assertEqual(GenePool.objects.filter(
             id=gene_pool.id).exclude(date_deleted=None).count(), 1)
 

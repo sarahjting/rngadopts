@@ -1,7 +1,8 @@
+from adopts.models import Adopt
 from adopts.permissions import IsAdoptMod
 from colors.serializers import ColorPoolSerializer
 from colors.models import ColorPool
-from django.utils import timezone
+from colors.actions import create_color_pool, delete_color_pool
 from rest_framework import status, generics
 from rest_framework.response import Response
 from users.mixins import ApiLoginRequiredMixin
@@ -20,7 +21,10 @@ class ColorPoolApiView(ApiLoginRequiredMixin, generics.ListCreateAPIView):
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        color_pool = serializer.save(adopt_id=adopt_id)
+        color_pool = create_color_pool(
+            adopt=Adopt.objects.get(id=adopt_id),
+            **serializer.validated_data,
+        )
 
         return Response(ColorPoolSerializer(color_pool).data, status=status.HTTP_201_CREATED)
 
@@ -34,10 +38,7 @@ class ColorPoolApiDetailView(ApiLoginRequiredMixin, generics.RetrieveUpdateDestr
 
     def delete(self, request, pk, **kwargs):
         try:
-            color_pool = self.get_queryset().get(id=pk)
-            color_pool.date_deleted = timezone.now()
-            color_pool.save()
-
-            return Response(status=status.HTTP_202_ACCEPTED)
+            delete_color_pool(self.get_queryset().get(id=pk))
+            return Response(status=status.HTTP_204_NO_CONTENT)
         except ColorPool.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)

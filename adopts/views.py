@@ -1,8 +1,8 @@
+from adopts.actions import create_adopt, create_adopt_layer, delete_adopt, delete_adopt_layer
 from adopts.serializers import AdoptLayerSerializer, AdoptSerializer, AdoptListSerializer
 from adopts.models import Adopt, AdoptLayer
 from adopts.permissions import IsAdoptMod
 from django.conf import settings
-from django.utils import timezone
 from rest_framework import status, generics
 from rest_framework.response import Response
 from users.mixins import ApiLoginRequiredMixin
@@ -23,8 +23,7 @@ class AdoptApiView(ApiLoginRequiredMixin, generics.ListCreateAPIView):
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        adopt = serializer.save()
-        adopt.mods.add(request.user)
+        adopt = create_adopt(mod=request.user, **serializer.validated_data,)
 
         return Response(AdoptSerializer(adopt).data, status=status.HTTP_201_CREATED)
 
@@ -37,11 +36,8 @@ class AdoptApiDetailView(ApiLoginRequiredMixin, generics.RetrieveUpdateDestroyAP
 
     def delete(self, request, pk):
         try:
-            adopt = self.get_queryset().get(id=pk)
-            adopt.date_deleted = timezone.now()
-            adopt.save()
-
-            return Response(status=status.HTTP_202_ACCEPTED)
+            delete_adopt(self.get_queryset().get(id=pk))
+            return Response(status=status.HTTP_204_NO_CONTENT)
         except Adopt.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -60,7 +56,10 @@ class AdoptLayerApiView(ApiLoginRequiredMixin, generics.CreateAPIView):
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        adopt_layer = serializer.save(adopt_id=adopt_id)
+        adopt_layer = create_adopt_layer(
+            adopt=Adopt.objects.filter(date_deleted=None).get(id=adopt_id),
+            **serializer.validated_data,
+        )
 
         return Response(AdoptLayerSerializer(adopt_layer).data, status=status.HTTP_201_CREATED)
 
@@ -71,3 +70,10 @@ class AdoptLayerApiDetailView(ApiLoginRequiredMixin, generics.DestroyAPIView, ge
 
     def get_queryset(self):
         return AdoptLayer.objects.filter(adopt_id=self.kwargs.get('adopt_id'))
+
+    def delete(self, request, adopt_id, pk):
+        try:
+            delete_adopt_layer(self.get_queryset().get(id=pk))
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Adopt.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
