@@ -13,12 +13,11 @@ import { useState, useEffect } from "react";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-
-// Soft UI Dashboard React examples
 import Sidenav from "components/Sidenav";
 import theme from "assets/theme";
 import routes from "routes";
-import { useSoftUIController, setMiniSidenav } from "context";
+import axios from "axios";
+import { useSoftUIController, setMiniSidenav, setUser } from "context";
 
 export default function App() {
   const [controller, dispatch] = useSoftUIController();
@@ -52,6 +51,13 @@ export default function App() {
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
   }, [pathname]);
+
+  useEffect(() => {
+    axios.get('/api/me')
+      .then((data) => {
+        setUser(dispatch, data.data || null)
+      });
+  }, []);
 
   const getRoutes = (allRoutes) =>
     allRoutes.map((route) => {

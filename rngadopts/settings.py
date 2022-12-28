@@ -13,9 +13,10 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 import os
 
+APP_URL = os.environ.get('APP_URL')
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -29,6 +30,7 @@ DEBUG = os.environ.get('DEBUG')
 ALLOWED_HOSTS = [
     'localhost',
     'web',  # this is required for expose to be able to access the web container
+    APP_URL,
 ]
 
 
@@ -41,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'rest_framework',
     'frontend',
     'users',
@@ -52,6 +55,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -164,4 +168,10 @@ REST_FRAMEWORK = {
 
 # App-specific settings
 RNGADOPTS_ADOPT_CREATION_ENABLED = os.environ.get(
-    'RNGADOPTS_ADOPT_CREATION_ENABLED', True),
+    'RNGADOPTS_ADOPT_CREATION_ENABLED', '1') == '1',
+
+# CORS
+CORS_ORIGIN_WHITELIST = (
+    'http://localhost:5173',
+    'http://127.0.0.1:5173'
+)

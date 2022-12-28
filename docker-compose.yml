@@ -40,6 +40,8 @@ services:
       - "5173:5173"
     profiles:
       - donotstart
+    env_file:
+      - ".env"
   expose:
     build: ./docker/expose
     extra_hosts:

@@ -9,6 +9,7 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
+import axios from "axios";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
@@ -24,3 +25,4 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   document.getElement
 )
 
+axios.defaults.baseURL = window.APP_URL
