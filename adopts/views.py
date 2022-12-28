@@ -12,7 +12,7 @@ class AdoptApiView(ApiLoginRequiredMixin, generics.ListCreateAPIView):
     serializer_class = AdoptListSerializer
 
     def get_queryset(self):
-        return self.request.user.adopts.filter(date_deleted=None).order_by('name')
+        return self.request.user.adopts.active().order_by('name')
 
     def post(self, request):
         if not settings.RNGADOPTS_ADOPT_CREATION_ENABLED:
@@ -32,7 +32,7 @@ class AdoptApiDetailView(ApiLoginRequiredMixin, generics.RetrieveUpdateDestroyAP
     serializer_class = AdoptSerializer
 
     def get_queryset(self):
-        return self.request.user.adopts.filter(date_deleted=None)
+        return self.request.user.adopts.active()
 
     def delete(self, request, pk):
         try:
@@ -57,7 +57,7 @@ class AdoptLayerApiView(ApiLoginRequiredMixin, generics.CreateAPIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         adopt_layer = create_adopt_layer(
-            adopt=Adopt.objects.filter(date_deleted=None).get(id=adopt_id),
+            adopt=Adopt.objects.active().get(id=adopt_id),
             **serializer.validated_data,
         )
 

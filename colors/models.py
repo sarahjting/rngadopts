@@ -2,9 +2,16 @@ from django.db import models
 from collections import deque
 import json
 import re
+from rngadopts import mixins
+
+
+class ColorQuerySet(models.QuerySet, mixins.queryset.SoftDeletes):
+    pass
 
 
 class ColorPool(models.Model):
+    objects = ColorQuerySet.as_manager()
+
     adopt = models.ForeignKey(
         'adopts.Adopt', on_delete=models.RESTRICT, related_name='color_pools')
     name = models.CharField(max_length=40)

@@ -2,9 +2,16 @@ from colors.models import ColorPool
 from django.db import models
 from os.path import splitext
 from users.models import User
+from rngadopts import mixins
+
+
+class AdoptQuerySet(models.QuerySet, mixins.queryset.SoftDeletes):
+    pass
 
 
 class Adopt(models.Model):
+    objects = AdoptQuerySet.as_manager()
+
     name = models.CharField(max_length=40)
     short_name = models.CharField(max_length=20, unique=True)
     logs_count = models.IntegerField(default=0)

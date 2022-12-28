@@ -1,10 +1,17 @@
-from django.db import models
-from os.path import splitext
 from adopts.models import Adopt
 from colors.models import ColorPool
+from django.db import models
+from os.path import splitext
+from rngadopts import mixins
+
+
+class GenePoolQuerySet(models.QuerySet, mixins.queryset.SoftDeletes):
+    pass
 
 
 class GenePool(models.Model):
+    objects = GenePoolQuerySet.as_manager()
+
     adopt = models.ForeignKey(
         Adopt, on_delete=models.RESTRICT, related_name='gene_pools')
     color_pool = models.ForeignKey(ColorPool, on_delete=models.RESTRICT)
@@ -24,7 +31,13 @@ class GenePool(models.Model):
         return self.name
 
 
+class GeneQuerySet(models.QuerySet, mixins.queryset.SoftDeletes):
+    pass
+
+
 class Gene(models.Model):
+    objects = GenePoolQuerySet.as_manager()
+
     adopt = models.ForeignKey(
         Adopt, on_delete=models.RESTRICT, related_name='genes')
     gene_pool = models.ForeignKey(

@@ -13,7 +13,7 @@ class GenePoolApiView(ApiLoginRequiredMixin, generics.ListCreateAPIView):
     permission_classes = [IsAdoptMod]
 
     def get_queryset(self):
-        return GenePool.objects.filter(adopt_id=self.kwargs.get('adopt_id'), date_deleted=None).order_by('name')
+        return GenePool.objects.active().filter(adopt_id=self.kwargs.get('adopt_id')).order_by('name')
 
     def post(self, request, adopt_id):
         serializer = GenePoolSerializer(
@@ -35,7 +35,7 @@ class GenePoolApiDetailView(ApiLoginRequiredMixin, generics.RetrieveUpdateDestro
     permission_classes = [IsAdoptMod]
 
     def get_queryset(self):
-        return GenePool.objects.filter(adopt_id=self.kwargs.get('adopt_id'), date_deleted=None)
+        return GenePool.objects.active().filter(adopt_id=self.kwargs.get('adopt_id'))
 
     def delete(self, request, adopt_id, pk):
         try:
@@ -50,7 +50,7 @@ class GeneApiView(ApiLoginRequiredMixin, generics.ListCreateAPIView):
     permission_classes = [IsAdoptMod]
 
     def get_queryset(self):
-        return Gene.objects.filter(gene_pool_id=self.kwargs.get('gene_pool_id'), date_deleted=None).order_by('name')
+        return Gene.objects.active().filter(gene_pool_id=self.kwargs.get('gene_pool_id')).order_by('name')
 
     def post(self, request, adopt_id, gene_pool_id):
         serializer = GeneSerializer(
@@ -73,7 +73,7 @@ class GeneApiDetailView(ApiLoginRequiredMixin, generics.RetrieveUpdateDestroyAPI
     permission_classes = [IsAdoptMod]
 
     def get_queryset(self):
-        return Gene.objects.filter(gene_pool_id=self.kwargs.get('gene_pool_id'), date_deleted=None)
+        return Gene.objects.active().filter(gene_pool_id=self.kwargs.get('gene_pool_id'))
 
     def update(self, request, adopt_id, gene_pool_id, pk):
         try:

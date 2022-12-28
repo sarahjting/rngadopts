@@ -13,7 +13,7 @@ class ColorPoolApiView(ApiLoginRequiredMixin, generics.ListCreateAPIView):
     permission_classes = [IsAdoptMod]
 
     def get_queryset(self):
-        return ColorPool.objects.filter(adopt_id=self.kwargs.get('adopt_id'), date_deleted=None).order_by('name')
+        return ColorPool.objects.active().filter(adopt_id=self.kwargs.get('adopt_id')).order_by('name')
 
     def post(self, request, adopt_id):
         serializer = ColorPoolSerializer(data=request.data)
@@ -34,7 +34,7 @@ class ColorPoolApiDetailView(ApiLoginRequiredMixin, generics.RetrieveUpdateDestr
     permission_classes = [IsAdoptMod]
 
     def get_queryset(self):
-        return ColorPool.objects.filter(adopt_id=self.kwargs.get('adopt_id'), date_deleted=None)
+        return ColorPool.objects.active().filter(adopt_id=self.kwargs.get('adopt_id'))
 
     def delete(self, request, pk, **kwargs):
         try:
