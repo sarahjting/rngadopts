@@ -35,6 +35,5 @@ def render_vite_bundle():
 
     return mark_safe(
         f"""<script type="module" src="/static/{manifest['index.html']['file']}"></script>
-        <link rel="stylesheet" type="text/css" href="/static/{manifest['index.html']['css'][0]}" />
         {imports_files}"""
     )

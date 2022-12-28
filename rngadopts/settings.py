@@ -140,7 +140,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     VITE_APP_DIR / "dist",
 ]
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = BASE_DIR / "static/public"
 
 # Uploads
 MEDIA_ROOT = '/static/uploads/'
