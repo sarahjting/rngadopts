@@ -49,7 +49,9 @@ export default function DashboardPage() {
                     {adopts.map((adopt, key) => (
                         <tr key={key}>
                             <td className="py-4 px-6">
-                                {adopt.name}
+                                <Link to={`/adopts/${adopt.id}`} className="text-blue-500">
+                                    {adopt.name}
+                                </Link>
                             </td>
                             <td className="py-4 px-6">
                                 {adopt.short_name}
