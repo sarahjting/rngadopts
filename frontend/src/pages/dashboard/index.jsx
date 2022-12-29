@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import GeneralBreadcrumbs from "../../components/breadcrumbs/GeneralBreadcrumbs";
 
 export default function DashboardPage() {
     const [adopts, setAdopts] = useState(null);
@@ -36,6 +37,7 @@ export default function DashboardPage() {
 
     return (
         <>
+            <GeneralBreadcrumbs></GeneralBreadcrumbs>
             {createButton}
             <div className="overflow-x-auto relative rounded-lg">
                 <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
