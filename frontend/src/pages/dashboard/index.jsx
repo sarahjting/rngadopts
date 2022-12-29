@@ -14,8 +14,10 @@ export default function DashboardPage() {
     }, [])
     
     const createButton = window.APP_FLAGS.adopts_creation && (
-        <div className="text-right mb-2">
-            <Link to="/adopts/create" className="btn btn-primary btn-sm">Create adopt</Link>
+        <div className="text-right mb-3">
+            <Link to="/adopts/create" className="text-white bg-blue-500 hover:bg-blue-600 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                Create adopt
+            </Link>
         </div>
     );
 
@@ -35,24 +37,28 @@ export default function DashboardPage() {
     return (
         <>
             {createButton}
-            <table className="table w-full">
-                <thead>
-                    <tr>
-                        <th>Adopt name</th>
-                        <th>Adopt alias (used for Discord commands)</th>
-                    </tr>
-                </thead>
-                {adopts.map((adopt, key) => (
-                    <tr key={key}>
-                        <td>
-                            {adopt.name}
-                        </td>
-                        <td>
-                            {adopt.short_name}
-                        </td>
-                    </tr>
-                ))}
-            </table>
+            <div className="overflow-x-auto relative">
+                <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <tr>
+                            <th className="py-3 px-6">Adopt name</th>
+                            <th className="py-3 px-6">Adopt alias (used for Discord commands)</th>
+                        </tr>
+                    </thead>
+                    <tbody className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                    {adopts.map((adopt, key) => (
+                        <tr key={key}>
+                            <td className="py-4 px-6">
+                                {adopt.name}
+                            </td>
+                            <td className="py-4 px-6">
+                                {adopt.short_name}
+                            </td>
+                        </tr>
+                    ))}
+                    </tbody>
+                </table>
+            </div>
         </>
     );
 }

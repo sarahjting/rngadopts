@@ -14,7 +14,7 @@ export default function LoginPage() {
   
   return (
     <div className="mt-5 text-center">
-      <a href={window.APP_URL + "/accounts/discord/login/"} className="btn">
+      <a href={window.APP_URL + "/accounts/discord/login/"} className="text-white bg-blue-500 hover:bg-blue-600 font-medium rounded-lg text-sm px-5 py-2.5">
         Login with Discord
       </a>
     </div>
