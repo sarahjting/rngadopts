@@ -1,6 +1,6 @@
 from adopts.models import Adopt
 from adopts.permissions import IsAdoptMod
-from colors.serializers import ColorPoolSerializer
+from colors.serializers import ColorPoolListSerializer, ColorPoolSerializer
 from colors.models import ColorPool
 from colors.actions import create_color_pool, delete_color_pool
 from rest_framework import status, generics
@@ -9,7 +9,7 @@ from users.mixins import ApiLoginRequiredMixin
 
 
 class ColorPoolApiView(ApiLoginRequiredMixin, generics.ListCreateAPIView):
-    serializer_class = ColorPoolSerializer
+    serializer_class = ColorPoolListSerializer
     permission_classes = [IsAdoptMod]
 
     def get_queryset(self):

@@ -1,8 +1,8 @@
 from adopts.factories import AdoptFactory
 from adopts.models import Adopt
 from colors.factories import ColorPoolFactory
-from colors.serializers import ColorPoolSerializer
-from adopts.serializers import AdoptSerializer
+from colors.serializers import ColorPoolListSerializer
+from adopts.serializers import AdoptListSerializer
 from django.conf import settings
 from django.test import TestCase
 from django.urls import reverse
@@ -29,13 +29,14 @@ class GenePoolSerializerTests(TestCase):
         self.assertEqual(GenePoolSerializer(gene_pool).data, {
             'id': gene_pool.id,
             'color_pool_id': gene_pool.color_pool_id,
-            'color_pool': ColorPoolSerializer(gene_pool.color_pool).data,
+            'color_pool': ColorPoolListSerializer(gene_pool.color_pool).data,
             'name': gene_pool.name,
             'type': gene_pool.type,
             'genes_count': gene_pool.genes_count,
             'genes_weight_total': gene_pool.genes_weight_total,
             'date_updated': gene_pool.date_updated.strftime(settings.DATETIME_FORMAT),
             'sort': 0,
+            'adopt': AdoptListSerializer(gene_pool.adopt).data,
         })
 
 
@@ -44,7 +45,7 @@ class GenePoolListSerializerTests(TestCase):
         gene_pool = GenePoolFactory()
         self.assertEqual(GenePoolListSerializer(gene_pool).data, {
             'id': gene_pool.id,
-            'color_pool': ColorPoolSerializer(gene_pool.color_pool).data,
+            'color_pool': ColorPoolListSerializer(gene_pool.color_pool).data,
             'name': gene_pool.name,
             'type': gene_pool.type,
             'genes_count': gene_pool.genes_count,
@@ -130,8 +131,8 @@ class GenePoolApiCreateTests(TestCase):
         })
 
         self.assertEqual(response.status_code, 201)
-        gene_pool = adopt.gene_pools.filter(
-            name='Foo', type='basic', color_pool_id=color_pool.id).get()
+        gene_pool = GenePool.objects.filter(
+            name='Foo', adopt_id=adopt.id, type='basic', color_pool_id=color_pool.id).get()
         self.assertEqual(response.data, GenePoolSerializer(gene_pool).data)
 
 
@@ -166,8 +167,8 @@ class GenePoolApiUpdateTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-        gene_pool = adopt.gene_pools.filter(
-            id=gene_pool.id, name='Foo', type='multi', color_pool_id=color_pool.id).get()
+        gene_pool = GenePool.objects.filter(
+            id=gene_pool.id, adopt_id=adopt.id, name='Foo', type='multi', color_pool_id=color_pool.id).get()
         self.assertEqual(response.data, GenePoolSerializer(gene_pool).data)
 
     def test_does_not_update_invalid_color_pool(self):

@@ -2,7 +2,7 @@ from adopts.factories import AdoptFactory
 from adopts.models import Adopt
 from colors.factories import ColorPoolFactory
 from colors.models import ColorPool
-from colors.serializers import ColorPoolSerializer
+from colors.serializers import ColorPoolListSerializer, ColorPoolSerializer
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
@@ -54,8 +54,8 @@ class ColorPoolApiIndexTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, [
-            ColorPoolSerializer(color_pool_1).data,
-            ColorPoolSerializer(color_pool_2).data,
+            ColorPoolListSerializer(color_pool_1).data,
+            ColorPoolListSerializer(color_pool_2).data,
         ])
 
     def test_fails_when_unauthorized(self):

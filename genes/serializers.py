@@ -1,6 +1,6 @@
-from adopts.serializers import AdoptSerializer
+from adopts.serializers import AdoptListSerializer, AdoptSerializer
 from colors.models import ColorPool
-from colors.serializers import ColorPoolSerializer
+from colors.serializers import ColorPoolListSerializer
 from genes.models import Gene, GeneLayer, GenePool
 from rest_framework import serializers
 
@@ -14,7 +14,7 @@ class GenePoolListSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()
     genes_count = serializers.ReadOnlyField()
     genes_weight_total = serializers.ReadOnlyField()
-    color_pool = ColorPoolSerializer(read_only=True)
+    color_pool = ColorPoolListSerializer(read_only=True)
 
 
 class GenePoolSerializer(serializers.ModelSerializer):
@@ -38,10 +38,11 @@ class GenePoolSerializer(serializers.ModelSerializer):
     class Meta:
         model = GenePool
         fields = ['id', 'color_pool_id', 'color_pool', 'name', 'type',
-                  'genes_count', 'genes_weight_total', 'date_updated', 'sort']
+                  'genes_count', 'genes_weight_total', 'date_updated', 'sort', 'adopt']
 
     id = serializers.ReadOnlyField()
-    color_pool = ColorPoolSerializer(read_only=True)
+    color_pool = ColorPoolListSerializer(read_only=True)
+    adopt = AdoptListSerializer(read_only=True)
     genes_count = serializers.ReadOnlyField()
     genes_weight_total = serializers.ReadOnlyField()
     sort = serializers.IntegerField(default=0)
@@ -53,7 +54,7 @@ class GeneListSerializer(serializers.ModelSerializer):
         fields = ['id', 'color_pool', 'name', 'weight', 'date_updated']
 
     id = serializers.ReadOnlyField()
-    color_pool = ColorPoolSerializer(read_only=True, allow_null=True)
+    color_pool = ColorPoolListSerializer(read_only=True, allow_null=True)
 
 
 class GeneLayerSerializer(serializers.ModelSerializer):
@@ -95,8 +96,10 @@ class GeneSerializer(serializers.ModelSerializer):
     class Meta:
         model = Gene
         fields = ['id', 'color_pool_id',
-                  'color_pool', 'name', 'weight', 'date_updated', 'gene_layers']
+                  'color_pool', 'name', 'weight', 'date_updated', 'gene_layers', 'adopt', 'gene_pool']
 
     id = serializers.ReadOnlyField()
-    color_pool = ColorPoolSerializer(read_only=True, allow_null=True)
+    adopt = AdoptListSerializer(read_only=True)
+    gene_pool = GenePoolListSerializer(read_only=True)
+    color_pool = ColorPoolListSerializer(read_only=True, allow_null=True)
     gene_layers = GeneLayerSerializer(read_only=True, many=True)

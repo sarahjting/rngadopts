@@ -1,7 +1,8 @@
 from adopts.factories import AdoptFactory
+from adopts.serializers import AdoptListSerializer
 from colors.factories import ColorPoolFactory
 from genes.factories import GeneFactory, GenePoolFactory
-from genes.serializers import GenePoolSerializer, GeneSerializer, GeneListSerializer
+from genes.serializers import GenePoolListSerializer, GeneSerializer, GeneListSerializer
 from django.conf import settings
 from django.test import TestCase
 from django.urls import reverse
@@ -25,6 +26,8 @@ class GeneSerializerTest(TestCase):
         gene = GeneFactory()
         self.assertEqual(GeneSerializer(gene).data, {
             'id': gene.id,
+            'adopt': AdoptListSerializer(gene.adopt).data,
+            'gene_pool': GenePoolListSerializer(gene.gene_pool).data,
             'color_pool_id': None,
             'color_pool': None,
             'name': gene.name,
@@ -140,8 +143,8 @@ class GeneApiCreateTests(TestCase):
         })
 
         self.assertEqual(response.status_code, 201)
-        gene = gene_pool.genes.filter(
-            name='Foo', color_pool_id=color_pool.id, weight=1).get()
+        gene = Gene.objects.filter(
+            name='Foo', gene_pool_id=gene_pool.id, color_pool_id=color_pool.id, weight=1).get()
         self.assertEqual(response.data, GeneSerializer(gene).data)
 
 
@@ -178,8 +181,8 @@ class GeneApiUpdateTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-        gene = gene_pool.genes.filter(
-            id=gene.id, name='Foo', weight=10, color_pool_id=color_pool.id).get()
+        gene = Gene.objects.filter(
+            id=gene.id, gene_pool_id=gene_pool.id, name='Foo', weight=10, color_pool_id=color_pool.id).get()
         self.assertEqual(response.data, GeneSerializer(gene).data)
 
     def test_does_not_update_invalid_color_pool(self):
