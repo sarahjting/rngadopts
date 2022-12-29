@@ -13,6 +13,7 @@ class AdoptSerializerTests(TestCase):
             'short_name': adopt.short_name,
             'logs_count': 0,
             'layers_count': 0,
+            'colors_count': 0,
             'genes_count': 0,
             'date_updated': adopt.date_updated.strftime(settings.DATETIME_FORMAT),
             'adopt_layers': []
@@ -27,7 +28,5 @@ class AdoptListSerializerTests(TestCase):
             'name': adopt.name,
             'short_name': adopt.short_name,
             'logs_count': 0,
-            'layers_count': 0,
-            'genes_count': 0,
             'date_updated': adopt.date_updated.strftime(settings.DATETIME_FORMAT),
         })

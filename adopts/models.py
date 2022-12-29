@@ -16,6 +16,7 @@ class Adopt(models.Model):
     short_name = models.CharField(max_length=20, unique=True)
     logs_count = models.IntegerField(default=0)
     layers_count = models.IntegerField(default=0)
+    colors_count = models.IntegerField(default=0)
     genes_count = models.IntegerField(default=0)
 
     date_created = models.DateTimeField(auto_now_add=True)

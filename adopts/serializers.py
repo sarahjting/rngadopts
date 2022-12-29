@@ -8,12 +8,9 @@ from rest_framework.validators import UniqueValidator
 class AdoptListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Adopt
-        fields = ['id', 'name', 'short_name',
-                  'logs_count', 'layers_count', 'genes_count', 'date_updated']
+        fields = ['id', 'name', 'short_name', 'logs_count', 'date_updated']
     id = serializers.ReadOnlyField()
     logs_count = serializers.ReadOnlyField()
-    layers_count = serializers.ReadOnlyField()
-    genes_count = serializers.ReadOnlyField()
 
 
 class AdoptLayerSerializer(serializers.ModelSerializer):
@@ -30,7 +27,8 @@ class AdoptLayerSerializer(serializers.ModelSerializer):
                 source='color_pool',
                 queryset=ColorPool.objects.filter(
                     date_deleted=None, adopt_id=adopt_id),
-                default=None)
+                default=None,
+                required=False)
 
     class Meta:
         model = AdoptLayer
@@ -45,11 +43,12 @@ class AdoptSerializer(serializers.ModelSerializer):
     class Meta:
         model = Adopt
         fields = ['id', 'name', 'short_name',
-                  'logs_count', 'layers_count', 'genes_count', 'date_updated', 'adopt_layers']
+                  'logs_count', 'layers_count', 'colors_count', 'genes_count', 'date_updated', 'adopt_layers']
     id = serializers.ReadOnlyField()
     short_name = serializers.SlugField(
         validators=[UniqueValidator(queryset=Adopt.objects)])
     logs_count = serializers.ReadOnlyField()
     layers_count = serializers.ReadOnlyField()
     genes_count = serializers.ReadOnlyField()
+    colors_count = serializers.ReadOnlyField()
     adopt_layers = AdoptLayerSerializer(read_only=True, many=True)
