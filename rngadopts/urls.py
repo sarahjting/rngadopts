@@ -18,9 +18,10 @@ from django.urls import include, path, re_path
 from django.views.generic.base import TemplateView
 
 urlpatterns = [
-    path('', include('frontend.urls'), name='home'),
+    path('', include('frontend.urls')),
     path('auth/', include('users.urls.auth')),
     path('auth/', include('django.contrib.auth.urls')),
+    path('accounts/', include('allauth.urls')),
 
     # 4 arguments: route pattern, view, kwargs, name
     path('admin/', admin.site.urls),

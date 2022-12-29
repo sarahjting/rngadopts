@@ -15,6 +15,10 @@ if [ $# -gt 0 ];then
     elif [ "$1" == "npm" ]; then
         shift 1
         $EXEC_NPM npm "$@"
+        
+    elif [ "$1" == "npx" ]; then
+        shift 1
+        $EXEC_NPM npx "$@"
 
     elif [ "$1" == "dev" ]; then
         $EXEC_NPM npm install

@@ -1,15 +1,23 @@
+import LoginPage from "pages/auth/login";
 import DashboardPage from "pages/dashboard";
-import SpaceShip from "components/Icons/SpaceShip";
+import { Navigate } from "react-router-dom";
 
 const routes = [
   {
-    type: "collapse",
-    name: "Dashboard",
-    key: "dashboard",
-    route: "/dashboard",
-    icon: <SpaceShip size="12px" />,
-    component: <DashboardPage />,
-    noCollapse: true,
+    path: "/login",
+    element: <LoginPage />,
+  },
+  {
+    path: "/adopts/create",
+    element: <DashboardPage />,
+  },
+  {
+    path: "/dashboard",
+    element: <DashboardPage />,
+  },
+  {
+    path: "*",
+    element: <Navigate to="/dashboard" />
   },
 ];
 

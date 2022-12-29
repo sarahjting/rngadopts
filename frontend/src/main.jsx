@@ -12,17 +12,18 @@ Coded by www.creative-tim.com
 import axios from "axios";
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
-import App from "./App"; 
-import { SoftUIControllerProvider } from "./context";
+import App from "App";
+import {BrowserRouter} from 'react-router-dom';
+
+import "index.css";
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <BrowserRouter>
-    <SoftUIControllerProvider>
+  <React.StrictMode>
+    <BrowserRouter>
       <App />
-    </SoftUIControllerProvider>
-  </BrowserRouter>,
-  document.getElement
-)
+    </BrowserRouter>
+  </React.StrictMode>
+);
 
-axios.defaults.baseURL = window.APP_URL
+axios.defaults.baseURL= window.APP_URL + "/api";
+axios.defaults.withCredentials = true;
