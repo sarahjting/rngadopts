@@ -9,6 +9,7 @@ export default function App() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+  const [toast, setToast] = useState(null);
 
   useEffect(() => {
     document.documentElement.scrollTop = 0;
@@ -30,10 +31,32 @@ export default function App() {
   }, [user, pathname])
 
   const getRoutes = (routes) =>
-    routes.map(({path, element}, i) => <Route exact path={path} element={element} key={i} />);
+    routes.map(({name, path, element}, i) => <Route exact name={name} path={path} element={element} key={i} />);
 
   return (
-    <AppContext.Provider value={{ user, setUser }}>
+    <AppContext.Provider value={{ 
+        user, 
+        setUser, 
+        toast, 
+        popToast: () => {
+          if (toast) {
+            clearTimeout(toast.timeoutHandle);
+          }
+          setToast(null);
+        },
+        pushToast: (message, type = 'info') => {
+          if (toast) {
+            clearTimeout(toast.timeoutHandle);
+          }
+          setToast({
+            message,
+            type,
+            timeoutHandle: setTimeout(() => {
+              setToast(null);
+            }, 10000),
+          })
+        },
+      }}>
       <DefaultLayout>
         <Routes>
           {getRoutes(routes)}
