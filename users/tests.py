@@ -1,6 +1,6 @@
 from django.urls import reverse
 from django.test import TestCase
-from users.factories import UserFactory, UserVerifiedFactory
+from users.factories import UserFactory
 
 from users.serializers import UserSerializer
 
@@ -26,16 +26,5 @@ class UserSerializerTests(TestCase):
         self.assertEqual(UserSerializer(user).data, {
             'id': user.id,
             'username': user.username,
-            'is_discord_verified': False,
+            'avatar_url': '',
         })
-
-
-class UserModelTests(TestCase):
-
-    def test_is_discord_verified_returns_false_when_not_discord_verified(self):
-        user = UserFactory()
-        self.assertIs(user.is_discord_verified(), False)
-
-    def test_is_discord_verified_returns_true_when_discord_verified(self):
-        user = UserVerifiedFactory()
-        self.assertIs(user.is_discord_verified(), True)
