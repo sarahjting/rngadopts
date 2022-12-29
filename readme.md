@@ -1,10 +1,8 @@
 # rngadopt
 
-babby's first python project!! learning django and also relearning react apparently lol
+First Python project!! Learning Python/Django and also relearning React apparently lol
 
-FlightRising-style colorwheel RNG pet generator. 
-
-- Dead simple to install docker compose setup for local dev with Django + Vite + Postgres
+- Dead simple to install docker compose setup for local dev with Django + Postgres + Vite + React
 
 # Setup
 1. Set up your `.env` --
@@ -37,7 +35,12 @@ This project is compatible with Expose, if you have an Expose server.
   ```
 
 # References
-- [Django Docker setup](https://github.com/docker/awesome-compose/tree/master/official-documentation-samples/django/)
-- [Django tutorial](https://docs.djangoproject.com/en/4.1/intro/tutorial01/)
-- [LearnDjango](https://learndjango.com/)
-- [Django/React Boilerplate](https://gist.github.com/lucianoratamero/7fc9737d24229ea9219f0987272896a2)
+- Django
+  - [Django Docker setup](https://github.com/docker/awesome-compose/tree/master/official-documentation-samples/django/)
+  - [Django tutorial](https://docs.djangoproject.com/en/4.1/intro/tutorial01/)
+  - [LearnDjango](https://learndjango.com/)
+  - [Django REST Framework](https://www.django-rest-framework.org/)
+- React & Frontend
+  - [Django/React Boilerplate](https://gist.github.com/lucianoratamero/7fc9737d24229ea9219f0987272896a2)
+  - [Tailwind](https://tailwindcss.com/)
+  - [Flowbite](https://flowbite.com/)
