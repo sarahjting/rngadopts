@@ -44,7 +44,7 @@ export default function AdoptCreatePage() {
             ></FormTextInput>
             <FormTextInput 
                 label="Short name"
-                helperText="Used for Discord commands" 
+                helperText="for Discord commands" 
                 name="short_name" 
                 errors={errors}
                 value={shortName}
