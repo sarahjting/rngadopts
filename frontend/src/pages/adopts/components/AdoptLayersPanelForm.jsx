@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import AppContext from "context";
 import GeneralModal from "components/modals/GeneralModal";
@@ -8,11 +8,25 @@ import FormFile from "components/form/FormFile";
 export default function AdoptLayersPanel({adopt, colorPools, show, onSubmitted, onClose, adoptLayer = null}) {
     const {pushToast} = useContext(AppContext);
     const [errors, setErrors] = useState({});
-    const [form, setForm] = useState({
-        image: null,
-        type: "static",
-        color_pool_id: null,
-    });
+    const [form, setForm] = useState({});
+
+    function submitted() {
+        setForm({
+            image: null,
+            type: "static",
+            color_pool_id: "",
+        });
+        onSubmitted();
+    };
+
+    useEffect(() => {
+        setErrors({});
+        setForm({
+            image: null,
+            type: adoptLayer?.type ?? "static",
+            color_pool_id: adoptLayer?.color_pool_id ?? "",
+        });
+    }, [adoptLayer])
     
     function create() {
         const formData = new FormData();
@@ -26,7 +40,7 @@ export default function AdoptLayersPanel({adopt, colorPools, show, onSubmitted, 
         axios.post(`adopts/${adopt.id}/layers`, formData)
             .then(() => {
                 pushToast('Adopt base layer created.', 'success');
-                onSubmitted();
+                submitted();
             })
             .catch((err) => {
                 if (err.response?.status === 400) {
@@ -36,6 +50,7 @@ export default function AdoptLayersPanel({adopt, colorPools, show, onSubmitted, 
                 }
             });
     }
+
     function update() {
         const data = {type: form.type};
         if (form.type === "color") {
@@ -44,7 +59,7 @@ export default function AdoptLayersPanel({adopt, colorPools, show, onSubmitted, 
         axios.put(`adopts/${adopt.id}/layers/${adoptLayer.id}`, data)
             .then(() => {
                 pushToast('Adopt base layer updated.', 'success');
-                onSubmitted();
+                submitted();
             })
             .catch((err) => {
                 if (err.response?.status === 400) {
@@ -60,7 +75,7 @@ export default function AdoptLayersPanel({adopt, colorPools, show, onSubmitted, 
         axios.delete(`adopts/${adopt.id}/layers/${adoptLayer.id}`)
             .then(() => {
                 pushToast('Adopt base layer deleted.', 'success');
-                onSubmitted();
+                submitted();
             })
             .catch((err) => {
                 if (err.response?.status === 400) {
@@ -89,8 +104,9 @@ export default function AdoptLayersPanel({adopt, colorPools, show, onSubmitted, 
                     <FormSelect 
                         name="type"
                         errors={errors}
+                        value={form.type}
                         label="Type"
-                        options={{static: "Static image (eg. lines, eye whites)", shading: "Shading", highlights: "Highlights", color: "Generate from color pool (eg. eye color)"}}
+                        options={{static: "Static image (eg. lines, eye whites)", shading: "Shading", highlights: "Highlights"}}
                         onChange={(e) => setForm({...form, type: e.target.value})}
                     ></FormSelect>
                     
@@ -98,6 +114,7 @@ export default function AdoptLayersPanel({adopt, colorPools, show, onSubmitted, 
                         name="color_pool_id"
                         errors={errors}
                         label="Color pool"
+                        value={form.color_pool_id}
                         options={colorPools.reduce((a, b) => ({
                             ...a,
                             [b.id]: b.name,

@@ -24,9 +24,13 @@ export default function AdoptDetailPage() {
         axios.get(`adopts/${id}`).then(data => loadAdopt(data.data));
     }
 
+    function reloadColorPools() {
+        axios.get(`adopts/${id}/color-pools`).then(data => setColorPools(data.data));
+    }
+
     useEffect(() => {
         reloadAdopt();
-        axios.get(`adopts/${id}/color-pools`).then(data => setColorPools(data.data));
+        reloadColorPools();
     }, []);
 
     function submit() {
@@ -73,6 +77,7 @@ export default function AdoptDetailPage() {
                     adopt={adopt} 
                     colorPools={colorPools}
                     onAdoptUpdated={reloadAdopt}
+                    onColorPoolsUpdated={reloadColorPools}
                 ></AdoptDetailTabs>
             </div>
         </div>

@@ -1,6 +1,8 @@
 from adopts import models
 from django.utils import timezone
 
+from colors.actions import create_color_pool_presets
+
 
 def create_adopt(name, short_name, mod=None):
     adopt = models.Adopt(name=name, short_name=short_name)
@@ -9,6 +11,7 @@ def create_adopt(name, short_name, mod=None):
     if mod:
         adopt.mods.add(mod)
 
+    create_color_pool_presets(adopt)
     return adopt
 
 

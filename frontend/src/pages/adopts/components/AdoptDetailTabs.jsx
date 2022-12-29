@@ -1,7 +1,8 @@
 import { useState } from "react";
 import AdoptLayersPanel from "pages/adopts/components/AdoptLayersPanel";
+import ColorPoolsPanel from "pages/adopts/components/ColorPoolsPanel";
 
-export default function AdoptDetailTabs({adopt, colorPools, onAdoptUpdated}) {
+export default function AdoptDetailTabs({adopt, colorPools, onAdoptUpdated, onColorPoolsUpdated}) {
     const [currentTab, setCurrentTab] = useState('adopt-layers-tab');
 
     const tabs = [
@@ -17,7 +18,7 @@ export default function AdoptDetailTabs({adopt, colorPools, onAdoptUpdated}) {
             target: "color-pools-content",
             tabTitle: "Color pools",
             tabPill: adopt.colors_count,
-            component: (<>Foo 2</>)
+            component: (<ColorPoolsPanel adopt={adopt} colorPools={colorPools} onSubmitted={onColorPoolsUpdated}></ColorPoolsPanel>)
         },
         {
             id: "gene-pools-tab",

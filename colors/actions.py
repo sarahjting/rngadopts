@@ -1,5 +1,18 @@
-from adopts import models
+from colors import models
 from django.utils import timezone
+from django.conf import settings
+import json
+
+
+def create_color_pool_presets(adopt):
+    file = open(settings.BASE_DIR / "colors/data/presets.json", "r")
+    data = json.load(file)
+    for color in data:
+        create_color_pool(
+            name=color['name'],
+            colors="\n".join(color['colors']),
+            adopt=adopt
+        )
 
 
 def create_color_pool(adopt, name, colors):
