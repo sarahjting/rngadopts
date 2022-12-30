@@ -24,7 +24,7 @@ export default function GenePoolFormModal({adopt, colorPools, show, onSubmitted,
         setForm({
             name: genePool?.name ?? "",
             type: genePool?.type ?? "basic",
-            color_pool_id: genePool?.color_pool?.id ?? "",
+            color_pool_id: genePool?.color_pool?.id ?? colorPools[0].id,
         });
     }, [genePool])
     
