@@ -13,7 +13,7 @@ export default function GenePoolsPanelIndex({adopt, colorPools, genePools, onSwi
     return (
         <div>
             {genePools.length ? (
-            <div className="overflow-x-auto relative rounded-lg mb-3">
+            <div className="overflow-x-auto relative">
                 <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                     <thead className="text-xs text-gray-700 uppercase bg-gray-100 border-b border-gray-50">
                         <tr>
@@ -44,8 +44,8 @@ export default function GenePoolsPanelIndex({adopt, colorPools, genePools, onSwi
                     </tbody>
                 </table>
             </div>
-            ) : (<div className="mb-3">No gene pools have been added to this adopt yet.</div>)}
-            <button className="text-white bg-blue-500 hover:bg-blue-600 font-medium rounded-lg text-sm px-5 py-2.5 text-center w-full" onClick={() => setShowModal(true)}>
+            ) : (<div className="p-8">No gene pools have been added to this adopt yet.</div>)}
+            <button className="text-white bg-blue-500 hover:bg-blue-600 font-medium rounded-b-lg text-sm px-5 py-2.5 text-center w-full" onClick={() => setShowModal(true)}>
                 Add new gene pool
             </button>
             <GenePoolFormModal

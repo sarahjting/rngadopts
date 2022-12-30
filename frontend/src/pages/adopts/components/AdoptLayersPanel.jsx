@@ -23,7 +23,7 @@ export default function AdoptLayersPanel({adopt, genePools, onSubmitted = (() =>
     return adopt?.adopt_layers ? (
         <div>
             {adopt.adopt_layers.length ? (
-            <div className="overflow-x-auto relative rounded-lg mb-3">
+            <div className="overflow-x-auto relative">
                 <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                     <thead className="text-xs text-gray-700 uppercase bg-gray-100 border-b border-gray-50">
                         <tr>
@@ -36,7 +36,7 @@ export default function AdoptLayersPanel({adopt, genePools, onSubmitted = (() =>
                     <tbody className="bg-gray-50 border-b">
                     {adopt.adopt_layers.map((adoptLayer, key) => (
                         <tr key={key} className="border-b border-gray-100">
-                            <td>
+                            <td className="py-4 px-6">
                                 <img src={adoptLayer.image} />
                             </td>
                             <td className="py-4 px-6">
@@ -56,8 +56,8 @@ export default function AdoptLayersPanel({adopt, genePools, onSubmitted = (() =>
                     </tbody>
                 </table>
             </div>
-            ) : (<div className="mb-3">No layers have been added to this adopt yet.</div>)}
-            <button className="text-white bg-blue-500 hover:bg-blue-600 font-medium rounded-lg text-sm px-5 py-2.5 text-center w-full" onClick={pushCreateModal}>
+            ) : (<div className="p-8">No layers have been added to this adopt yet.</div>)}
+            <button className="text-white bg-blue-500 hover:bg-blue-600 font-medium rounded-b-lg text-sm px-5 py-2.5 text-center w-full" onClick={pushCreateModal}>
                 Add new layer
             </button>
             <AdoptLayerFormModal 

@@ -65,11 +65,11 @@ export default function GenePoolsPanel({adopt, colorPools, genePools, onSubmitte
     }
 
     if (!genePools || !colorPools || !adopt || (currentGenePool && !genes)) {
-        return (<>Loading...</>);
+        return (<div class="p-8">Loading...</div>);
     }
 
     if (colorPools && colorPools.length === 0) {
-        return (<div>Add color pools in the "Color pools" tab first.</div>)
+        return (<div class="p-8">Add color pools in the "Color pools" tab first.</div>)
     }
 
     if (currentScreen === SCREENS.GENE_POOLS_DETAIL) {

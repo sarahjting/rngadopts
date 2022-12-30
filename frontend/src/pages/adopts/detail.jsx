@@ -133,7 +133,7 @@ export default function AdoptDetailPage() {
                 {tabs.map((tab, key) => (
                 <div 
                     key={key}
-                    className={`${currentTab === tab.id ? "" : "hidden"} p-4 bg-white rounded-lg md:p-8`} 
+                    className={`${currentTab === tab.id ? "" : "hidden"} bg-white rounded-lg`} 
                     id={tab.target} 
                     role="tabpanel" 
                     aria-labelledby={tab.id}

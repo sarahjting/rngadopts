@@ -41,21 +41,19 @@ export default function GenePoolsPanelGene({adopt, colorPools, genePool, gene, o
 
     return (
         <div>
-            <div className="flex justify-between">
-                <h1 className="flex items-center">
-                    Gene: {gene.name}
-                    <button className="ml-2 p-1 text-xs text-blue-500" onClick={pushUpdateGeneModal}>
-                        <PencilIcon />
-                    </button>
-                </h1>
-                <button className="flex items-center text-sm mb-2" onClick={() => onSwitchScreen(SCREENS.GENE_POOLS_DETAIL, genePool)}>
-                    <CaretLeftIcon className="text-gray-400 mr-2" /> 
-                    Back to {genePool.name}
+            <div className="bg-gray-100 border-b border-gray-200">
+                <button className="flex w-full items-center text-sm p-4" onClick={() => onSwitchScreen(SCREENS.GENE_POOLS_DETAIL, genePool)}>
+                    <CaretLeftIcon className="text-gray-400 mr-2" />  Back
                 </button>
             </div>
-            <hr className="mb-3" />
+            <div className="flex justify-between py-4 px-4 border-b border-gray-200">
+                Gene: {gene.name}
+                <button className="flex p-1 text-xs text-blue-500" onClick={() => pushUpdateGeneModal()}>
+                <PencilIcon className="mr-2" /> Edit 
+                </button>
+            </div>
             {gene.gene_layers.length ? (
-            <div className="overflow-x-auto relative rounded-lg mb-3">
+            <div className="overflow-x-auto relative">
                 <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                     <thead className="text-xs text-gray-700 uppercase bg-gray-100 border-b border-gray-50">
                         <tr>
@@ -68,7 +66,7 @@ export default function GenePoolsPanelGene({adopt, colorPools, genePool, gene, o
                     <tbody className="bg-gray-50 border-b">
                     {gene.gene_layers.map((geneLayer, key) => (
                         <tr key={key} className="border-b border-gray-100">
-                            <td>
+                            <td className="py-4 px-6">
                                 <img src={geneLayer.image} />
                             </td>
                             <td className="py-4 px-6">
@@ -87,8 +85,8 @@ export default function GenePoolsPanelGene({adopt, colorPools, genePool, gene, o
                     </tbody>
                 </table>
             </div>
-            ) : (<div className="mb-3">No layers have been added to this gene yet.</div>)}
-            <button className="text-white bg-blue-500 hover:bg-blue-600 font-medium rounded-lg text-sm px-5 py-2.5 text-center w-full" onClick={pushCreateGeneLayerModal}>
+            ) : (<div className="p-8">No layers have been added to this gene yet.</div>)}
+            <button className="text-white bg-blue-500 hover:bg-blue-600 font-medium rounded-b-lg text-sm px-5 py-2.5 text-center w-full" onClick={pushCreateGeneLayerModal}>
                 Add new layer
             </button>
             <GeneFormModal
