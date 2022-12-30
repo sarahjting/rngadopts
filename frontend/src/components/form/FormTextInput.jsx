@@ -1,7 +1,7 @@
 import FormInput from "components/form/FormInput";
 
 export default function FormTextInput({label = null, helperText = null, errors = {}, value = "", ...props}) {
-    const hasErrors = errors[props.name] && props.errors[props.name].length;
+    const hasErrors = errors[props.name] && errors[props.name].length;
 
     return (<FormInput name={props.name} errors={errors} label={label} helperText={helperText}>
         <input 
