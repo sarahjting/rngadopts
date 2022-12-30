@@ -1,12 +1,11 @@
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import GeneralBreadcrumbs from "components/breadcrumbs/GeneralBreadcrumbs";
 import FormTextInput from "components/form/FormTextInput";
 import AppContext from "context";
 
 export default function AdoptCreatePage() {
-    const {pushToast} = useContext(AppContext);
+    const {pushToast, setBreadcrumbs} = useContext(AppContext);
     const navigate = useNavigate();
     const [name, setName] = useState('');
     const [shortName, setShortName] = useState('');
@@ -16,6 +15,7 @@ export default function AdoptCreatePage() {
         if (!window.APP_FLAGS.adopts_creation) {
             navigate('dashboard')
         }
+        setBreadcrumbs([{to: `/adopts/create`, title: "Create adopt"}]);
     }, [])
 
     function submit() {
@@ -36,7 +36,6 @@ export default function AdoptCreatePage() {
 
     return (
         <>
-            <GeneralBreadcrumbs breadcrumbs={[{to: `/adopts/create`, title: "Create adopt"}]}></GeneralBreadcrumbs>
             <div className="max-w-md m-auto">
                 <FormTextInput 
                     label="Adopt name" 

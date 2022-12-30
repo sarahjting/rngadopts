@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import axios from "axios";
+import AppContext from "context";
 import { Link } from "react-router-dom";
-import GeneralBreadcrumbs from "../../components/breadcrumbs/GeneralBreadcrumbs";
 
 export default function DashboardPage() {
+    const {setBreadcrumbs} = useContext(AppContext);
     const [adopts, setAdopts] = useState(null);
 
     useEffect(() => {
@@ -12,6 +13,7 @@ export default function DashboardPage() {
             .then(adopts => {
                 setAdopts(adopts);
             });
+        setBreadcrumbs([]);
     }, [])
     
     const createButton = window.APP_FLAGS.adopts_creation && (
@@ -37,7 +39,6 @@ export default function DashboardPage() {
 
     return (
         <>
-            <GeneralBreadcrumbs></GeneralBreadcrumbs>
             {createButton}
             <div className="overflow-x-auto relative rounded-lg">
                 <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">

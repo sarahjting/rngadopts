@@ -10,6 +10,7 @@ export default function App() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [toast, setToast] = useState(null);
+  const [breadcrumbs, setBreadcrumbs] = useState([]);
 
   useEffect(() => {
     document.documentElement.scrollTop = 0;
@@ -37,6 +38,8 @@ export default function App() {
     <AppContext.Provider value={{ 
         user, 
         setUser, 
+        breadcrumbs,
+        setBreadcrumbs,
         toast, 
         popToast: () => {
           if (toast) {

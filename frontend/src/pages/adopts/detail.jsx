@@ -4,10 +4,9 @@ import axios from "axios";
 import AppContext from "context";
 import AdoptDetailTabs from "pages/adopts/components/AdoptDetailTabs";
 import FormTextInput from "components/form/FormTextInput";
-import GeneralBreadcrumbs from "components/breadcrumbs/GeneralBreadcrumbs";
 
 export default function AdoptDetailPage() {
-    const {pushToast} = useContext(AppContext);
+    const {pushToast, setBreadcrumbs} = useContext(AppContext);
     const [adopt, setAdopt] = useState(null);
     const [colorPools, setColorPools] = useState(null);
     const [genePools, setGenePools] = useState(null);
@@ -20,6 +19,7 @@ export default function AdoptDetailPage() {
         setAdopt(adopt);
         setName(adopt.name);
         setShortName(adopt.short_name);
+        setBreadcrumbs([{to: `/adopts/${adopt.id}`, title: adopt.name}]);
     }
 
     function reloadAdopt() {
@@ -60,7 +60,6 @@ export default function AdoptDetailPage() {
 
     return adopt ? (
         <>
-            <GeneralBreadcrumbs breadcrumbs={[{to: `/adopts/${adopt.id}`, title: adopt.name}]}></GeneralBreadcrumbs>
             <div className="block md:flex gap-4">
                 <div className="max-w-md w-96">
                     <div className="w-full p-4 bg-white border border-gray-200 rounded-lg shadow-md sm:p-6 md:p-8 mb-4">

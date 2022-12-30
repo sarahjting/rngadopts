@@ -3,13 +3,15 @@ import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
-  const {user} = useContext(AppContext);
+  const {user, setBreadcrumbs} = useContext(AppContext);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (user && user.id) {
       navigate('dashboard')
     }
+
+    setBreadcrumbs([]);
   }, [user])
   
   return (

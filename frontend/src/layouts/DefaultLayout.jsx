@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
 import AppContext from "../context";
 import { Link } from "react-router-dom";
+import GeneralBreadcrumbs from "components/breadcrumbs/GeneralBreadcrumbs";
 
 export default function DefaultLayout({children}) {
   const {user, toast, popToast} = useContext(AppContext);
@@ -48,6 +49,7 @@ export default function DefaultLayout({children}) {
       </nav>
 
       <div className="m-auto py-2 px-4 lg:w-1/2">
+          <GeneralBreadcrumbs></GeneralBreadcrumbs>
           {children}
       </div>
 
