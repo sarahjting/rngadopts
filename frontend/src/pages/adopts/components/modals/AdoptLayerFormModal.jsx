@@ -15,8 +15,8 @@ export default function AdoptLayerFormModal({adopt, genePools, show, onSubmitted
         setForm({
             image: null,
             type: "static",
-            gene_pool_id: "",
-            sort: 0,
+            gene_pool_id: genePools.length ? genePools[0].id : "",
+            sort: "0",
         });
         onSubmitted();
     };
@@ -26,8 +26,8 @@ export default function AdoptLayerFormModal({adopt, genePools, show, onSubmitted
         setForm({
             image: null,
             type: adoptLayer?.type ?? "static",
-            gene_pool_id: adoptLayer?.gene_pool_id ?? (genePools && genePools.length ? genePools[0].id : ""),
-            sort: adoptLayer?.sort ?? 0,
+            gene_pool_id: adoptLayer?.gene_pool.id ?? (genePools && genePools.length ? genePools[0].id : ""),
+            sort: adoptLayer?.sort ?? "0",
         });
     }, [adoptLayer])
     

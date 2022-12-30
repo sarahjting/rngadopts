@@ -41,7 +41,7 @@ export default function AdoptLayersPanel({adopt, genePools, onSubmitted = (() =>
                             </td>
                             <td className="py-4 px-6">
                                 {adoptLayer.type}
-                                {adoptLayer.type === "gene" && (<> ({adoptLayer.gene_pool.name})</>)}
+                                {adoptLayer.type === "gene" && (<> ({adoptLayer.gene_pool?.name})</>)}
                             </td>
                             <td className="py-4 px-6">
                                 {adoptLayer.sort}

@@ -4,8 +4,9 @@ from django.utils import timezone
 from colors.actions import create_color_pool_presets
 
 
-def create_adopt(name, short_name, mod=None):
-    adopt = models.Adopt(name=name, short_name=short_name)
+def create_adopt(name, short_name, width, height,  mod=None):
+    adopt = models.Adopt(name=name, short_name=short_name,
+                         width=width, height=height)
     adopt.save()
 
     if mod:

@@ -9,6 +9,8 @@ class AdoptFactory(factory.django.DjangoModelFactory):
 
     name = factory.Sequence(lambda n: 'Adopt %d' % n)
     short_name = factory.LazyAttribute(lambda o: slugify(o.name))
+    width = 100
+    height = 100
 
     @factory.post_generation
     def mods(self, create, extracted, **kwargs):

@@ -70,6 +70,8 @@ class AdoptApiCreateTests(TestCase):
         return client.post(reverse('adopts:api'), {
             'name': 'Foo',
             'short_name': 'foo',
+            'width': 100,
+            'height': 100,
         } | data)
 
     def test_fails_when_unauthenticated(self):
@@ -134,42 +136,42 @@ class AdoptApiViewTests(TestCase):
 
 
 class AdoptApiUpdateTests(TestCase):
-
-    def test_fails_when_unauthenticated(self):
+    def _put(self, adopt, user=None, data={}):
         client = APIClient()
 
+        if user:
+            client.force_login(user)
+
+        return client.put(reverse('adopts:api', kwargs={'pk': adopt.id}), {
+            'name': 'Foo',
+            'short_name': 'foo',
+            'width': 101,
+            'height': 101,
+        } | data)
+
+    def test_fails_when_unauthenticated(self):
         adopt = AdoptFactory()
-        response = client.put(reverse('adopts:api'), kwargs={'pk': adopt.id})
+        response = self._put(adopt)
         self.assertEqual(response.status_code, 403)
 
     def test_updates_my_adopt(self):
-        client = APIClient()
-
         user = UserFactory()
-        client.force_login(user)
-
         adopt = AdoptFactory(mods=(user,))
 
-        response = client.put(reverse('adopts:api', kwargs={'pk': adopt.id}), {
-                              'name': 'Foo', 'short_name': 'foo'})
+        response = self._put(adopt, user)
 
         self.assertEqual(response.status_code, 200)
 
         adopt = user.adopts.filter(
-            id=adopt.id, name='Foo', short_name='foo').get()
+            id=adopt.id, name='Foo', short_name='foo', width=101, height=101).get()
         self.assertEqual(response.data, AdoptSerializer(adopt).data)
 
     def test_does_not_update_other_adopts(self):
-        client = APIClient()
-
         user = UserFactory()
-        client.force_login(user)
-
         unrelated_user = UserFactory()
         unrelated_adopt = AdoptFactory(mods=(unrelated_user,))
 
-        response = client.put(reverse('adopts:api', kwargs={'pk': unrelated_adopt.id}),  {
-                              'name': 'Foo', 'short_name': 'foo'})
+        response = self._put(unrelated_adopt, user)
 
         self.assertEqual(response.status_code, 404)
         self.assertEqual(user.adopts.filter(

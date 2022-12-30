@@ -42,7 +42,7 @@ class AdoptLayerSerializer(serializers.ModelSerializer):
 class AdoptSerializer(serializers.ModelSerializer):
     class Meta:
         model = Adopt
-        fields = ['id', 'name', 'short_name',
+        fields = ['id', 'name', 'short_name', 'width', 'height',
                   'logs_count', 'layers_count', 'colors_count', 'genes_count', 'date_updated', 'adopt_layers']
     id = serializers.ReadOnlyField()
     short_name = serializers.SlugField(

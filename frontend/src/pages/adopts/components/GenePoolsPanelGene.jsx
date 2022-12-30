@@ -59,6 +59,7 @@ export default function GenePoolsPanelGene({adopt, colorPools, genePool, gene, o
                         <tr>
                             <th className="py-3 px-6">Layer</th>
                             <th className="py-3 px-6">Type</th>
+                            <th className="py-3 px-6">Palette</th>
                             <th className="py-3 px-6">Sort</th>
                             <th></th>
                         </tr>
@@ -71,6 +72,9 @@ export default function GenePoolsPanelGene({adopt, colorPools, genePool, gene, o
                             </td>
                             <td className="py-4 px-6">
                                 {geneLayer.type}
+                            </td>
+                            <td className="py-4 px-6">
+                                {geneLayer.type.substring(0, 5) === "color" ? geneLayer.color_key : "--"}
                             </td>
                             <td className="py-4 px-6">
                                 {geneLayer.sort}

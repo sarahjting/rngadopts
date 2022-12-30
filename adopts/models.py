@@ -3,6 +3,8 @@ from django.db import models
 from os.path import splitext
 from users.models import User
 from rngadopts import mixins
+from django.core.validators import MinValueValidator
+from django.core.validators import MaxValueValidator
 
 
 class AdoptQuerySet(models.QuerySet, mixins.queryset.SoftDeletes):
@@ -14,6 +16,10 @@ class Adopt(models.Model):
 
     name = models.CharField(max_length=40)
     short_name = models.CharField(max_length=20, unique=True)
+    width = models.IntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(800)])
+    height = models.IntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(800)])
     logs_count = models.IntegerField(default=0)
     layers_count = models.IntegerField(default=0)
     colors_count = models.IntegerField(default=0)

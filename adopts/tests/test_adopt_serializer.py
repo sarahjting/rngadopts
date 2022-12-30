@@ -15,6 +15,8 @@ class AdoptSerializerTests(TestCase):
             'layers_count': 0,
             'colors_count': 0,
             'genes_count': 0,
+            'width': 100,
+            'height': 100,
             'date_updated': adopt.date_updated.strftime(settings.DATETIME_FORMAT),
             'adopt_layers': []
         })
