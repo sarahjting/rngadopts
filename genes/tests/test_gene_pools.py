@@ -51,6 +51,7 @@ class GenePoolListSerializerTests(TestCase):
             'genes_count': gene_pool.genes_count,
             'genes_weight_total': gene_pool.genes_weight_total,
             'date_updated': gene_pool.date_updated.strftime(settings.DATETIME_FORMAT),
+            'sort': 0,
         })
 
 

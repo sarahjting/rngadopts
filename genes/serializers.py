@@ -9,7 +9,7 @@ class GenePoolListSerializer(serializers.ModelSerializer):
     class Meta:
         model = GenePool
         fields = ['id', 'color_pool', 'name', 'type',
-                  'genes_count', 'genes_weight_total', 'date_updated']
+                  'genes_count', 'genes_weight_total', 'date_updated', 'sort']
 
     id = serializers.ReadOnlyField()
     genes_count = serializers.ReadOnlyField()
