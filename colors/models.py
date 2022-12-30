@@ -23,6 +23,15 @@ class ColorPool(models.Model):
     def __str__(self):
         return self.name
 
+    # these can probably be memoized, im lazy
+
+    def colors_count(self):
+        return len(self.colors_dict())
+
+    def palettes_count(self):
+        colors_dict = self.colors_dict()
+        return 0 if len(colors_dict) == 0 else len(colors_dict[0]['palettes'])
+
     def colors_json(self):
         return json.dumps(self.colors_dict())
 

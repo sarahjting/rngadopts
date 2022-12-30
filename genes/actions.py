@@ -2,9 +2,9 @@ from genes import models
 from django.utils import timezone
 
 
-def create_gene_pool(adopt, name, type, sort, color_pool):
+def create_gene_pool(adopt, name, type, color_pool):
     gene_pool = models.GenePool(
-        adopt=adopt, name=name, type=type, sort=sort, color_pool=color_pool)
+        adopt=adopt, name=name, type=type, color_pool=color_pool)
     gene_pool.save()
 
     adopt = gene_pool.adopt

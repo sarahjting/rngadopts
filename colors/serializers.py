@@ -19,11 +19,12 @@ class ColorsField(serializers.Field):
 class ColorPoolListSerializer(serializers.ModelSerializer):
     class Meta:
         model = ColorPool
-        fields = ['id', 'name', 'date_updated', 'colors', 'colors_dict']
+        fields = ['id', 'name', 'date_updated',
+                  'colors_count', 'palettes_count']
 
     id = serializers.ReadOnlyField()
-    colors = ColorsField()
-    colors_dict = serializers.ReadOnlyField()
+    colors_count = serializers.ReadOnlyField()
+    palettes_count = serializers.ReadOnlyField()
 
 
 class ColorPoolSerializer(serializers.ModelSerializer):

@@ -41,10 +41,10 @@ export default function ColorPoolsPanel({adopt, colorPools, onSubmitted = (() =>
                                 </button>
                             </td>
                             <td className="py-4 px-6">
-                                {colorPool.colors_dict.length}
+                                {colorPool.colors_count}
                             </td>
                             <td className="py-4 px-6">
-                                {colorPool.colors_dict.length === 0 ? 'N/A' : colorPool.colors_dict[0].palettes.length}
+                                {colorPool.palettes_count}
                             </td>
                         </tr>
                     ))}

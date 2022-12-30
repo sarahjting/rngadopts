@@ -3,7 +3,7 @@ import AdoptLayersPanel from "pages/adopts/components/AdoptLayersPanel";
 import ColorPoolsPanel from "pages/adopts/components/ColorPoolsPanel";
 import GenePoolsPanel from "pages/adopts/components/GenePoolsPanel";
 
-export default function AdoptDetailTabs({adopt, colorPools, onAdoptUpdated, onColorPoolsUpdated}) {
+export default function AdoptDetailTabs({adopt, colorPools, genePools, onAdoptUpdated, onColorPoolsUpdated, onGenePoolsUpdated}) {
     const [currentTab, setCurrentTab] = useState('adopt-layers-tab');
 
     const tabs = [
@@ -12,7 +12,7 @@ export default function AdoptDetailTabs({adopt, colorPools, onAdoptUpdated, onCo
             target: "adopt-layers-content",
             tabTitle: "Base layers",
             tabPill: adopt.layers_count,
-            component: (<AdoptLayersPanel adopt={adopt} colorPools={colorPools} onSubmitted={onAdoptUpdated} />)
+            component: (<AdoptLayersPanel adopt={adopt} genePools={genePools} onSubmitted={onAdoptUpdated} />)
         },
         {
             id: "color-pools-tab",
@@ -26,7 +26,7 @@ export default function AdoptDetailTabs({adopt, colorPools, onAdoptUpdated, onCo
             target: "gene-pools-content",
             tabTitle: "Gene pools",
             tabPill: adopt.genes_count,
-            component: (<GenePoolsPanel adopt={adopt} colorPools={colorPools} onSubmitted={onAdoptUpdated} />)
+            component: (<GenePoolsPanel adopt={adopt} genePools={genePools} colorPools={colorPools} onSubmitted={onGenePoolsUpdated} />)
         },
     ]
 

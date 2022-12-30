@@ -8,7 +8,7 @@ class GenePoolListSerializer(serializers.ModelSerializer):
     class Meta:
         model = GenePool
         fields = ['id', 'color_pool', 'name', 'type',
-                  'genes_count', 'genes_weight_total', 'date_updated', 'sort']
+                  'genes_count', 'genes_weight_total', 'date_updated']
 
     id = serializers.ReadOnlyField()
     genes_count = serializers.ReadOnlyField()
@@ -37,14 +37,13 @@ class GenePoolSerializer(serializers.ModelSerializer):
     class Meta:
         model = GenePool
         fields = ['id', 'color_pool_id', 'color_pool', 'name', 'type',
-                  'genes_count', 'genes_weight_total', 'date_updated', 'sort', 'adopt']
+                  'genes_count', 'genes_weight_total', 'date_updated', 'adopt']
 
     id = serializers.ReadOnlyField()
     color_pool = ColorPoolListSerializer(read_only=True)
     adopt = serializers.SerializerMethodField(read_only=True)
     genes_count = serializers.ReadOnlyField()
     genes_weight_total = serializers.ReadOnlyField()
-    sort = serializers.IntegerField(default=0)
 
     def get_adopt(self, obj):
         from adopts.serializers import AdoptListSerializer

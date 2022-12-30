@@ -10,6 +10,7 @@ export default function AdoptDetailPage() {
     const {pushToast} = useContext(AppContext);
     const [adopt, setAdopt] = useState(null);
     const [colorPools, setColorPools] = useState(null);
+    const [genePools, setGenePools] = useState(null);
     const [name, setName] = useState('');
     const [shortName, setShortName] = useState('');
     const [errors, setErrors] = useState({});
@@ -27,11 +28,20 @@ export default function AdoptDetailPage() {
 
     function reloadColorPools() {
         axios.get(`adopts/${id}/color-pools`).then(data => setColorPools(data.data));
+        reloadAdopt();
+    }
+
+    function reloadGenePools(doReload=true) {
+        axios.get(`adopts/${id}/gene-pools`).then(data => setGenePools(data.data));
+        if (doReload) {
+            reloadAdopt();
+        }
     }
 
     useEffect(() => {
         reloadAdopt();
-        reloadColorPools();
+        reloadColorPools(false);
+        reloadGenePools(false);
     }, []);
 
     function submit() {
@@ -79,8 +89,10 @@ export default function AdoptDetailPage() {
                     <AdoptDetailTabs 
                         adopt={adopt} 
                         colorPools={colorPools}
+                        genePools={genePools}
                         onAdoptUpdated={reloadAdopt}
                         onColorPoolsUpdated={reloadColorPools}
+                        onGenePoolsUpdated={reloadGenePools}
                     ></AdoptDetailTabs>
                 </div>
             </div>

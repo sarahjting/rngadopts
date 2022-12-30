@@ -1,7 +1,7 @@
 import { useState } from "react";
 import AdoptLayersPanelForm from "pages/adopts/components/AdoptLayersPanelForm";
 
-export default function AdoptLayersPanel({adopt, colorPools, onSubmitted = (() => {})}) {
+export default function AdoptLayersPanel({adopt, genePools, onSubmitted = (() => {})}) {
     const [showModal, setShowModal] = useState(false);
     const [currentAdoptLayer, setCurrentAdoptLayer] = useState(null);
 
@@ -29,6 +29,7 @@ export default function AdoptLayersPanel({adopt, colorPools, onSubmitted = (() =
                         <tr>
                             <th className="py-3 px-6">Layer</th>
                             <th className="py-3 px-6">Type</th>
+                            <th className="py-3 px-6">Sort</th>
                             <th className="py-3 px-6"></th>
                         </tr>
                     </thead>
@@ -40,6 +41,10 @@ export default function AdoptLayersPanel({adopt, colorPools, onSubmitted = (() =
                             </td>
                             <td className="py-4 px-6">
                                 {adoptLayer.type}
+                                {adoptLayer.type === "gene" && (<> ({adoptLayer.gene_pool.name})</>)}
+                            </td>
+                            <td className="py-4 px-6">
+                                {adoptLayer.sort}
                             </td>
                             <td className="py-4 px-6 text-right">
                                 <button className="btn bg-blue-500 text-white py-1 px-3 rounded-md" onClick={() => pushUpdateModal(adoptLayer)}>
@@ -57,7 +62,7 @@ export default function AdoptLayersPanel({adopt, colorPools, onSubmitted = (() =
             </button>
             <AdoptLayersPanelForm 
                 adopt={adopt} 
-                colorPools={colorPools} 
+                genePools={genePools} 
                 adoptLayer={currentAdoptLayer}
                 show={showModal} 
                 onSubmitted={submitted} 

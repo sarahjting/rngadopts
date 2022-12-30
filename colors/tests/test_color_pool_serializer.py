@@ -12,8 +12,8 @@ class ColorPoolListSerializerTests(TestCase):
             'id': color_pool.id,
             'name': color_pool.name,
             'date_updated': color_pool.date_updated.strftime(settings.DATETIME_FORMAT),
-            'colors': color_pool.colors,
-            'colors_dict': color_pool.colors_dict(),
+            'colors_count': color_pool.colors_count(),
+            'palettes_count': color_pool.palettes_count(),
         })
 
 

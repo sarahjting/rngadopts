@@ -2,23 +2,12 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import GenePoolsPanelForm from "./GenePoolsPanelForm";
 
-export default function GenePoolsPanel({adopt, colorPools, onSubmitted = (() => {})}) {
+export default function GenePoolsPanel({adopt, colorPools, genePools, onSubmitted = (() => {})}) {
     const [currentGenePool, setCurrentGenePool] = useState(null);
-    const [genePools, setGenePools] = useState(null);
     const [showModal, setShowModal] = useState(false);
-
-    useEffect(() => {
-        reloadGenePools();
-    }, [])
-    
-    function reloadGenePools() {
-        axios.get(`adopts/${adopt.id}/gene-pools`)
-            .then(data => setGenePools(data.data));
-    }
 
     function submitted() {
         setShowModal(false);
-        reloadGenePools();
         onSubmitted();
     }
 
@@ -46,7 +35,6 @@ export default function GenePoolsPanel({adopt, colorPools, onSubmitted = (() => 
                             <th className="py-3 px-6">Gene pool</th>
                             <th className="py-3 px-6">Type</th>
                             <th className="py-3 px-6">Color pool</th>
-                            <th className="py-3 px-6">Sort</th>
                         </tr>
                     </thead>
                     <tbody className="bg-gray-50 border-b">
@@ -65,9 +53,6 @@ export default function GenePoolsPanel({adopt, colorPools, onSubmitted = (() => 
                             </td>
                             <td className="py-4 px-6">
                                 {genePool.color_pool ? genePool.color_pool.name : 'None'}
-                            </td>
-                            <td className="py-4 px-6">
-                                {genePool.sort}
                             </td>
                         </tr>
                     ))}

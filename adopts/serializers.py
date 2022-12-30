@@ -1,6 +1,6 @@
 from adopts.models import Adopt, AdoptLayer
 from genes.models import GenePool
-from genes.serializers import GenePoolSerializer
+from genes.serializers import GenePoolListSerializer
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
@@ -35,7 +35,7 @@ class AdoptLayerSerializer(serializers.ModelSerializer):
         fields = ['id', 'image', 'type', 'gene_pool', 'sort']
 
     id = serializers.ReadOnlyField()
-    gene_pool = GenePoolSerializer(read_only=True)
+    gene_pool = GenePoolListSerializer(read_only=True)
     sort = serializers.IntegerField(default=0)
 
 

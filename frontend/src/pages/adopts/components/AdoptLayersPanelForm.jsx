@@ -4,8 +4,9 @@ import AppContext from "context";
 import GeneralModal from "components/modals/GeneralModal";
 import FormSelect from "components/form/FormSelect";
 import FormFile from "components/form/FormFile";
+import FormTextInput from "components/form/FormTextInput";
 
-export default function AdoptLayersPanelForm({adopt, colorPools, show, onSubmitted, onClose, adoptLayer = null}) {
+export default function AdoptLayersPanelForm({adopt, genePools, show, onSubmitted, onClose, adoptLayer = null}) {
     const {pushToast} = useContext(AppContext);
     const [errors, setErrors] = useState({});
     const [form, setForm] = useState({});
@@ -14,7 +15,8 @@ export default function AdoptLayersPanelForm({adopt, colorPools, show, onSubmitt
         setForm({
             image: null,
             type: "static",
-            color_pool_id: "",
+            gene_pool_id: "",
+            sort: 0,
         });
         onSubmitted();
     };
@@ -24,7 +26,8 @@ export default function AdoptLayersPanelForm({adopt, colorPools, show, onSubmitt
         setForm({
             image: null,
             type: adoptLayer?.type ?? "static",
-            color_pool_id: adoptLayer?.color_pool_id ?? "",
+            gene_pool_id: adoptLayer?.gene_pool_id ?? (genePools && genePools.length ? genePools[0].id : ""),
+            sort: adoptLayer?.sort ?? 0,
         });
     }, [adoptLayer])
     
@@ -32,9 +35,10 @@ export default function AdoptLayersPanelForm({adopt, colorPools, show, onSubmitt
         const formData = new FormData();
         formData.append('image', form.image)
         formData.append('type', form.type)
+        formData.append('sort', form.sort)
 
-        if (form.type === "color") {
-            formData.append('color_pool_id', form.color_pool_id)
+        if (form.type === "gene") {
+            formData.append('gene_pool_id', form.gene_pool_id)
         }
 
         axios.post(`adopts/${adopt.id}/layers`, formData)
@@ -52,9 +56,9 @@ export default function AdoptLayersPanelForm({adopt, colorPools, show, onSubmitt
     }
 
     function update() {
-        const data = {type: form.type};
-        if (form.type === "color") {
-            data.color_pool_id = form.color_pool_id;
+        const data = {type: form.type, sort: form.sort};
+        if (form.type === "gene") {
+            data.gene_pool_id = form.gene_pool_id;
         }
         axios.put(`adopts/${adopt.id}/layers/${adoptLayer.id}`, data)
             .then(() => {
@@ -106,20 +110,20 @@ export default function AdoptLayersPanelForm({adopt, colorPools, show, onSubmitt
                         errors={errors}
                         value={form.type}
                         label="Type"
-                        options={{static: "Static image (eg. lines, eye whites)", shading: "Shading", highlights: "Highlights"}}
+                        options={{static: "Static image (eg. lines, eye whites)", shading: "Shading", highlights: "Highlights", gene: "Gene"}}
                         onChange={(e) => setForm({...form, type: e.target.value})}
                     ></FormSelect>
                     
-                    {form.type === "color" && <FormSelect 
-                        name="color_pool_id"
+                    {form.type === "gene" && genePools && <FormSelect 
+                        name="gene_pool_id"
                         errors={errors}
-                        label="Color pool"
-                        value={form.color_pool_id}
-                        options={colorPools.reduce((a, b) => ({
+                        label="Gene pool"
+                        value={form.gene_pool_id}
+                        options={genePools.reduce((a, b) => ({
                             ...a,
                             [b.id]: b.name,
                         }), {})}
-                        onChange={(e) => setForm({...form, color_pool_id: e.target.value})}
+                        onChange={(e) => setForm({...form, gene_pool_id: e.target.value})}
                     ></FormSelect>}
                     
                     {!adoptLayer && (<FormFile
@@ -128,6 +132,15 @@ export default function AdoptLayersPanelForm({adopt, colorPools, show, onSubmitt
                         onChange={(e) => setForm({...form, image: e.target.files[0]})}
                         errors={errors}
                     />)}
+
+                    <FormTextInput 
+                        name="sort"
+                        errors={errors}
+                        label="Sort"
+                        helperText="Higher numbers go on top"
+                        value={form.sort}
+                        onChange={(e) => setForm({...form, sort: e.target.value})}
+                    ></FormTextInput>
                 </div>
             </div>
         </GeneralModal>

@@ -15,7 +15,6 @@ export default function GenePoolsPanelForm({adopt, colorPools, show, onSubmitted
             name: "",
             type: "basic",
             color_pool_id: "",
-            sort: 0,
         });
         onSubmitted();
     };
@@ -26,7 +25,6 @@ export default function GenePoolsPanelForm({adopt, colorPools, show, onSubmitted
             name: genePool?.name ?? "",
             type: genePool?.type ?? "basic",
             color_pool_id: genePool?.color_pool?.id ?? "",
-            sort: genePool?.sort ?? 0,
         });
     }, [genePool])
     
@@ -115,15 +113,6 @@ export default function GenePoolsPanelForm({adopt, colorPools, show, onSubmitted
                         }), {})}
                         onChange={(e) => setForm({...form, color_pool_id: e.target.value})}
                     ></FormSelect>
-
-                    <FormTextInput 
-                        name="sort"
-                        errors={errors}
-                        label="Sort"
-                        helperText="Higher numbers go on top"
-                        value={form.sort}
-                        onChange={(e) => setForm({...form, sort: e.target.value})}
-                    ></FormTextInput>
                 </div>
             </div>
         </GeneralModal>
