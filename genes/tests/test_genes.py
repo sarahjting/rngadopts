@@ -46,6 +46,7 @@ class GeneListSerializerTest(TestCase):
             'name': gene.name,
             'weight': gene.weight,
             'date_updated': gene.date_updated.strftime(settings.DATETIME_FORMAT),
+            'gene_layers': [],
         })
 
 

@@ -50,15 +50,6 @@ class GenePoolSerializer(serializers.ModelSerializer):
         return AdoptListSerializer(obj.adopt, read_only=True).data
 
 
-class GeneListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Gene
-        fields = ['id', 'color_pool', 'name', 'weight', 'date_updated']
-
-    id = serializers.ReadOnlyField()
-    color_pool = ColorPoolListSerializer(read_only=True, allow_null=True)
-
-
 class GeneLayerSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -76,6 +67,17 @@ class GeneLayerSerializer(serializers.ModelSerializer):
         fields = ['id', 'image', 'type', 'color_key', 'sort']
 
     id = serializers.ReadOnlyField()
+
+
+class GeneListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Gene
+        fields = ['id', 'color_pool', 'name',
+                  'weight', 'date_updated', 'gene_layers']
+
+    id = serializers.ReadOnlyField()
+    gene_layers = GeneLayerSerializer(read_only=True, many=True)
+    color_pool = ColorPoolListSerializer(read_only=True, allow_null=True)
 
 
 class GeneSerializer(serializers.ModelSerializer):

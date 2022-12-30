@@ -4,7 +4,7 @@ import ColorPoolsPanel from "pages/adopts/components/ColorPoolsPanel";
 import GenePoolsPanel from "pages/adopts/components/GenePoolsPanel";
 import AppContext from "context";
 
-export default function AdoptDetailTabs({adopt, colorPools, genePools, onAdoptUpdated, onColorPoolsUpdated, onGenePoolsUpdated}) {
+export default function AdoptDetailTabs({adopt, colorPools, genePools, onAdoptUpdated, onColorPoolsUpdated, onGenePoolsUpdated, loaders}) {
     const {setBreadcrumbs} = useContext(AppContext);
     const [currentTab, setCurrentTab] = useState('adopt-layers-tab');
 
@@ -60,7 +60,7 @@ export default function AdoptDetailTabs({adopt, colorPools, genePools, onAdoptUp
                     </button>
                 </li>))}
             </ul>
-            <div id="defaultTabContent">
+            <div id="defaultTabContent" className={Object.keys(loaders).length > 0 ? "hidden" : "block"}>
                 {tabs.map((tab, key) => (
                 <div 
                     key={key}

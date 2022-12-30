@@ -1,7 +1,9 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import AppContext from "context";
 import GenePoolsPanelDetail from "./GenePoolsPanelDetail";
 import GenePoolsPanelIndex from "./GenePoolsPanelIndex";
+import GenePoolsPanelGene from "./GenePoolsPanelGene";
+import axios from "axios";
 
 export const SCREENS = {
     GENE_POOLS_INDEX: "GENE_POOLS_INDEX",
@@ -11,9 +13,38 @@ export const SCREENS = {
 
 export default function GenePoolsPanel({adopt, colorPools, genePools, onSubmitted = (() => {})}) {
     const {setBreadcrumbs} = useContext(AppContext);
+    const [genes, setGenes] = useState(null);
     const [currentScreen, setCurrentScreen] = useState(SCREENS.GENE_POOLS_INDEX);
     const [currentGenePool, setCurrentGenePool] = useState(null);
     const [currentGene, setCurrentGene] = useState(null);
+
+    function reloadGenes() {
+        if (currentGenePool) {
+            axios.get(`adopts/${adopt.id}/gene-pools/${currentGenePool.id}/genes`).then(data => setGenes(data.data));
+        } else {
+            setGenes(null);
+        }
+    }
+
+    useEffect(() => {
+        reloadGenes();
+    }, []);
+
+    useEffect(() => {
+        if (currentGenePool) {
+            setCurrentGenePool(genePools.find(x => x.id === currentGenePool.id));
+        }
+    }, [genePools]);
+
+    useEffect(() => {
+        reloadGenes();
+    }, [currentGenePool]);
+
+    useEffect(() => {
+        if (currentGene) {
+            setCurrentGene(genes.find(x => x.id === currentGene.id));
+        }
+    }, [genes]);
     
     function switchScreen(screen, genePool = null, gene = null) {
         setCurrentGenePool(genePool);
@@ -33,7 +64,7 @@ export default function GenePoolsPanel({adopt, colorPools, genePools, onSubmitte
         setBreadcrumbs(breadcrumbs);
     }
 
-    if (!genePools || !colorPools || !adopt) {
+    if (!genePools || !colorPools || !adopt || (currentGenePool && !genes)) {
         return (<>Loading...</>);
     }
 
@@ -46,11 +77,19 @@ export default function GenePoolsPanel({adopt, colorPools, genePools, onSubmitte
             adopt={adopt}
             colorPools={colorPools}
             genePool={currentGenePool}
+            genes={genes}
             onSubmitted={onSubmitted}
             onSwitchScreen={switchScreen}
         ></GenePoolsPanelDetail>)
     } else if (currentScreen === SCREENS.GENES_DETAIL) {
-
+        return (<GenePoolsPanelGene
+            adopt={adopt}
+            colorPools={colorPools}
+            genePool={currentGenePool}
+            gene={currentGene}
+            onSubmitted={onSubmitted}
+            onSwitchScreen={switchScreen}
+        ></GenePoolsPanelGene>)
     } else {
         return (<GenePoolsPanelIndex
             adopt={adopt}

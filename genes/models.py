@@ -67,8 +67,18 @@ class GeneLayer(models.Model):
     image = models.ImageField(null=True, upload_to=gene_layer_to_image_path)
     type = models.CharField(
         max_length=20,
-        choices=[('static_over', 'Static image on top of adopt (eg. tert lines)'), ('shading', 'Shading (eg. tert shading -- dropshadows also work)'),
-                 ('highlights', 'Highlights (eg. tert highlights)'), ('static_marking', 'Static image on adopt base (eg. accent/tattoo)'), ('color', 'Generate all colors from color pool (regular marking)'), ('static_under', 'Static image underneath adopt (eg. background)'),]
+        choices=[
+            ('static_over', 'Static on top of adopt'),
+            ('shading_over', 'Shading on top of adopt'),
+            ('highlights_over', 'Highlights on top of adopt'),
+            ('color_over', 'Color pool on top of adopt'),
+            ('static_on', 'Static on base'),
+            ('color_on', 'Color on base'),
+            ('static_under', 'Static under adopt'),
+            ('shading_under', 'Shading under adopt'),
+            ('highlights_under', 'Highlights under adopt'),
+            ('color_under', 'Color under adopt'),
+        ]
     )
     color_key = models.IntegerField(null=True)
     sort = models.IntegerField(default=0)

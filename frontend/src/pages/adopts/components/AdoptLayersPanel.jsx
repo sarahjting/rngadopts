@@ -36,7 +36,7 @@ export default function AdoptLayersPanel({adopt, genePools, onSubmitted = (() =>
                     <tbody className="bg-gray-50 border-b">
                     {adopt.adopt_layers.map((adoptLayer, key) => (
                         <tr key={key} className="border-b border-gray-100">
-                            <td className="py-4 px-6">
+                            <td>
                                 <img src={adoptLayer.image} />
                             </td>
                             <td className="py-4 px-6">
