@@ -2,26 +2,34 @@ import { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import AppContext from "context";
-import AdoptDetailTabs from "pages/adopts/components/AdoptDetailTabs";
-import FormTextInput from "components/form/FormTextInput";
+import AdoptBasicsPanel from "./components/AdoptBasicsPanel";
+import AdoptLayersPanel from "./components/AdoptLayersPanel";
+import ColorPoolsPanel from "./components/ColorPoolsPanel";
+import GenePoolsPanel from "./components/GenePoolsPanel";
 
 export default function AdoptDetailPage() {
-    const {pushToast, setBreadcrumbs} = useContext(AppContext);
+    const {setBreadcrumbs} = useContext(AppContext);
     const [loaders, setLoaders] = useState({});
     const [adopt, setAdopt] = useState(null);
     const [colorPools, setColorPools] = useState(null);
     const [genePools, setGenePools] = useState(null);
-    const [name, setName] = useState('');
-    const [shortName, setShortName] = useState('');
-    const [errors, setErrors] = useState({});
+    const [currentTab, setCurrentTab] = useState('adopt-basic-tab');
     let { id } = useParams();
 
-    function loadAdopt(adopt) {
-        setAdopt(adopt);
-        setName(adopt.name);
-        setShortName(adopt.short_name);
-        setBreadcrumbs([{to: `/adopts/${adopt.id}`, title: adopt.name}]);
-    }
+    useEffect(() => {
+        reloadAdopt();
+        reloadColorPools(false);
+        reloadGenePools(false);
+    }, []);
+
+    useEffect(() => {
+        const breadcrumbs = [];
+        if (adopt) {
+            breadcrumbs.push({to: `/adopts/${adopt.id}`, title: adopt.name});
+            breadcrumbs.push({to: `/adopts/${adopt.id}`, title: tabs.find((x) => x.id === currentTab)?.tabTitle})
+        }
+        setBreadcrumbs(breadcrumbs);
+    }, [adopt, currentTab])
 
     function pushLoader(key) {
         setLoaders({...loaders, [key]: true});
@@ -32,12 +40,16 @@ export default function AdoptDetailPage() {
         setLoaders(poppedLoaders);
     }
 
-    function reloadAdopt() {
-        pushLoader('adopt');
-        axios.get(`adopts/${id}`).then(data => {
-            loadAdopt(data.data);
-            popLoader('adopt');
-        });
+    function reloadAdopt(adopt=null) {
+        if (adopt) {
+            setAdopt(adopt);
+        } else {
+            pushLoader('adopt');
+            axios.get(`adopts/${id}`).then(data => {
+                setAdopt(data.data);
+                popLoader('adopt');
+            });
+        }
     }
 
     function reloadColorPools(doReload=true) {
@@ -62,64 +74,74 @@ export default function AdoptDetailPage() {
         }
     }
 
-    useEffect(() => {
-        reloadAdopt();
-        reloadColorPools(false);
-        reloadGenePools(false);
-    }, []);
-
-    function submit() {
-        axios.put(`adopts/${adopt.id}`, {name, short_name: shortName})
-            .then(data => data.data)
-            .then(adopt => {
-                loadAdopt(adopt);
-                pushToast('Adopt updated.', 'success');
-            })
-            .catch(err => {
-                if (err.response.status === 400) {
-                    setErrors(err.response.data);
-                }
-            });
-    }
+    const tabs = [
+        {
+            id: "adopt-basic-tab",
+            target: "adopt-basic-content",
+            tabTitle: "Basic",
+            tabPill: null,
+            component: (<AdoptBasicsPanel adopt={adopt} onSubmitted={reloadAdopt} />)
+        },
+        {
+            id: "adopt-layers-tab",
+            target: "adopt-layers-content",
+            tabTitle: "Base layers",
+            tabPill: adopt?.layers_count,
+            component: (<AdoptLayersPanel adopt={adopt} genePools={genePools} onSubmitted={reloadAdopt} />)
+        },
+        {
+            id: "color-pools-tab",
+            target: "color-pools-content",
+            tabTitle: "Color pools",
+            tabPill: adopt?.colors_count,
+            component: (<ColorPoolsPanel adopt={adopt} colorPools={colorPools} onSubmitted={reloadColorPools} />)
+        },
+        {
+            id: "gene-pools-tab",
+            target: "gene-pools-content",
+            tabTitle: "Gene pools",
+            tabPill: adopt?.genes_count,
+            component: (<GenePoolsPanel adopt={adopt} genePools={genePools} colorPools={colorPools} onSubmitted={reloadGenePools} />)
+        },
+    ]
 
     return !adopt ? (<>Loading...</>) : (
-        <>
-            <div className={`block md:flex gap-4`}>
-                <div className="max-w-md w-96">
-                    <div className="w-full p-4 bg-white border border-gray-200 rounded-lg shadow-md sm:p-6 md:p-8 mb-4">
-                        <h5 className="text-xl font-medium text-gray-900 dark:text-white mb-3">Basic details</h5>
-                        <FormTextInput 
-                            label="Adopt name" 
-                            name="name" 
-                            errors={errors}
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                        ></FormTextInput>
-                        <FormTextInput 
-                            label="Short name"
-                            helperText="for Discord commands" 
-                            name="short_name" 
-                            errors={errors}
-                            value={shortName}
-                            onChange={(e) => setShortName(e.target.value)}
-                        ></FormTextInput>
-                        <button className="w-full text-white bg-blue-500 hover:bg-blue-600 font-medium rounded-lg text-sm px-5 py-2.5 text-center" onClick={submit}>
-                            Update
-                        </button>
-                    </div>
+        <div className="w-full bg-white border rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
+            <ul className="flex flex-wrap items-stretch text-sm font-medium text-center text-gray-500 border-b border-gray-200 rounded-t-lg bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:bg-gray-800" id="defaultTab" data-tabs-toggle="#defaultTabContent" role="tablist">
+                {tabs.map((tab, key) => (
+                <li key={key} className="mr-2 flex items-stretch">
+                    <button 
+                        id={tab.id} 
+                        data-tabs-target={`#${tab.target}`} 
+                        type="button" 
+                        role="tab" 
+                        aria-controls="about" 
+                        aria-selected={currentTab === tab.id} 
+                        className={`inline-block p-4 ${currentTab === tab.id ? "text-blue-600" : ""} rounded-tl-lg hover:bg-gray-100`}
+                        onClick={() => setCurrentTab(tab.id)}
+                    >
+                        {tab.tabTitle} 
+                        {tab.tabPill !== null && (
+                            <span className={`inline-flex justify-center items-center ml-2 w-4 p-3 h-4 text-xs font-semibold ${tab.tabPill ? "text-blue-800 bg-blue-200" : "text-red-800 bg-red-200"} rounded-full`}>
+                                {tab.tabPill}
+                            </span>
+                        )}
+                    </button>
+                </li>))}
+            </ul>
+            <div id="defaultTabContent" className={Object.keys(loaders).length > 0 ? "hidden" : "block"}>
+                {tabs.map((tab, key) => (
+                <div 
+                    key={key}
+                    className={`${currentTab === tab.id ? "" : "hidden"} p-4 bg-white rounded-lg md:p-8`} 
+                    id={tab.target} 
+                    role="tabpanel" 
+                    aria-labelledby={tab.id}
+                >
+                    {tab.component}
                 </div>
-                <div className="grow">
-                    <AdoptDetailTabs 
-                        adopt={adopt} 
-                        colorPools={colorPools}
-                        genePools={genePools}
-                        onAdoptUpdated={reloadAdopt}
-                        onColorPoolsUpdated={reloadColorPools}
-                        onGenePoolsUpdated={reloadGenePools}
-                        loaders={loaders}
-                    ></AdoptDetailTabs>
-                </div>
+                ))}
             </div>
-        </>
+        </div>
     );
 }
