@@ -1,10 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
 import AdoptLayersPanel from "pages/adopts/components/AdoptLayersPanel";
 import ColorPoolsPanel from "pages/adopts/components/ColorPoolsPanel";
 import GenePoolsPanel from "pages/adopts/components/GenePoolsPanel";
+import AppContext from "context";
 
 export default function AdoptDetailTabs({adopt, colorPools, genePools, onAdoptUpdated, onColorPoolsUpdated, onGenePoolsUpdated}) {
+    const {setBreadcrumbs} = useContext(AppContext);
     const [currentTab, setCurrentTab] = useState('adopt-layers-tab');
+
+    useEffect(() => {
+        const breadcrumbs = [{to: `/adopts/${adopt.id}`, title: adopt.name}];
+        breadcrumbs.push({to: `/adopts/${adopt.id}`, title: tabs.find((x) => x.id === currentTab)?.tabTitle})
+        setBreadcrumbs(breadcrumbs);
+    }, [currentTab])
 
     const tabs = [
         {
