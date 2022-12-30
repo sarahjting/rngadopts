@@ -13,7 +13,7 @@ class GenePoolApiView(ApiLoginRequiredMixin, generics.ListCreateAPIView):
     permission_classes = [IsAdoptMod]
 
     def get_queryset(self):
-        return GenePool.objects.active().filter(adopt_id=self.kwargs.get('adopt_id')).order_by('name')
+        return GenePool.objects.active().filter(adopt_id=self.kwargs.get('adopt_id')).order_by('-sort', '-id')
 
     def post(self, request, adopt_id):
         serializer = GenePoolSerializer(
