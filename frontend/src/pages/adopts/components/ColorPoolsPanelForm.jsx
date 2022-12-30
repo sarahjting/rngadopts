@@ -116,7 +116,7 @@ export default function ColorPoolsPanelForm({adopt, show, onSubmitted, onClose, 
                     {isPreviewMode && (<>
                             {palettePreview}
                             <div className="text-right">
-                                <button class="bg-blue-500 text-white px-2 py-1 rounded-lg text-sm" onClick={() => setIsPreviewMode(false)}>
+                                <button  className="bg-blue-500 text-white px-2 py-1 rounded-lg text-sm" onClick={() => setIsPreviewMode(false)}>
                                     Edit palettes
                                 </button>
                             </div>
@@ -130,14 +130,14 @@ export default function ColorPoolsPanelForm({adopt, show, onSubmitted, onClose, 
                             onChange={(e) => setForm({...form, colors: e.target.value})}
                             wrap="off"
                             rows="10"
-                            style={{"white-space": "nowrap"}}
+                            style={{whiteSpace: "nowrap"}}
                         ></FormTextarea>
                         <div className="text-right mb-3">
-                            <button class="bg-blue-500 text-white px-2 py-1 rounded-lg text-sm" onClick={() => setIsPreviewMode(true)}>
+                            <button  className="bg-blue-500 text-white px-2 py-1 rounded-lg text-sm" onClick={() => setIsPreviewMode(true)}>
                                 Preview
                             </button>
                         </div>
-                        <ul class="list-disc ml-4 text-sm">
+                        <ul  className="list-disc ml-4 text-sm">
                             <li>
                                 Every color pool / color wheel must have at least one color. 
                             </li>
@@ -149,7 +149,7 @@ export default function ColorPoolsPanelForm({adopt, show, onSubmitted, onClose, 
                             </li>
                             <li>
                                 Enter every color on a new line. The line should be formatted in the following order, with a space or comma each datum:
-                                <ul class="list-disc ml-4">
+                                <ul  className="list-disc ml-4">
                                     <li>Name of the color</li>
                                     <li>The first color palette's base hex code, prefixed with a #</li>
                                     <li>The first color palette's shading hex code, prefixed with a #</li>

@@ -1,4 +1,4 @@
-export default function AdoptLayersPanel(props) {
+export default function GeneralModal(props) {
     const onClose = props.onClose || (() => {});
 
     return (

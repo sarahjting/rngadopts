@@ -5,7 +5,7 @@ import GeneralModal from "components/modals/GeneralModal";
 import FormSelect from "components/form/FormSelect";
 import FormFile from "components/form/FormFile";
 
-export default function AdoptLayersPanel({adopt, colorPools, show, onSubmitted, onClose, adoptLayer = null}) {
+export default function AdoptLayersPanelForm({adopt, colorPools, show, onSubmitted, onClose, adoptLayer = null}) {
     const {pushToast} = useContext(AppContext);
     const [errors, setErrors] = useState({});
     const [form, setForm] = useState({});
