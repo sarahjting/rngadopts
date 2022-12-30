@@ -60,8 +60,10 @@ export default function ColorPoolsPanel({adopt, colorPools, onSubmitted = (() =>
                 colorPool={currentColorPool} 
                 show={showModal} 
                 onSubmitted={submitted} 
-                onClose={() => 
-                setShowModal(false)}
+                onClose={() => {
+                    setCurrentColorPool(null);
+                    setShowModal(false);
+                }}
             ></ColorPoolFormModal>
         </div>
     ) : (<>Loading...</>);

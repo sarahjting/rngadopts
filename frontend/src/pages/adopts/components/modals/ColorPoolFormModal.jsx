@@ -9,6 +9,7 @@ export default function ColorPoolFormModal({adopt, show, onSubmitted, onClose, c
     const {pushToast} = useContext(AppContext);
     const [errors, setErrors] = useState({});
     const [form, setForm] = useState({});
+    const [colorPoolDetail, setColorPoolDetail] = useState(null);
     const [isPreviewMode, setIsPreviewMode] = useState(true);
 
     function submitted() {
@@ -16,10 +17,28 @@ export default function ColorPoolFormModal({adopt, show, onSubmitted, onClose, c
         onSubmitted();
     };
 
+    function reloadDetail() {
+        return axios.get(`adopts/${adopt.id}/color-pools/${colorPool.id}`)
+            .then(data => data.data)
+            .then(colorPoolDetail => {
+                setColorPoolDetail(colorPoolDetail)
+                setForm({
+                    name: colorPoolDetail?.name ?? "", 
+                    colors: colorPoolDetail?.colors ?? "",
+                });
+                setIsPreviewMode(true);
+            });
+    }
+
     useEffect(() => {
         setErrors({});
-        setForm({name: colorPool?.name ?? "", colors: colorPool?.colors ?? ""});
-        setIsPreviewMode(!!colorPool);
+        setColorPoolDetail(null);
+        if (colorPool) {
+            reloadDetail();
+        } else {
+            setForm({name: "", colors: ""});
+            setIsPreviewMode(false);
+        }
     }, [colorPool])
     
     function submit() {
@@ -92,6 +111,67 @@ export default function ColorPoolFormModal({adopt, show, onSubmitted, onClose, c
         </div>
     )
 
+    const modalContents = colorPool && !colorPoolDetail ? (<>Loading...</>) : (
+        <div>
+            <FormTextInput 
+                name="name"
+                errors={errors}
+                label="Name"
+                value={form.name}
+                onChange={(e) => setForm({...form, name: e.target.value})}
+            ></FormTextInput>
+            {isPreviewMode && (<>
+                    {palettePreview}
+                    <div className="text-right">
+                        <button  className="bg-blue-500 text-white px-2 py-1 rounded-lg text-sm" onClick={() => setIsPreviewMode(false)}>
+                            Edit palettes
+                        </button>
+                    </div>
+                </>)}
+            {!isPreviewMode && (<>
+                <FormTextarea 
+                    name="colors"
+                    errors={errors}
+                    label="Colors"
+                    value={form.colors}
+                    onChange={(e) => setForm({...form, colors: e.target.value})}
+                    wrap="off"
+                    rows="10"
+                    style={{whiteSpace: "nowrap"}}
+                ></FormTextarea>
+                <div className="text-right mb-3">
+                    <button  className="bg-blue-500 text-white px-2 py-1 rounded-lg text-sm" onClick={() => setIsPreviewMode(true)}>
+                        Preview
+                    </button>
+                </div>
+                <ul  className="list-disc ml-4 text-sm">
+                    <li>
+                        Every color pool / color wheel must have at least one color. 
+                    </li>
+                    <li>
+                        Every color must have at least one palette. A multi-palette color can be used for multi-colored markings (eg. FR's butterfly, blend, etc). 
+                    </li>
+                    <li>
+                        Each palette must have 3 hex codes. A base hex code, shading hex code, and highlight hex code. Provide the same hex three times over if you don't want shading/highlights.
+                    </li>
+                    <li>
+                        Enter every color on a new line. The line should be formatted in the following order, with a space or comma each datum:
+                        <ul  className="list-disc ml-4">
+                            <li>Name of the color</li>
+                            <li>The first color palette's base hex code, prefixed with a #</li>
+                            <li>The first color palette's shading hex code, prefixed with a #</li>
+                            <li>The first color palette's highlight hex code, prefixed with a #</li>
+                            <li>The second color palette's base hex code, prefixed with a #</li>
+                            <li>The second color palette's shading hex code, prefixed with a #</li>
+                            <li>The second color palette's highlight hex code, prefixed with a #</li>
+                            <li>Repeat until you have all colors assigned</li>
+                        </ul>
+                    </li>
+                </ul>
+            </>)}
+        </div>
+    );
+
     return (
         <GeneralModal 
             show={show}
@@ -104,66 +184,7 @@ export default function ColorPoolFormModal({adopt, show, onSubmitted, onClose, c
                 </div>
             )}
         >
-            <div>
-                <div>
-                    <FormTextInput 
-                        name="name"
-                        errors={errors}
-                        label="Name"
-                        value={form.name}
-                        onChange={(e) => setForm({...form, name: e.target.value})}
-                    ></FormTextInput>
-                    {isPreviewMode && (<>
-                            {palettePreview}
-                            <div className="text-right">
-                                <button  className="bg-blue-500 text-white px-2 py-1 rounded-lg text-sm" onClick={() => setIsPreviewMode(false)}>
-                                    Edit palettes
-                                </button>
-                            </div>
-                        </>)}
-                    {!isPreviewMode && (<>
-                        <FormTextarea 
-                            name="colors"
-                            errors={errors}
-                            label="Colors"
-                            value={form.colors}
-                            onChange={(e) => setForm({...form, colors: e.target.value})}
-                            wrap="off"
-                            rows="10"
-                            style={{whiteSpace: "nowrap"}}
-                        ></FormTextarea>
-                        <div className="text-right mb-3">
-                            <button  className="bg-blue-500 text-white px-2 py-1 rounded-lg text-sm" onClick={() => setIsPreviewMode(true)}>
-                                Preview
-                            </button>
-                        </div>
-                        <ul  className="list-disc ml-4 text-sm">
-                            <li>
-                                Every color pool / color wheel must have at least one color. 
-                            </li>
-                            <li>
-                                Every color must have at least one palette. A multi-palette color can be used for multi-colored markings (eg. FR's butterfly, blend, etc). 
-                            </li>
-                            <li>
-                                Each palette must have 3 hex codes. A base hex code, shading hex code, and highlight hex code. Provide the same hex three times over if you don't want shading/highlights.
-                            </li>
-                            <li>
-                                Enter every color on a new line. The line should be formatted in the following order, with a space or comma each datum:
-                                <ul  className="list-disc ml-4">
-                                    <li>Name of the color</li>
-                                    <li>The first color palette's base hex code, prefixed with a #</li>
-                                    <li>The first color palette's shading hex code, prefixed with a #</li>
-                                    <li>The first color palette's highlight hex code, prefixed with a #</li>
-                                    <li>The second color palette's base hex code, prefixed with a #</li>
-                                    <li>The second color palette's shading hex code, prefixed with a #</li>
-                                    <li>The second color palette's highlight hex code, prefixed with a #</li>
-                                    <li>Repeat until you have all colors assigned</li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </>)}
-                </div>
-            </div>
+            {modalContents}
         </GeneralModal>
     );
 }
