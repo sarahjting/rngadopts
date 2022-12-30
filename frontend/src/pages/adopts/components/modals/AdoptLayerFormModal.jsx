@@ -6,7 +6,7 @@ import FormSelect from "components/form/FormSelect";
 import FormFile from "components/form/FormFile";
 import FormTextInput from "components/form/FormTextInput";
 
-export default function AdoptLayersPanelForm({adopt, genePools, show, onSubmitted, onClose, adoptLayer = null}) {
+export default function AdoptLayerFormModal({adopt, genePools, show, onSubmitted, onClose, adoptLayer = null}) {
     const {pushToast} = useContext(AppContext);
     const [errors, setErrors] = useState({});
     const [form, setForm] = useState({});

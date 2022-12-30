@@ -1,5 +1,5 @@
 import { useState } from "react";
-import AdoptLayersPanelForm from "pages/adopts/components/AdoptLayersPanelForm";
+import AdoptLayerFormModal from "pages/adopts/components/modals/AdoptLayerFormModal";
 
 export default function AdoptLayersPanel({adopt, genePools, onSubmitted = (() => {})}) {
     const [showModal, setShowModal] = useState(false);
@@ -60,7 +60,7 @@ export default function AdoptLayersPanel({adopt, genePools, onSubmitted = (() =>
             <button className="text-white bg-blue-500 hover:bg-blue-600 font-medium rounded-lg text-sm px-5 py-2.5 text-center w-full" onClick={pushCreateModal}>
                 Add new layer
             </button>
-            <AdoptLayersPanelForm 
+            <AdoptLayerFormModal 
                 adopt={adopt} 
                 genePools={genePools} 
                 adoptLayer={currentAdoptLayer}
@@ -68,7 +68,7 @@ export default function AdoptLayersPanel({adopt, genePools, onSubmitted = (() =>
                 onSubmitted={submitted} 
                 onClose={() => 
                 setShowModal(false)}
-            ></AdoptLayersPanelForm>
+            ></AdoptLayerFormModal>
         </div>
     ) : (<>Loading...</>);
 }

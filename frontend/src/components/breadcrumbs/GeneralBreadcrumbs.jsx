@@ -14,7 +14,7 @@ export default function GeneralBreadcrumbs({breadcrumbs = []}) {
                 </li>
                 {breadcrumbs.map((breadcrumb, i) => (
                     <li key={i}>
-                        <div  className="flex items-center">
+                        <div className="flex items-center">
                             <CaretRightIcon className="text-gray-400" />
                             <Link to={breadcrumb.to}  className={`ml-1 text-sm font-medium ${i == breadcrumbs.length - 1 ? "text-gray-500" : "text-gray-700"} hover:text-gray-900 md:ml-2`}>
                                 {breadcrumb.title}

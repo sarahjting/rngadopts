@@ -5,7 +5,7 @@ import GeneralModal from "components/modals/GeneralModal";
 import FormTextInput from "components/form/FormTextInput";
 import FormTextarea from "components/form/FormTextarea";
 
-export default function ColorPoolsPanelForm({adopt, show, onSubmitted, onClose, colorPool = null}) {
+export default function ColorPoolFormModal({adopt, show, onSubmitted, onClose, colorPool = null}) {
     const {pushToast} = useContext(AppContext);
     const [errors, setErrors] = useState({});
     const [form, setForm] = useState({});

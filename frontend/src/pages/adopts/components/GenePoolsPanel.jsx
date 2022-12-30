@@ -1,77 +1,49 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
-import GenePoolsPanelForm from "./GenePoolsPanelForm";
+import { useState } from "react";
+import GenePoolsPanelDetail from "./GenePoolsPanelDetail";
+import GenePoolsPanelIndex from "./GenePoolsPanelIndex";
+
+export const SCREENS = {
+    GENE_POOLS_INDEX: "GENE_POOLS_INDEX",
+    GENE_POOLS_DETAIL: "GENE_POOLS_DETAIL",
+    GENES_DETAIL: "GENE_DETAIL",
+};
 
 export default function GenePoolsPanel({adopt, colorPools, genePools, onSubmitted = (() => {})}) {
+    const [currentScreen, setCurrentScreen] = useState(SCREENS.GENE_POOLS_INDEX);
     const [currentGenePool, setCurrentGenePool] = useState(null);
-    const [showModal, setShowModal] = useState(false);
-
-    function submitted() {
-        setShowModal(false);
-        onSubmitted();
-    }
-
-    function pushCreateModal() {
-        setCurrentGenePool(null);
-        setShowModal(true);
-    }
-
-    function pushUpdateModal(genePool) {
+    const [currentGene, setCurrentGene] = useState(null);
+    
+    function switchScreen(screen, genePool = null, gene = null) {
         setCurrentGenePool(genePool);
-        setShowModal(true);
+        setCurrentGene(gene);
+        setCurrentScreen(screen);
+    }
+
+    if (!genePools || !colorPools || !adopt) {
+        return (<>Loading...</>);
     }
 
     if (colorPools && colorPools.length === 0) {
         return (<div>Add color pools in the "Color pools" tab first.</div>)
     }
 
-    return genePools ? (
-        <div>
-            {genePools.length ? (
-            <div className="overflow-x-auto relative rounded-lg mb-3">
-                <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                    <thead className="text-xs text-gray-700 uppercase bg-gray-100 border-b border-gray-50">
-                        <tr>
-                            <th className="py-3 px-6">Gene pool</th>
-                            <th className="py-3 px-6">Type</th>
-                            <th className="py-3 px-6">Color pool</th>
-                        </tr>
-                    </thead>
-                    <tbody className="bg-gray-50 border-b">
-                    {genePools.map((genePool, key) => (
-                        <tr key={key} className="border-b border-gray-100">
-                            <td className="py-4 px-6">
-                                <button className="text-blue-500" onClick={() => pushUpdateModal(genePool)}>
-                                    {genePool.name}
-                                    <span className={`inline-flex justify-center items-center ml-2 w-4 p-3 h-4 text-xs font-semibold ${genePool.genes_count ? "text-blue-800 bg-blue-200" : "text-red-800 bg-red-200"} rounded-full`}>
-                                        {genePool.genes_count}
-                                    </span>
-                                </button>
-                            </td>
-                            <td className="py-4 px-6">
-                                {genePool.type}
-                            </td>
-                            <td className="py-4 px-6">
-                                {genePool.color_pool ? genePool.color_pool.name : 'None'}
-                            </td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
-            </div>
-            ) : (<div className="mb-3">No gene pools have been added to this adopt yet.</div>)}
-            <button className="text-white bg-blue-500 hover:bg-blue-600 font-medium rounded-lg text-sm px-5 py-2.5 text-center w-full" onClick={pushCreateModal}>
-                Add new gene pool
-            </button>
-            <GenePoolsPanelForm
-                adopt={adopt} 
-                colorPools={colorPools} 
-                genePool={currentGenePool}
-                show={showModal} 
-                onSubmitted={submitted} 
-                onClose={() => 
-                setShowModal(false)}
-            ></GenePoolsPanelForm>
-        </div>
-    ) : (<>Loading...</>);
+    if (currentScreen === SCREENS.GENE_POOLS_DETAIL) {
+        return (<GenePoolsPanelDetail
+            adopt={adopt}
+            colorPools={colorPools}
+            genePool={currentGenePool}
+            onSubmitted={onSubmitted}
+            onSwitchScreen={switchScreen}
+        ></GenePoolsPanelDetail>)
+    } else if (currentScreen === SCREENS.GENES_DETAIL) {
+
+    } else {
+        return (<GenePoolsPanelIndex
+            adopt={adopt}
+            colorPools={colorPools}
+            genePools={genePools}
+            onSubmitted={onSubmitted}
+            onSwitchScreen={switchScreen}
+        ></GenePoolsPanelIndex>)
+    }
 }

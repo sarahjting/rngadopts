@@ -1,5 +1,5 @@
 import { useState } from "react";
-import ColorPoolsPanelForm from "pages/adopts/components/ColorPoolsPanelForm";
+import ColorPoolFormModal from "pages/adopts/components/modals/ColorPoolFormModal";
 
 export default function ColorPoolsPanel({adopt, colorPools, onSubmitted = (() => {})}) {
     const [showModal, setShowModal] = useState(false);
@@ -55,14 +55,14 @@ export default function ColorPoolsPanel({adopt, colorPools, onSubmitted = (() =>
             <button className="text-white bg-blue-500 hover:bg-blue-600 font-medium rounded-lg text-sm px-5 py-2.5 text-center w-full" onClick={pushCreateModal}>
                 Add new color pool
             </button>
-            <ColorPoolsPanelForm 
+            <ColorPoolFormModal 
                 adopt={adopt} 
                 colorPool={currentColorPool} 
                 show={showModal} 
                 onSubmitted={submitted} 
                 onClose={() => 
                 setShowModal(false)}
-            ></ColorPoolsPanelForm>
+            ></ColorPoolFormModal>
         </div>
     ) : (<>Loading...</>);
 }

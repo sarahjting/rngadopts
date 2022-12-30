@@ -5,7 +5,7 @@ import GeneralModal from "components/modals/GeneralModal";
 import FormSelect from "components/form/FormSelect";
 import FormTextInput from "components/form/FormTextInput";
 
-export default function GenePoolsPanelForm({adopt, colorPools, show, onSubmitted, onClose, genePool = null}) {
+export default function GenePoolFormModal({adopt, colorPools, show, onSubmitted, onClose, genePool = null}) {
     const {pushToast} = useContext(AppContext);
     const [errors, setErrors] = useState({});
     const [form, setForm] = useState({});
