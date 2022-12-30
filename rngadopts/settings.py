@@ -147,15 +147,15 @@ VITE_APP_DIR = BASE_DIR / "frontend"
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = "/static/"
 STATICFILES_DIRS = [
     VITE_APP_DIR / "dist",
 ]
-STATIC_ROOT = BASE_DIR / "static/public"
+# STATIC_ROOT = BASE_DIR / "static/static"
 
 # Uploads
-MEDIA_ROOT = '/static/uploads/'
-MEDIA_URL = '/uploads/'
+MEDIA_ROOT = BASE_DIR / "static/uploads/"
+MEDIA_URL = "/uploads/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

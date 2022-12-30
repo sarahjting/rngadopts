@@ -33,12 +33,13 @@ export default function AdoptLayerFormModal({adopt, genePools, show, onSubmitted
     
     function create() {
         const formData = new FormData();
-        formData.append('image', form.image)
         formData.append('type', form.type)
         formData.append('sort', form.sort)
 
         if (form.type === "gene") {
             formData.append('gene_pool_id', form.gene_pool_id)
+        } else {
+            formData.append('image', form.image)
         }
 
         axios.post(`adopts/${adopt.id}/layers`, formData)
@@ -105,6 +106,7 @@ export default function AdoptLayerFormModal({adopt, genePools, show, onSubmitted
         >
             <div>
                 <div>
+                    {adoptLayer && adoptLayer.image && (<div class="flex justify-center mb-2"><img src={adoptLayer.image}></img></div>)}
                     <FormSelect 
                         name="type"
                         errors={errors}
@@ -126,7 +128,7 @@ export default function AdoptLayerFormModal({adopt, genePools, show, onSubmitted
                         onChange={(e) => setForm({...form, gene_pool_id: e.target.value})}
                     ></FormSelect>}
                     
-                    {!adoptLayer && (<FormFile
+                    {!adoptLayer && form.type !== "gene" && (<FormFile
                         name="image"
                         label="Layer image"
                         onChange={(e) => setForm({...form, image: e.target.files[0]})}
