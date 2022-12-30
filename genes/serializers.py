@@ -1,4 +1,3 @@
-from adopts.serializers import AdoptListSerializer, AdoptSerializer
 from colors.models import ColorPool
 from colors.serializers import ColorPoolListSerializer
 from genes.models import Gene, GeneLayer, GenePool
@@ -42,10 +41,14 @@ class GenePoolSerializer(serializers.ModelSerializer):
 
     id = serializers.ReadOnlyField()
     color_pool = ColorPoolListSerializer(read_only=True)
-    adopt = AdoptListSerializer(read_only=True)
+    adopt = serializers.SerializerMethodField(read_only=True)
     genes_count = serializers.ReadOnlyField()
     genes_weight_total = serializers.ReadOnlyField()
     sort = serializers.IntegerField(default=0)
+
+    def get_adopt(self, obj):
+        from adopts.serializers import AdoptListSerializer
+        return AdoptListSerializer(obj.adopt, read_only=True).data
 
 
 class GeneListSerializer(serializers.ModelSerializer):
@@ -99,7 +102,11 @@ class GeneSerializer(serializers.ModelSerializer):
                   'color_pool', 'name', 'weight', 'date_updated', 'gene_layers', 'adopt', 'gene_pool']
 
     id = serializers.ReadOnlyField()
-    adopt = AdoptListSerializer(read_only=True)
+    adopt = serializers.SerializerMethodField()
     gene_pool = GenePoolListSerializer(read_only=True)
     color_pool = ColorPoolListSerializer(read_only=True, allow_null=True)
     gene_layers = GeneLayerSerializer(read_only=True, many=True)
+
+    def get_adopt(self, obj):
+        from adopts.serializers import AdoptListSerializer
+        return AdoptListSerializer(obj.adopt, read_only=True).data

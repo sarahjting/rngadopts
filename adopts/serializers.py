@@ -1,6 +1,6 @@
 from adopts.models import Adopt, AdoptLayer
-from colors.models import ColorPool
-from colors.serializers import ColorPoolSerializer
+from genes.models import GenePool
+from genes.serializers import GenePoolSerializer
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
@@ -23,19 +23,19 @@ class AdoptLayerSerializer(serializers.ModelSerializer):
             adopt_id = self.context.get('adopt_id', None)
 
         if adopt_id:
-            self.fields['color_pool_id'] = serializers.PrimaryKeyRelatedField(
-                source='color_pool',
-                queryset=ColorPool.objects.filter(
+            self.fields['gene_pool_id'] = serializers.PrimaryKeyRelatedField(
+                source='gene_pool',
+                queryset=GenePool.objects.filter(
                     date_deleted=None, adopt_id=adopt_id),
                 default=None,
                 required=False)
 
     class Meta:
         model = AdoptLayer
-        fields = ['id', 'image', 'type', 'color_pool', 'sort']
+        fields = ['id', 'image', 'type', 'gene_pool', 'sort']
 
     id = serializers.ReadOnlyField()
-    color_pool = ColorPoolSerializer(read_only=True)
+    gene_pool = GenePoolSerializer(read_only=True)
     sort = serializers.IntegerField(default=0)
 
 

@@ -1,5 +1,5 @@
 from adopts.factories import AdoptFactory, AdoptLayerFactory
-from colors.factories import ColorPoolFactory
+from genes.factories import GenePoolFactory
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.urls import reverse
@@ -29,10 +29,10 @@ class AdoptLayerApiCreateTests(TestCase):
     def test_creates(self):
         user = UserFactory()
         adopt = AdoptFactory(mods=(user,))
-        color_pool = ColorPoolFactory(adopt=adopt)
+        gene_pool = GenePoolFactory(adopt=adopt)
 
         response = self._post(adopt, user=user, data={
-                              'color_pool_id': color_pool.id})
+                              'gene_pool_id': gene_pool.id})
 
         self.assertEqual(response.status_code, 201)
         self.assertEqual(1, adopt.adopt_layers.count())
@@ -47,13 +47,13 @@ class AdoptLayerApiCreateTests(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(0, adopt.adopt_layers.count())
 
-    def test_fails_when_invalid_color_pool(self):
+    def test_fails_when_invalid_gene_pool(self):
         user = UserFactory()
         adopt = AdoptFactory(mods=(user,))
-        color_pool = ColorPoolFactory()
+        gene_pool = GenePoolFactory()
 
         response = self._post(adopt, user=user, data={
-                              'color_pool_id': color_pool.id})
+                              'gene_pool_id': gene_pool.id})
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(0, adopt.adopt_layers.count())

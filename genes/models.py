@@ -1,4 +1,3 @@
-from adopts.models import Adopt
 from colors.models import ColorPool
 from django.db import models
 from os.path import splitext
@@ -13,7 +12,7 @@ class GenePool(models.Model):
     objects = GenePoolQuerySet.as_manager()
 
     adopt = models.ForeignKey(
-        Adopt, on_delete=models.RESTRICT, related_name='gene_pools')
+        'adopts.Adopt', on_delete=models.RESTRICT, related_name='gene_pools')
     color_pool = models.ForeignKey(ColorPool, on_delete=models.RESTRICT)
     name = models.CharField(max_length=40)
     type = models.CharField(
@@ -39,7 +38,7 @@ class Gene(models.Model):
     objects = GenePoolQuerySet.as_manager()
 
     adopt = models.ForeignKey(
-        Adopt, on_delete=models.RESTRICT, related_name='genes')
+        'adopts.Adopt', on_delete=models.RESTRICT, related_name='genes')
     gene_pool = models.ForeignKey(
         GenePool, on_delete=models.RESTRICT, related_name='genes')
     name = models.CharField(max_length=40)
@@ -62,7 +61,7 @@ def gene_layer_to_image_path(obj, filename):
 
 class GeneLayer(models.Model):
     adopt = models.ForeignKey(
-        Adopt, on_delete=models.RESTRICT, related_name='gene_layers')
+        'adopts.Adopt', on_delete=models.RESTRICT, related_name='gene_layers')
     gene = models.ForeignKey(
         Gene, on_delete=models.RESTRICT, related_name='gene_layers')
     image = models.ImageField(null=True, upload_to=gene_layer_to_image_path)

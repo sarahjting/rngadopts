@@ -1,4 +1,4 @@
-from colors.models import ColorPool
+from genes.models import GenePool
 from django.db import models
 from os.path import splitext
 from users.models import User
@@ -41,10 +41,10 @@ class AdoptLayer(models.Model):
     type = models.CharField(
         max_length=20,
         choices=[('static', 'Static image (eg. lines, eye whites)'), ('shading', 'Shading'),
-                 ('highlights', 'Highlights'), ('color', 'Generate all colors from color pool (eg. eye color)')]
+                 ('highlights', 'Highlights'), ('gene', 'Gene pool')]
     )
-    color_pool = models.ForeignKey(
-        ColorPool, on_delete=models.RESTRICT, null=True)
+    gene_pool = models.ForeignKey(
+        GenePool, on_delete=models.RESTRICT, null=True)
     sort = models.IntegerField(default=0)
 
 

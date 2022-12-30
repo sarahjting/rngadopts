@@ -20,9 +20,9 @@ def delete_adopt(adopt):
     adopt.save()
 
 
-def create_adopt_layer(adopt, type, image, color_pool=None, sort=0):
+def create_adopt_layer(adopt, type, image, gene_pool=None, sort=0):
     adopt_layer = models.AdoptLayer(adopt=adopt, type=type,
-                                    image=image, color_pool=color_pool, sort=sort)
+                                    image=image, gene_pool=gene_pool, sort=sort)
     adopt_layer.save()
 
     adopt.layers_count += 1
