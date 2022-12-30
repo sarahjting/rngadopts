@@ -1,5 +1,6 @@
 from genes import models
 from django.utils import timezone
+import random
 
 
 def create_gene_pool(adopt, name, type, color_pool):
@@ -71,3 +72,32 @@ def create_gene_layer(adopt, gene, image, type, color_key=None, sort=0):
         adopt=adopt, gene=gene, image=image, type=type, color_key=color_key, sort=sort)
     gene_layer.save()
     return gene_layer
+
+
+def pick_genes_from_pool(gene_pool):
+    all_genes = gene_pool.genes.all()
+    if len(all_genes) == 0:
+        return []
+
+    selected_genes = []
+
+    if gene_pool.type == "multi":
+        for gene in all_genes:
+            if random.randint(1, 100) <= gene.weight:
+                selected_genes.append(gene)
+    else:
+        i = 0
+        pool_weight = sum([x.weight for x in all_genes])
+        offset = random.randint(1, pool_weight)
+        while True:
+            offset -= all_genes[i].weight
+            if offset <= 0 or i >= len(all_genes):
+                selected_genes.append(all_genes[i])
+                break
+            i += 1
+
+    return selected_genes
+
+
+def my_rand():
+    return random.randint(1, 10)
