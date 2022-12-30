@@ -81,9 +81,8 @@ class GenePoolApiIndexTests(TestCase):
         client = APIClient()
         client.force_login(user)
 
-        gene_pool_highest_sort = GenePoolFactory(adopt=adopt, sort=10)
-        gene_pool_earlier = GenePoolFactory(adopt=adopt, sort=5)
-        gene_pool_later = GenePoolFactory(adopt=adopt, sort=5)
+        gene_pool_2 = GenePoolFactory(name='Z', adopt=adopt)
+        gene_pool_1 = GenePoolFactory(name='A', adopt=adopt)
         gene_pool_deleted = GenePoolFactory(
             adopt=adopt, date_deleted=timezone.now())
 
@@ -91,9 +90,8 @@ class GenePoolApiIndexTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, [
-            GenePoolListSerializer(gene_pool_highest_sort).data,
-            GenePoolListSerializer(gene_pool_later).data,
-            GenePoolListSerializer(gene_pool_earlier).data,
+            GenePoolListSerializer(gene_pool_1).data,
+            GenePoolListSerializer(gene_pool_2).data,
         ])
 
     def test_fails_when_unauthorized(self):
