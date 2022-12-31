@@ -15,9 +15,9 @@ First Python project!! Learning Python/Django and also relearning React apparent
     ```
 3. Set up the administrator account -- Run the following command and follow the instructions.
     ```
-    ./manage createsuperuser
-    ```
-3. Your admin account can use the following admin panel -- https://localhost:8000/admin 
+    ./d manage createsuperuser
+    ```    
+4. Your admin account can use the following admin panel -- https://localhost:8000/admin 
 
 # Expose
 This project is compatible with Expose, if you have an Expose server.

@@ -16,6 +16,7 @@ from corsheaders.defaults import default_headers
 
 
 APP_URL = os.environ.get('APP_URL')
+APP_DOMAIN = os.environ.get('APP_DOMAIN')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -31,8 +32,7 @@ DEBUG = os.environ.get('DEBUG')
 
 ALLOWED_HOSTS = [
     'localhost',
-    'web',  # this is required for expose to be able to access the web container
-    APP_URL,
+    APP_DOMAIN,
 ]
 
 
@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'adopts',
     'colors',
     'genes',
+    'discordbot',
 ]
 
 MIDDLEWARE = [
@@ -184,6 +185,9 @@ REST_FRAMEWORK = {
 RNGADOPTS_ADOPT_CREATION_ENABLED = os.environ.get(
     'RNGADOPTS_ADOPT_CREATION_ENABLED', '1') == '1',
 
+# Discord
+DISCORDBOT_TOKEN = os.environ.get('DISCORDBOT_TOKEN')
+
 # CORS
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:5173',
@@ -195,6 +199,7 @@ if DEBUG:
     CORS_ALLOW_CREDENTIALS = True
     CSRF_TRUSTED_ORIGINS = [
         'http://localhost:5173',  # this is the vite dev server
+        APP_URL,
     ]
     SESSION_COOKIE_SECURE = False
     CSRF_COOKIE_DOMAIN = None
@@ -224,3 +229,12 @@ if DEBUG:
             }
         }
     }
+else:
+    CSRF_TRUSTED_ORIGINS = [
+        APP_URL
+    ]
+
+# Required while using Expose
+USE_X_FORWARDED_HOST = True
+DEFAULT_HTTP_PROTOCOL = "https"
+HTTPS = "on"
