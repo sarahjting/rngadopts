@@ -25,7 +25,7 @@ export default function DashboardPage() {
     );
 
     if (adopts === null) {
-        return (<>Loading...</>);
+        return (<div className="p-8">Loading...</div>);
     }
 
     if (adopts.length === 0) {

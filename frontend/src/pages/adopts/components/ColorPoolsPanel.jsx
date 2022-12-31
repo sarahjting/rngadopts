@@ -66,5 +66,5 @@ export default function ColorPoolsPanel({adopt, colorPools, onSubmitted = (() =>
                 }}
             ></ColorPoolFormModal>
         </div>
-    ) : (<>Loading...</>);
+    ) : ((<div className="p-8">Loading (1)...</div>));
 }

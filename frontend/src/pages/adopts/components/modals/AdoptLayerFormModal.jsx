@@ -26,7 +26,7 @@ export default function AdoptLayerFormModal({adopt, genePools, show, onSubmitted
         setForm({
             image: null,
             type: adoptLayer?.type ?? "static",
-            gene_pool_id: adoptLayer?.gene_pool.id ?? (genePools && genePools.length ? genePools[0].id : ""),
+            gene_pool_id: adoptLayer?.gene_pool?.id ?? (genePools && genePools.length ? genePools[0].id : ""),
             sort: adoptLayer?.sort ?? "0",
         });
     }, [adoptLayer])
@@ -106,7 +106,7 @@ export default function AdoptLayerFormModal({adopt, genePools, show, onSubmitted
         >
             <div>
                 <div>
-                    {adoptLayer && adoptLayer.image && (<div class="flex justify-center mb-2"><img src={adoptLayer.image}></img></div>)}
+                    {adoptLayer && adoptLayer.image && (<div className="flex justify-center mb-2"><img src={adoptLayer.image}></img></div>)}
                     <FormSelect 
                         name="type"
                         errors={errors}

@@ -70,5 +70,5 @@ export default function AdoptLayersPanel({adopt, genePools, onSubmitted = (() =>
                 setShowModal(false)}
             ></AdoptLayerFormModal>
         </div>
-    ) : (<>Loading...</>);
+    ) : (<div className="p-8">Loading...</div>);
 }

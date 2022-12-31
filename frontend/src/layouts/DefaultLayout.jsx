@@ -55,5 +55,5 @@ export default function DefaultLayout({children}) {
 
       {toastWidget}
     </>
-  ) : (<>Loading...</>);
+  ) : (<div className="p-8">Loading...</div>);
 }

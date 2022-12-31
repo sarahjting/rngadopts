@@ -111,7 +111,7 @@ export default function ColorPoolFormModal({adopt, show, onSubmitted, onClose, c
         </div>
     )
 
-    const modalContents = colorPool && !colorPoolDetail ? (<>Loading...</>) : (
+    const modalContents = colorPool && !colorPoolDetail ? ((<div className="p-8">Loading...</div>)) : (
         <div>
             <FormTextInput 
                 name="name"

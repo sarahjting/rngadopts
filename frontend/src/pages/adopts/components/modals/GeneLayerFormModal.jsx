@@ -104,7 +104,7 @@ export default function GeneLayerFormModal({adopt, genePool, gene, show, onSubmi
         >
             <div>
                 <div>
-                    {geneLayer && geneLayer.image && (<div class="flex justify-center mb-2"><img src={geneLayer.image}></img></div>)}
+                    {geneLayer && geneLayer.image && (<div className="flex justify-center mb-2"><img src={geneLayer.image}></img></div>)}
 
                     {!geneLayer && (<FormFile
                         name="image"

@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useMemo } from "react";
 import AppContext from "context";
 import GenePoolsPanelDetail from "./GenePoolsPanelDetail";
 import GenePoolsPanelIndex from "./GenePoolsPanelIndex";
@@ -11,7 +11,7 @@ export const SCREENS = {
     GENES_DETAIL: "GENE_DETAIL",
 };
 
-export default function GenePoolsPanel({adopt, colorPools, genePools, onSubmitted = (() => {})}) {
+export default function GenePoolsPanel({adopt, colorPools, genePools, onSubmitted = (() => {}), onGenePoolLoaded = (() => {})}) {
     const {setBreadcrumbs} = useContext(AppContext);
     const [genes, setGenes] = useState(null);
     const [currentScreen, setCurrentScreen] = useState(SCREENS.GENE_POOLS_INDEX);
@@ -20,7 +20,10 @@ export default function GenePoolsPanel({adopt, colorPools, genePools, onSubmitte
 
     function reloadGenes() {
         if (currentGenePool) {
-            axios.get(`adopts/${adopt.id}/gene-pools/${currentGenePool.id}/genes`).then(data => setGenes(data.data));
+            axios.get(`adopts/${adopt.id}/gene-pools/${currentGenePool.id}/genes`).then(data => {
+                setGenes(data.data);
+                onGenePoolLoaded();
+            });
         } else {
             setGenes(null);
         }
@@ -36,7 +39,7 @@ export default function GenePoolsPanel({adopt, colorPools, genePools, onSubmitte
         }
     }, [genePools]);
 
-    useEffect(() => {
+    useMemo(() => {
         reloadGenes();
     }, [currentGenePool]);
 
@@ -65,38 +68,40 @@ export default function GenePoolsPanel({adopt, colorPools, genePools, onSubmitte
     }
 
     if (!genePools || !colorPools || !adopt || (currentGenePool && !genes)) {
-        return (<div class="p-8">Loading...</div>);
+        return (<div className="p-8">Loading (1)...</div>);
     }
 
     if (colorPools && colorPools.length === 0) {
-        return (<div class="p-8">Add color pools in the "Color pools" tab first.</div>)
+        return (<div className="p-8">Add color pools in the "Color pools" tab first.</div>)
     }
 
-    if (currentScreen === SCREENS.GENE_POOLS_DETAIL) {
-        return (<GenePoolsPanelDetail
-            adopt={adopt}
-            colorPools={colorPools}
-            genePool={currentGenePool}
-            genes={genes}
-            onSubmitted={onSubmitted}
-            onSwitchScreen={switchScreen}
-        ></GenePoolsPanelDetail>)
-    } else if (currentScreen === SCREENS.GENES_DETAIL) {
-        return (<GenePoolsPanelGene
-            adopt={adopt}
-            colorPools={colorPools}
-            genePool={currentGenePool}
-            gene={currentGene}
-            onSubmitted={onSubmitted}
-            onSwitchScreen={switchScreen}
-        ></GenePoolsPanelGene>)
-    } else {
-        return (<GenePoolsPanelIndex
-            adopt={adopt}
-            colorPools={colorPools}
-            genePools={genePools}
-            onSubmitted={onSubmitted}
-            onSwitchScreen={switchScreen}
-        ></GenePoolsPanelIndex>)
-    }
+    // we use a hidden toggle here is because we want the component to be hidden but retain state
+    // this is so the user gets taken back to the screen that they were just on with their existing settings after they submit a form
+    return (<>
+        <div>
+            {currentScreen === SCREENS.GENE_POOLS_DETAIL && (<GenePoolsPanelDetail
+                adopt={adopt}
+                colorPools={colorPools}
+                genePool={currentGenePool}
+                genes={genes}
+                onSubmitted={onSubmitted}
+                onSwitchScreen={switchScreen}
+            ></GenePoolsPanelDetail>)}
+            {currentScreen === SCREENS.GENES_DETAIL && (<GenePoolsPanelGene
+                adopt={adopt}
+                colorPools={colorPools}
+                genePool={currentGenePool}
+                gene={currentGene}
+                onSubmitted={onSubmitted}
+                onSwitchScreen={switchScreen}
+            ></GenePoolsPanelGene>)}
+            {currentScreen === SCREENS.GENE_POOLS_INDEX && (<GenePoolsPanelIndex
+                adopt={adopt}
+                colorPools={colorPools}
+                genePools={genePools}
+                onSubmitted={onSubmitted}
+                onSwitchScreen={switchScreen}
+            ></GenePoolsPanelIndex>)}
+        </div>
+    </>)
 }

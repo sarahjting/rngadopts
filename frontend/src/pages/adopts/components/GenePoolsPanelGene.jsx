@@ -36,7 +36,7 @@ export default function GenePoolsPanelGene({adopt, colorPools, genePool, gene, o
     }
 
     if (!adopt || !colorPools || !genePool || !gene) {
-        return (<>Loading...</>);
+        return ((<div className="p-8">Loading...</div>));
     }
 
     return (

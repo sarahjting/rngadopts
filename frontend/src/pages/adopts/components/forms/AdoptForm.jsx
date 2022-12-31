@@ -36,7 +36,7 @@ export default function AdoptForm({adopt, onSubmitted = (() => {})}) {
     return (
         <>
             <div className="max-w-md w-96 m-auto">
-                <div className="w-full p-4 bg-white sm:p-6 md:p-8 mb-4">
+                <div className="w-full bg-white mb-4">
                     <FormTextInput 
                         label="Adopt name" 
                         name="name" 

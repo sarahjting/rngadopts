@@ -46,7 +46,7 @@ export default function GeneFormModal({adopt, colorPools, genePool, show, onSubm
 
     function deleteGene()
     {
-        axios.delete(`adopts/${adopt.id}/gene-pools/${genePool.id}/${gene.id}`)
+        axios.delete(`adopts/${adopt.id}/gene-pools/${genePool.id}/genes/${gene.id}`)
             .then(() => {
                 pushToast('Gene deleted.', 'success');
                 submitted();

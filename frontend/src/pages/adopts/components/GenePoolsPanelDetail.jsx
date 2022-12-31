@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import GenePoolFormModal from "pages/adopts/components/modals/GenePoolFormModal";
 import { SCREENS } from "pages/adopts/components/GenePoolsPanel";
 import GeneFormModal from "pages/adopts/components/modals/GeneFormModal";
@@ -66,19 +66,19 @@ export default function GenePoolsPanelIndex({adopt, colorPools, genePool, genes,
                                 {gene.color_pool ? gene.color_pool.name : '--'}
                             </td>
                             <td className="py-2 px-2">
-                                <button class="text-blue-500" onClick={() => onSwitchScreen(SCREENS.GENES_DETAIL, genePool, gene)}>
+                                <button className="text-blue-500" onClick={() => onSwitchScreen(SCREENS.GENES_DETAIL, genePool, gene)}>
                                     <span className={`inline-flex justify-center items-center mr-2 w-4 p-3 h-4 text-xs font-semibold ${gene.gene_layers.length ? "text-blue-800 bg-blue-200" : "text-red-800 bg-red-200"} rounded-full`}>
                                         {gene.gene_layers.length}
                                     </span>
                                 </button>
                             </td>
                             <td className="py-2 px-2">
-                                <button class="flex text-blue-500" onClick={() => pushModal(MODALS.UPDATE_GENE, gene)}>
+                                <button className="flex text-blue-500" onClick={() => pushModal(MODALS.UPDATE_GENE, gene)}>
                                     <PencilIcon className="mr-2" /> Edit 
                                 </button>
                             </td>
                             <td className="py-2 px-2">
-                                <button class="flex text-blue-500" onClick={() => onSwitchScreen(SCREENS.GENES_DETAIL, genePool, gene)}>
+                                <button className="flex text-blue-500" onClick={() => onSwitchScreen(SCREENS.GENES_DETAIL, genePool, gene)}>
                                     <PencilIcon className="mr-2" /> Layers 
                                 </button>
                             </td>
