@@ -185,7 +185,7 @@ class AdoptGenerator:
         return self
 
     def __str__(self):
-        return f"{self.adopt.name}: " + ", ".join([f"{gene_color['gene'].name} ({gene_color['color']['name']})" for gene_color in self.gene_colors])
+        return f"{self.adopt.name}: " + ", ".join([f"{gene_color['gene'].name} ({gene_color['color'].name})" for gene_color in self.gene_colors])
 
 
 # i wonder if python prefers this to be a function or class? PHP likes classes for easier composition
