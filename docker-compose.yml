@@ -1,18 +1,8 @@
 services:
-  db:
-    image: postgres
-    volumes:
-      - ./data/db:/var/lib/postgresql/data
-    ports: 
-      - "5432:5432"
-    environment:
-      - POSTGRES_DB=rngadopts
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-    networks:
-      - web
   web:
-    build: .
+    build: 
+      context: .
+      dockerfile: ./docker/web/Dockerfile
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/code
@@ -25,10 +15,29 @@ services:
     env_file:
       - ".env"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+        # https://stackoverflow.com/questions/35069027/docker-wait-for-postgresql-to-be-running
     networks:
       - web
       - expose
+  db:
+    image: postgres
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    ports: 
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=rngadopts
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    networks:
+      - web
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
   npm:
     image: node:19.3-alpine
     volumes:

@@ -34,6 +34,16 @@ This project is compatible with Expose, if you have an Expose server.
   ./d expose
   ```
 
+# Troubleshooting
+## ModuleNotFoundError when running `docker compose up`
+```
+docker compose up --build
+```
+
+# Blog
+- [Setting up Docker for Django project development](https://sarahjting.com/Django-dev-docker-compose-d3e0b7d9582347fc8bf0ac3797badfdb)
+- [Setting up a self-hosted Laravel Expose server](https://sarahjting.com/Setting-up-self-hosted-Expose-ngrok-1225864eb0cb4902a88b2ea2c681f134)
+
 # References
 - Django
   - [Django Docker setup](https://github.com/docker/awesome-compose/tree/master/official-documentation-samples/django/)
