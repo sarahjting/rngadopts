@@ -6,6 +6,33 @@ from django.conf import settings
 from rest_framework import status, generics
 from rest_framework.response import Response
 from users.mixins import ApiLoginRequiredMixin
+from django.views import View
+from adopts.adopt_gen import AdoptGenerator, AdoptGeneratorImage
+from django.shortcuts import HttpResponse
+
+
+class AdoptGenView(View, ApiLoginRequiredMixin):
+    def get(self, request, file_name):
+        # this is supposed to return an image but there are many reasons it would break (permission error or malformed data)
+        # TODO: for now we just return a 400 and empty response, but we could build messages into error images too
+        try:
+            data = file_name.split("-", 1)
+            adopt = request.user.adopts.get(short_name=data[0])
+
+            gen = AdoptGenerator(adopt)
+
+            if len(data) == 1:
+                gen.randomize()
+            else:
+                gen.from_data_string(data[1])
+
+            image = AdoptGeneratorImage(gen)
+
+            response = HttpResponse(content_type="image/png")
+            image.pil.save(response, "PNG")
+            return response
+        except Exception as e:
+            return HttpResponse("", status=status.HTTP_400_BAD_REQUEST)
 
 
 class AdoptApiView(ApiLoginRequiredMixin, generics.ListCreateAPIView):

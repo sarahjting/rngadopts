@@ -1,15 +1,23 @@
-from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
-
-from genes.actions import pick_genes_from_pool
+from adopts.adopt_gen import AdoptGeneratorGenePicker
 from unittest import mock
+from adopts.factories import AdoptFactory
 from genes.factories import GeneFactory, GenePoolFactory
 
 
-class TestPickGenesFromPool(TestCase):
+class AdoptGeneratorGenePickerTests(TestCase):
+    def test_picks_multiple_pools(self):
+        adopt = AdoptFactory()
+        gene_pools = [GenePoolFactory(
+            adopt=adopt), GenePoolFactory(adopt=adopt)]
+        genes = [GeneFactory(gene_pool=gene_pools[0], weight=1), GeneFactory(
+            gene_pool=gene_pools[1], weight=1)]
+        self.assertEqual(genes, AdoptGeneratorGenePicker(adopt).pick())
+
     def test_pick_genes_from_pool_picks_no_genes_when_empty(self):
         gene_pool = GenePoolFactory()
-        self.assertEqual([], pick_genes_from_pool(gene_pool))
+        self.assertEqual([], AdoptGeneratorGenePicker(
+            gene_pool.adopt).pick_from_pool(gene_pool))
 
     @mock.patch('random.randint')
     def test_pick_genes_from_pool_picks_multiple_genes(self, randomint_mock):
@@ -21,7 +29,8 @@ class TestPickGenesFromPool(TestCase):
         uncommon_gene_expected = GeneFactory(gene_pool=gene_pool, weight=25)
         common_gene_expected = GeneFactory(gene_pool=gene_pool, weight=75)
         self.assertEqual(
-            [uncommon_gene_expected, common_gene_expected], pick_genes_from_pool(gene_pool))
+            [uncommon_gene_expected, common_gene_expected], AdoptGeneratorGenePicker(
+                gene_pool.adopt).pick_from_pool(gene_pool))
 
     @mock.patch('random.randint')
     def test_pick_genes_from_pool_picks_basic_gene(self, randomint_mock):
@@ -33,4 +42,5 @@ class TestPickGenesFromPool(TestCase):
         GeneFactory(gene_pool=gene_pool, weight=25)
         GeneFactory(gene_pool=gene_pool, weight=75)
         self.assertEqual(
-            [expected_gene], pick_genes_from_pool(gene_pool))
+            [expected_gene], AdoptGeneratorGenePicker(
+                gene_pool.adopt).pick_from_pool(gene_pool))

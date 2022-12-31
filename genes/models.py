@@ -60,6 +60,9 @@ def gene_layer_to_image_path(obj, filename):
 
 
 class GeneLayer(models.Model):
+    class Meta:
+        ordering = ('-sort',)
+
     adopt = models.ForeignKey(
         'adopts.Adopt', on_delete=models.RESTRICT, related_name='gene_layers')
     gene = models.ForeignKey(

@@ -24,17 +24,42 @@ class ColorPool(models.Model):
         return self.name
 
     # these can probably be memoized, im lazy
+    def get_color(self, color_index):
+        colors = self.colors_obj
 
+        if color_index < 0 or color_index >= len(colors):
+            return None
+
+        return self.colors_obj[color_index]
+
+    def get_palette(self, color_index, palette_key):
+        color = self.get_color(color_index)
+
+        return None if color is None else color.get_palette(palette_key)
+
+    def get_hex(self, color_index, palette_key, layer):
+        color = self.get_color(color_index)
+
+        return None if color is None else color.get_hex(palette_key, layer)
+
+    @property
+    def colors_obj(self):
+        return Color.from_db(self.colors)
+
+    @property
     def colors_count(self):
-        return len(self.colors_dict())
+        return len(self.colors_dict)
 
+    @property
     def palettes_count(self):
-        colors_dict = self.colors_dict()
+        colors_dict = self.colors_dict
         return 0 if len(colors_dict) == 0 else len(colors_dict[0]['palettes'])
 
+    @property
     def colors_json(self):
-        return json.dumps(self.colors_dict())
+        return json.dumps(self.colors_dict)
 
+    @property
     def colors_dict(self):
         colors = Color.from_db(self.colors)
         return [x.to_dict() for x in colors]
@@ -52,6 +77,20 @@ class Color:
 
     def __str__(self):
         return ' '.join([self.name] + [x.__str__() for x in self.palettes])
+
+    def get_palette(self, palette_key):
+        if palette_key < 0 or palette_key >= len(self.palettes):
+            return None
+
+        return self.palettes[palette_key]
+
+    def get_hex(self, palette_key, layer):
+        palette = self.get_palette(palette_key)
+
+        if palette is None or layer not in ["base", "shading", "highlight"]:
+            return None
+
+        return getattr(palette, layer)
 
     def from_db(data):
         colors = []
