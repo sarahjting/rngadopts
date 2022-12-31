@@ -44,7 +44,8 @@ export default function AdoptDetailPage() {
         if (adopt) {
             setAdopt(adopt);
         } else {
-            pushLoader('adopt');
+            pushLoader("adopt");
+            pushLoader("gene_pool_detail")
             axios.get(`adopts/${id}`).then(data => {
                 setAdopt(data.data);
                 popLoader('adopt');
@@ -53,25 +54,26 @@ export default function AdoptDetailPage() {
     }
 
     function reloadColorPools(doReload=true) {
-        pushLoader('color_pools');
-        axios.get(`adopts/${id}/color-pools`).then(data => {
-            setColorPools(data.data)
-            popLoader('color_pools');
-        });
+        pushLoader("color_pools");
         if (doReload) {
             reloadAdopt();
         }
+        axios.get(`adopts/${id}/color-pools`).then(data => {
+            setColorPools(data.data)
+            popLoader("color_pools");
+        });
     }
 
     function reloadGenePools(doReload=true) {
-        pushLoader('gene_pools');
-        axios.get(`adopts/${id}/gene-pools`).then(data => {
-            setGenePools(data.data)
-            popLoader('gene_pools');
-        });
+        pushLoader("gene_pools");
+        pushLoader("gene_pool_detail")
         if (doReload) {
             reloadAdopt();
         }
+        axios.get(`adopts/${id}/gene-pools`).then(data => {
+            setGenePools(data.data)
+            popLoader("gene_pools");
+        });
     }
 
     const tabs = [
@@ -101,11 +103,17 @@ export default function AdoptDetailPage() {
             target: "gene-pools-content",
             tabTitle: "Gene pools",
             tabPill: adopt?.genes_count,
-            component: (<GenePoolsPanel adopt={adopt} genePools={genePools} colorPools={colorPools} onSubmitted={reloadGenePools} />)
+            component: (<GenePoolsPanel 
+                adopt={adopt} 
+                genePools={genePools} 
+                colorPools={colorPools} 
+                onSubmitted={reloadGenePools} 
+                onGenePoolLoaded={() => popLoader("gene_pool_detail")} 
+            />)
         },
     ]
 
-    return !adopt ? (<>Loading...</>) : (
+    return !adopt ? ((<div className="p-8">Loading...</div>)) : (
         <div className="w-full bg-white border rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
             <ul className="flex flex-wrap items-stretch text-sm font-medium text-center text-gray-500 border-b border-gray-200 rounded-t-lg bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:bg-gray-800" id="defaultTab" data-tabs-toggle="#defaultTabContent" role="tablist">
                 {tabs.map((tab, key) => (
@@ -129,6 +137,7 @@ export default function AdoptDetailPage() {
                     </button>
                 </li>))}
             </ul>
+            {Object.keys(loaders).length > 0 && (<div className="p-8">Loading (0: {Object.keys(loaders)[0]})...</div>)}
             <div id="defaultTabContent" className={Object.keys(loaders).length > 0 ? "hidden" : "block"}>
                 {tabs.map((tab, key) => (
                 <div 
