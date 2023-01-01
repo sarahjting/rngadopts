@@ -22,11 +22,11 @@ if [ $# -gt 0 ];then
 
     elif [ "$1" == "dev" ]; then
         $EXEC_NPM npm install
-        docker compose run -p 5173:5173 npm npm run dev
+        docker compose run --rm -p 5173:5173 npm npm run dev
 
     elif [ "$1" == "build" ]; then
         $EXEC_NPM npm install 
-        docker compose run -e mode=production npm npm run build
+        docker compose run --rm -e mode=production npm npm run build
 
     elif [ "$1" == "expose" ]; then
         docker compose run --rm expose
