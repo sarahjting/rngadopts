@@ -40,6 +40,13 @@ class AdoptGeneratorImage:
 
         self.pil = base_pil
 
+    def _find_gene(self, gene_id):
+        """
+        If gene exists in the gen, return the gene color. If not, return None.
+        """
+        res = [gc for gc in self.gen.gene_colors if gc["gene"].id == gene_id]
+        return res[0] if len(res) > 0 else None
+
     def _build_light_level(self, adopt_layers, light_level):
         """
         Generates either a base, shading, or highlight image and returns a PIL Image
@@ -50,8 +57,18 @@ class AdoptGeneratorImage:
             if gene_type == "static":
                 self._draw_file(pil, gene_layer.image.path)
             elif gene_type == "color":
-                self._draw_file_color(pil, gene_layer.image.path,
-                                      gene_color["color"].get_hex(gene_layer.color_key - 1, light_level))
+                color = gene_color["color"]
+
+                # if there's a required gene, we can assume it exists; take color from there if possible
+                if gene_layer.required_gene_id:
+                    required_gc = self._find_gene(gene_layer.required_gene_id)
+                    if required_gc:
+                        color = required_gc["color"]
+                    else:
+                        return
+
+                self._draw_file_color(pil, gene_layer.image.path, color.get_hex(
+                    gene_layer.color_key - 1, light_level))
 
         def draw_adopt_layer(pil, adopt_layer):
             if adopt_layer.type == "static":
@@ -99,10 +116,16 @@ class AdoptGeneratorImage:
 
                 for gene_color in gene_colors:
                     for gene_layer in reversed(gene_color["gene"].gene_layers.all()):
+                        # check for required gene
+                        if gene_layer.required_gene_id and not self._find_gene(gene_layer.required_gene_id):
+                            continue
+
+                        # check if we're at the correct depth to draw this
                         gene_type, gene_depth = gene_layer.type.split("_")
                         if gene_depth != depth:
                             continue
 
+                        # draw
                         draw_gene_color_layer(pil, gene_color, gene_layer)
         return pil
 

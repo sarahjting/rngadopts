@@ -18,9 +18,15 @@ class GeneLayerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GeneLayer
-        fields = ['id', 'image', 'type', 'color_key', 'sort']
+        fields = ['id', 'image', 'type',
+                  'color_key', 'required_gene_id', 'sort']
 
     id = serializers.ReadOnlyField()
+    required_gene_id = serializers.PrimaryKeyRelatedField(
+        required=False,
+        allow_null=True,
+        source='required_gene',
+        queryset=Gene.objects.filter(date_deleted=None))
 
 
 class GeneListSerializer(serializers.ModelSerializer):

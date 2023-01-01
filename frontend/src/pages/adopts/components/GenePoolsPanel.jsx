@@ -65,6 +65,7 @@ export default function GenePoolsPanel({adopt, colorPools, genePools, onSubmitte
             {currentScreen === SCREENS.GENES_DETAIL && (<GenePoolsPanelGene
                 adopt={adopt}
                 colorPools={colorPools}
+                genePools={genePools}
                 genePool={currentGenePool}
                 gene={currentGene}
                 onSubmitted={onSubmitted}

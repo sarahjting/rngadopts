@@ -30,7 +30,7 @@ export default function GenePoolFormModal({adopt, colorPools, show, onSubmitted,
     
     function submit() {
         const fn = genePool?.id ? axios.put : axios.post;
-        fn(`adopts/${adopt.id}/gene-pools${genePool ? "/" + genePool.id : ""}`, form)
+        fn(`adopts/${adopt.id}/gene-pools${genePool ? `/${genePool.id}` : ""}`, form)
             .then(() => {
                 pushToast('Gene pools updated.', 'success');
                 submitted();

@@ -11,7 +11,7 @@ const MODALS = {
     UPDATE_GENE_LAYER: 'UPDATE_GENE_LAYER',
 };
 
-export default function GenePoolsPanelGene({adopt, colorPools, genePool, gene, onSwitchScreen, onSubmitted = (() => {})}) {
+export default function GenePoolsPanelGene({adopt, colorPools, genePools, genePool, gene, onSwitchScreen, onSubmitted = (() => {})}) {
     const [modal, setModal] = useState(null);
     const [currentGeneLayer, setCurrentGeneLayer] = useState(null);
 
@@ -37,6 +37,38 @@ export default function GenePoolsPanelGene({adopt, colorPools, genePool, gene, o
 
     if (!adopt || !colorPools || !genePool || !gene) {
         return ((<div className="p-8">Loading...</div>));
+    }
+
+    const genes = genePools.map((pool) => pool.genes).flat(1);
+    console.log(genes);
+
+    function geneLayerRow(geneLayer, key) {
+        const requiredGene = genes.find(x => x.id === geneLayer.required_gene_id);
+        console.log(geneLayer, gene)
+        return (
+            <tr key={key} className="border-b border-gray-100">
+                <td className="py-4 px-6">
+                    <img src={geneLayer.image} />
+                </td>
+                <td className="py-4 px-6">
+                    {geneLayer.type}
+                </td>
+                <td className="py-4 px-6">
+                    {requiredGene && (<>
+                        <span className="bg-orange-300 text-white py-2 px-2 mb-2 rounded-md text-center mr-2">Requires {requiredGene.name}</span>
+                    </>)}
+                    {geneLayer.type.substring(0, 5) === "color" ? `Palette ${geneLayer.color_key}` : "--"}
+                </td>
+                <td className="py-4 px-6">
+                    {geneLayer.sort}
+                </td>
+                <td>
+                    <button className="btn bg-blue-500 text-white py-1 px-3 rounded-md" onClick={() => pushUpdateGeneLayerModal(geneLayer)}>
+                        Edit
+                    </button>
+                </td>
+            </tr>
+        );
     }
 
     return (
@@ -65,27 +97,7 @@ export default function GenePoolsPanelGene({adopt, colorPools, genePool, gene, o
                         </tr>
                     </thead>
                     <tbody className="bg-gray-50 border-b">
-                    {gene.gene_layers.map((geneLayer, key) => (
-                        <tr key={key} className="border-b border-gray-100">
-                            <td className="py-4 px-6">
-                                <img src={geneLayer.image} />
-                            </td>
-                            <td className="py-4 px-6">
-                                {geneLayer.type}
-                            </td>
-                            <td className="py-4 px-6">
-                                {geneLayer.type.substring(0, 5) === "color" ? geneLayer.color_key : "--"}
-                            </td>
-                            <td className="py-4 px-6">
-                                {geneLayer.sort}
-                            </td>
-                            <td>
-                                <button className="btn bg-blue-500 text-white py-1 px-3 rounded-md" onClick={() => pushUpdateGeneLayerModal(geneLayer)}>
-                                    Edit
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
+                    {gene.gene_layers.map((geneLayer, key) => geneLayerRow(geneLayer, key))}
                     </tbody>
                 </table>
             </div>
@@ -105,6 +117,7 @@ export default function GenePoolsPanelGene({adopt, colorPools, genePool, gene, o
             <GeneLayerFormModal
                 adopt={adopt} 
                 colorPools={colorPools} 
+                genePools={genePools}
                 genePool={genePool}
                 gene={gene}
                 geneLayer={currentGeneLayer}

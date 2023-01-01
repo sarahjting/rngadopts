@@ -85,5 +85,5 @@ class GeneLayer(models.Model):
     )
     color_key = models.IntegerField(null=True)
     sort = models.IntegerField(default=0)
-    required_gene_id = models.ForeignKey(
+    required_gene = models.ForeignKey(
         Gene, on_delete=models.RESTRICT, related_name='dependent_gene_layers', null=True)

@@ -6,12 +6,14 @@ import FormSelect from "components/form/FormSelect";
 import FormFile from "components/form/FormFile";
 import FormTextInput from "components/form/FormTextInput";
 
-export default function GeneLayerFormModal({adopt, genePool, gene, show, onSubmitted, onClose, geneLayer = null}) {
+export default function GeneLayerFormModal({adopt, genePools, genePool, gene, show, onSubmitted, onClose, geneLayer = null}) {
     const {pushToast} = useContext(AppContext);
     const [errors, setErrors] = useState({});
     const [form, setForm] = useState({});
 
-    const colorPool = gene.color_pool ?? genePool.color_pool;
+    const requiredGene = form?.required_gene_id ? genePools.map(x => x.genes).flat(1).find(x => x.id === form.required_gene_id) : null;
+    const requiredGenePool = requiredGene ? genePools.find(x => !!x.genes.find(x => x.id === requiredGene.id)) : null;
+    const colorPool = requiredGene?.color_pool ?? requiredGenePool?.color_pool ?? gene.color_pool ?? genePool.color_pool;
 
     useEffect(() => {
         setErrors({});
@@ -20,6 +22,7 @@ export default function GeneLayerFormModal({adopt, genePool, gene, show, onSubmi
             type: geneLayer?.type ?? "color_on",
             color_key: geneLayer?.color_key ?? "1",
             sort: geneLayer?.sort ?? "0",
+            required_gene_id: geneLayer?.required_gene_id ?? "",
         });
     }, [geneLayer])
 
@@ -29,17 +32,19 @@ export default function GeneLayerFormModal({adopt, genePool, gene, show, onSubmi
             type: "color_on",
             color_key: "1",
             sort: "0",
+            required_gene_id: "",
         });
         onSubmitted();
     };
     
     function create() {
         const formData = new FormData();
-        formData.append('gene_id', gene.id)
-        formData.append('image', form.image)
-        formData.append('type', form.type)
-        formData.append('color_key', form.color_key)
-        formData.append('sort', form.sort)
+        formData.append('gene_id', gene.id);
+        formData.append('image', form.image);
+        formData.append('type', form.type);
+        formData.append('color_key', form.color_key);
+        formData.append('sort', form.sort);
+        formData.append('required_gene_id', form.required_gene_id);
 
         axios.post(`adopts/${adopt.id}/gene-layers`, formData)
             .then(() => {
@@ -60,6 +65,7 @@ export default function GeneLayerFormModal({adopt, genePool, gene, show, onSubmi
             type: form.type, 
             sort: form.sort,
             color_key: form.color_key,
+            required_gene_id: form.required_gene_id,
         })
             .then(() => {
                 pushToast('Gene layer updated.', 'success');
@@ -141,23 +147,27 @@ export default function GeneLayerFormModal({adopt, genePool, gene, show, onSubmi
                                 Multi-color marking: 1 COLOR ON layer for each color. Select a different palette for each. 
                             </li>
                             <li>
-                                Apparel: 1 STATIC OVER layer. If you want color pool colors, refer to Tert/eyes guide.
-                            </li>
-                            <li>
-                                Backdrop: 1 STATIC UNDER layer. If you want color pool colors, refer to Tert/eyes guide.
-                            </li>
-                            <li>
-                                Skins/tattoos (markings that do not get flood filled): 1 STATIC ON layer.
-                            </li>
-                            <li>
                                 Tert/eyes: Lines as STATIC OVER, shading as SHADING OVER, highlights as HIGHLIGHTS OVER, all color layers as COLOR OVER, eye white layer as a STATIC OVER.
-                                <ul className="list-disc ml-4">
-                                    <li>If your tert goes behind the adopt, use STATIC UNDER, SHADING UNDER, HIGHLIGHTS UNDER, COLOR UNDER</li>
-                                    <li>You can use over and under layers for double-sided terts (eg. front and back wings)</li>
-                                    <li>You can use over, under, and COLOR ON for terts that come with markings</li>
-                                </ul>
                             </li>
                         </ul>
+                    </div>
+
+                    <FormSelect 
+                        name="required_gene_id"
+                        errors={errors}
+                        label="Required gene"
+                        value={form.required_gene_id}
+                        options={genePools.reduce((a, b) => ({
+                            ...a,
+                            [b.name]: b.genes.reduce((aa, bb) => ({
+                                ...aa,
+                                [bb.id]: bb.name,
+                            }), {}),
+                        }), {"": ""})}
+                        onChange={(e) => setForm({...form, required_gene_id: e.target.value})}
+                    ></FormSelect>
+                    <div className="text-xs text-gray-600 mb-3">
+                        <p>Advanced setting: Ignore if you don't know what this is.</p>
                     </div>
 
                     {
@@ -171,6 +181,9 @@ export default function GeneLayerFormModal({adopt, genePool, gene, show, onSubmi
                                     onChange={(e) => setForm({...form, color_key: e.target.value})}
                                 ></FormTextInput>
                                 <div className="text-xs text-gray-600 mb-3">
+                                    {requiredGene && (<p>
+                                        <span class="text-orange-500">You have selected a required gene. The color of this layer will be taken from <strong>{requiredGene.name} ({requiredGenePool.name})</strong>.</span> 
+                                    </p>)}
                                     <p>The color pool for this gene is <strong>{colorPool.name}</strong>.</p>
                                     {
                                         colorPool.palettes_count === 1 

@@ -9,7 +9,10 @@ export default function FormSelect({options, value = "", label = null, helperTex
             value={value}
             {...props}
         >
-            {Object.keys(options).map((key) => (<option key={key} value={key}>{options[key]}</option>))}
+            {
+                Object.keys(options).map((key) => typeof options[key] !== "object" ? (<option key={key} value={key}>{options[key]}</option>)
+                    : (<optgroup key={key} label={key}>{Object.keys(options[key]).map((k) => (<option key={k} value={k}>{options[key][k]}</option>))}</optgroup>))
+            }
         </select>
     </FormInput>);
 }
