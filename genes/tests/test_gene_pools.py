@@ -9,7 +9,7 @@ from django.urls import reverse
 from django.utils import timezone
 from genes.factories import GenePoolFactory
 from genes.models import GenePool
-from genes.serializers import GenePoolSerializer, GenePoolListSerializer
+from genes.serializers import GeneListSerializer, GenePoolSerializer, GenePoolListSerializer
 from rest_framework.test import APIClient
 from users.factories import UserFactory
 
@@ -32,6 +32,7 @@ class GenePoolSerializerTests(TestCase):
             'color_pool': ColorPoolListSerializer(gene_pool.color_pool).data,
             'name': gene_pool.name,
             'type': gene_pool.type,
+            'genes': [],
             'genes_count': gene_pool.genes_count,
             'genes_weight_total': gene_pool.genes_weight_total,
             'date_updated': gene_pool.date_updated.strftime(settings.DATETIME_FORMAT),
@@ -47,6 +48,7 @@ class GenePoolListSerializerTests(TestCase):
             'color_pool': ColorPoolListSerializer(gene_pool.color_pool).data,
             'name': gene_pool.name,
             'type': gene_pool.type,
+            'genes': [],
             'genes_count': gene_pool.genes_count,
             'genes_weight_total': gene_pool.genes_weight_total,
             'date_updated': gene_pool.date_updated.strftime(settings.DATETIME_FORMAT),

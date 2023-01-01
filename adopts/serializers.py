@@ -3,6 +3,7 @@ from genes.models import GenePool
 from genes.serializers import GenePoolListSerializer
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
+from django.core.validators import RegexValidator
 
 
 class AdoptListSerializer(serializers.ModelSerializer):
@@ -46,7 +47,10 @@ class AdoptSerializer(serializers.ModelSerializer):
                   'logs_count', 'layers_count', 'colors_count', 'genes_count', 'date_updated', 'adopt_layers']
     id = serializers.ReadOnlyField()
     short_name = serializers.SlugField(
-        validators=[UniqueValidator(queryset=Adopt.objects)])
+        validators=[UniqueValidator(queryset=Adopt.objects), RegexValidator(
+            '^[A-Za-z0-9]+$',
+            message="Must be alphanumeric"
+        )])
     logs_count = serializers.ReadOnlyField()
     layers_count = serializers.ReadOnlyField()
     genes_count = serializers.ReadOnlyField()

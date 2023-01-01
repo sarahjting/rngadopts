@@ -3,12 +3,15 @@ from adopts.serializers import AdoptLayerSerializer, AdoptSerializer, AdoptListS
 from adopts.models import Adopt, AdoptLayer
 from adopts.permissions import IsAdoptMod
 from django.conf import settings
+from django.urls import reverse
 from rest_framework import status, generics
 from rest_framework.response import Response
 from users.mixins import ApiLoginRequiredMixin
 from django.views import View
 from adopts.adopt_gen import AdoptGenerator, AdoptGeneratorImage
 from django.shortcuts import HttpResponse
+from django.http import JsonResponse
+from rngadopts.decorators import find_or_fail
 
 
 class AdoptGenView(View, ApiLoginRequiredMixin):
@@ -32,7 +35,23 @@ class AdoptGenView(View, ApiLoginRequiredMixin):
             image.pil.save(response, "PNG")
             return response
         except Exception as e:
+            raise e
             return HttpResponse("", status=status.HTTP_400_BAD_REQUEST)
+
+
+class AdoptGenApiView(View, ApiLoginRequiredMixin):
+    @find_or_fail(Adopt, "adopt")
+    def post(self, request, pk, adopt):
+        if not adopt.mods.filter(id=request.user.id).exists():
+            return HttpResponse("", status=status.HTTP_403_FORBIDDEN)
+
+        gen = AdoptGenerator(adopt)
+        gen.randomize()
+
+        return JsonResponse({
+            "url": request.build_absolute_uri(reverse("adopts:gen", kwargs={"file_name": gen.to_data_string()})),
+            "dict": gen.to_dict(),
+        })
 
 
 class AdoptApiView(ApiLoginRequiredMixin, generics.ListCreateAPIView):

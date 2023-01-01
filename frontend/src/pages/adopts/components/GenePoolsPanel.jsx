@@ -11,27 +11,11 @@ export const SCREENS = {
     GENES_DETAIL: "GENE_DETAIL",
 };
 
-export default function GenePoolsPanel({adopt, colorPools, genePools, onSubmitted = (() => {}), onGenePoolLoaded = (() => {})}) {
+export default function GenePoolsPanel({adopt, colorPools, genePools, onSubmitted = (() => {})}) {
     const {setBreadcrumbs} = useContext(AppContext);
-    const [genes, setGenes] = useState(null);
     const [currentScreen, setCurrentScreen] = useState(SCREENS.GENE_POOLS_INDEX);
     const [currentGenePool, setCurrentGenePool] = useState(null);
     const [currentGene, setCurrentGene] = useState(null);
-
-    function reloadGenes() {
-        if (currentGenePool) {
-            axios.get(`adopts/${adopt.id}/gene-pools/${currentGenePool.id}/genes`).then(data => {
-                setGenes(data.data);
-                onGenePoolLoaded();
-            });
-        } else {
-            setGenes(null);
-        }
-    }
-
-    useEffect(() => {
-        reloadGenes();
-    }, []);
 
     useEffect(() => {
         if (currentGenePool) {
@@ -40,15 +24,11 @@ export default function GenePoolsPanel({adopt, colorPools, genePools, onSubmitte
     }, [genePools]);
 
     useMemo(() => {
-        reloadGenes();
+        if (currentGene) {
+            setCurrentGene(currentGenePool.genes.find(x => x.id === currentGene.id));
+        }
     }, [currentGenePool]);
 
-    useEffect(() => {
-        if (currentGene) {
-            setCurrentGene(genes.find(x => x.id === currentGene.id));
-        }
-    }, [genes]);
-    
     function switchScreen(screen, genePool = null, gene = null) {
         setCurrentGenePool(genePool);
         setCurrentGene(gene);
@@ -67,10 +47,6 @@ export default function GenePoolsPanel({adopt, colorPools, genePools, onSubmitte
         setBreadcrumbs(breadcrumbs);
     }
 
-    if (!genePools || !colorPools || !adopt || (currentGenePool && !genes)) {
-        return (<div className="p-8">Loading (1)...</div>);
-    }
-
     if (colorPools && colorPools.length === 0) {
         return (<div className="p-8">Add color pools in the "Color pools" tab first.</div>)
     }
@@ -83,7 +59,6 @@ export default function GenePoolsPanel({adopt, colorPools, genePools, onSubmitte
                 adopt={adopt}
                 colorPools={colorPools}
                 genePool={currentGenePool}
-                genes={genes}
                 onSubmitted={onSubmitted}
                 onSwitchScreen={switchScreen}
             ></GenePoolsPanelDetail>)}

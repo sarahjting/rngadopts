@@ -15,8 +15,8 @@ export default function AdoptCreatePage() {
     }, [])
 
     return (
-        <>
+        <div className="max-w-md w-96 m-auto">
             <AdoptForm onSubmitted={(adopt) => navigate(`adopts/${adopt.id}`)} />
-        </>
+        </div>
     );
 }

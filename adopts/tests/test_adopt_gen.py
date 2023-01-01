@@ -8,7 +8,7 @@ import json
 
 class AdoptGeneratorTest(TestCase):
     def setUp(self):
-        self.adopt = AdoptFactory()
+        self.adopt = AdoptFactory(short_name="Test")
         self.color_pool = ColorPoolFactory(adopt=self.adopt, colors="Baz")
         self.gene_pools = [GenePoolFactory(adopt=self.adopt, color_pool=self.color_pool, name="A"),
                            GenePoolFactory(adopt=self.adopt, color_pool=self.color_pool, name="B")]
@@ -34,26 +34,22 @@ class AdoptGeneratorTest(TestCase):
         self.assertEqual({
             "adopt_id": self.adopt.id,
             "gene_colors": [
-                {"gene": "Foo", "color": "Baz"},
-                {"gene": "Bar", "color": "Baz"},
+                {"gene": {"id": self.genes[0].id, "name": self.genes[0].name, "gene_pool_id": self.gene_pools[0].id},
+                 "color": {"name": "Baz", "color_pool_id": self.color_pool.id}},
+                {"gene": {"id": self.genes[1].id, "name": self.genes[1].name, "gene_pool_id": self.gene_pools[1].id},
+                 "color": {"name": "Baz", "color_pool_id": self.color_pool.id}},
             ]
         }, gen.to_dict())
 
     def test_to_json(self):
         gen = AdoptGenerator(self.adopt)
         gen.randomize()
-        self.assertEqual(json.dumps({
-            "adopt_id": self.adopt.id,
-            "gene_colors": [
-                {"gene": "Foo", "color": "Baz"},
-                {"gene": "Bar", "color": "Baz"},
-            ]
-        }), gen.to_json())
+        self.assertEqual(json.dumps(gen.to_dict()), gen.to_json())
 
     def test_to_data_string(self):
         gen = AdoptGenerator(self.adopt)
         gen.randomize()
-        self.assertEqual("a_foo_baz-b_bar_baz", gen.to_data_string())
+        self.assertEqual("test-a_foo_baz-b_bar_baz", gen.to_data_string())
 
     def test_from_data_string(self):
         gen = AdoptGenerator(self.adopt)

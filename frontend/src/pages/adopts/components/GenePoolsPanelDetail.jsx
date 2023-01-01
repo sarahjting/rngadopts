@@ -11,7 +11,7 @@ const MODALS = {
     UPDATE_GENE: 'UPDATE_GENE',
 };
 
-export default function GenePoolsPanelIndex({adopt, colorPools, genePool, genes, onSwitchScreen, onSubmitted = (() => {})}) {
+export default function GenePoolsPanelIndex({adopt, colorPools, genePool, onSwitchScreen, onSubmitted = (() => {})}) {
     const [modal, setModal] = useState(null);
     const [currentGene, setCurrentGene] = useState(null);
 
@@ -38,7 +38,7 @@ export default function GenePoolsPanelIndex({adopt, colorPools, genePool, genes,
                 <PencilIcon className="mr-2" /> Edit 
                 </button>
             </div>
-            {genes.length ? (
+            {genePool.genes.length ? (
             <div className="overflow-x-auto relative">
                 <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                     <thead className="text-xs text-gray-700 uppercase bg-gray-100 border-b border-gray-50">
@@ -52,7 +52,7 @@ export default function GenePoolsPanelIndex({adopt, colorPools, genePool, genes,
                         </tr>
                     </thead>
                     <tbody className="bg-gray-50 border-b">
-                    {genes.map((gene, key) => (
+                    {genePool.genes.map((gene, key) => (
                         <tr key={key} className="border-b border-gray-100">
                             <td className="py-2 px-2">
                                 <button className="ml-2 text-blue-500" onClick={() => onSwitchScreen(SCREENS.GENES_DETAIL, genePool, gene)}>

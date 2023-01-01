@@ -110,10 +110,20 @@ class AdoptGeneratorImage:
         return Image.new(mode, (self.width, self.height), hex)
 
     def _file_pil(self, path):
-        new_image = Image.open(path, 'r')
-        if new_image.width != self.width or new_image.height != self.height:
-            new_image = new_image.crop((0, 0, self.width, self.height))
-        return new_image
+        try:
+            new_image = Image.open(path, 'r')
+
+            # if the image is the wrong width or height, we crop it then paste it on a correctly sized transparent image
+            if new_image.width != self.width or new_image.height != self.height:
+                base_image = self._new_pil()
+                new_image = new_image.crop((0, 0, self.width, self.height))
+                self._draw_file(base_image, new_image)
+                return base_image
+
+            return new_image
+        except AttributeError:
+            # this occurs if there is no image found at the path location
+            return self._new_pil()
 
     def _draw_file(self, pil, path):
         pil.alpha_composite(self._file_pil(path))
@@ -146,21 +156,29 @@ class AdoptGenerator:
         return self
 
     def to_dict(self):
-        # this is for log purposes only; this is a separated function because we need to duplicate and log the color palette at the time of saving
+        # this is for log and display
         # TODO: save a historical version of the color pool on every update and have logs point towards the version ID
         return {
             "adopt_id": self.adopt.id,
             "gene_colors": [{
-                "gene": gene_color["gene"].name,
-                "color": gene_color["color"].name,
+                "gene": {"id": gene_color["gene"].id, "name": gene_color["gene"].name, "gene_pool_id": gene_color["gene"].gene_pool_id},
+                "color": {"name": gene_color["color"].name, "color_pool_id": gene_color["color_pool"].id},
             } for gene_color in self.gene_colors]
         }
 
     def to_json(self):
         return json.dumps(self.to_dict())
 
+    def clean_slugify(self, str):
+        # we can't have these in the url strings
+        return slugify(str).replace("-", "").replace("_", "")
+
     def to_data_string(self):
-        return "-".join(sorted([f"{slugify(gc['gene'].gene_pool.name)}_{slugify(gc['gene'].name)}_{slugify(gc['color'].name)}" for gc in self.gene_colors]))
+        return "-".join([self.clean_slugify(self.adopt.short_name)] + sorted(["_".join([
+            self.clean_slugify(gc['gene'].gene_pool.name),
+            self.clean_slugify(gc['gene'].name),
+            self.clean_slugify(gc['color'].name)
+        ]) for gc in self.gene_colors]))
 
     def from_data_string(self, data_string):
         raw_gene_colors = [x.split("_") for x in data_string.split("-")]
@@ -170,12 +188,12 @@ class AdoptGenerator:
         for raw_gc in raw_gene_colors:
             # TODO: add a slug column on the db instead of this lol
             try:
-                gene_pool, = [x for x in gene_pools if slugify(
+                gene_pool, = [x for x in gene_pools if self.clean_slugify(
                     x.name) == raw_gc[0]]
-                gene, = [x for x in gene_pool.genes.all() if slugify(
+                gene, = [x for x in gene_pool.genes.all() if self.clean_slugify(
                     x.name) == raw_gc[1]]
                 color_pool = gene.color_pool or gene_pool.color_pool
-                color, = [x for x in color_pool.colors_obj if slugify(
+                color, = [x for x in color_pool.colors_obj if self.clean_slugify(
                     x.name) == raw_gc[2]]
                 self.gene_colors.append(
                     {"gene": gene, "color_pool": color_pool, "color": color, })

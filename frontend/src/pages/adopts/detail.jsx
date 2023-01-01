@@ -45,7 +45,6 @@ export default function AdoptDetailPage() {
             setAdopt(adopt);
         } else {
             pushLoader("adopt");
-            pushLoader("gene_pool_detail")
             axios.get(`adopts/${id}`).then(data => {
                 setAdopt(data.data);
                 popLoader('adopt');
@@ -66,7 +65,6 @@ export default function AdoptDetailPage() {
 
     function reloadGenePools(doReload=true) {
         pushLoader("gene_pools");
-        pushLoader("gene_pool_detail")
         if (doReload) {
             reloadAdopt();
         }
@@ -82,7 +80,7 @@ export default function AdoptDetailPage() {
             target: "adopt-basic-content",
             tabTitle: "Basic",
             tabPill: null,
-            component: (<AdoptBasicsPanel adopt={adopt} onSubmitted={reloadAdopt} />)
+            component: (<AdoptBasicsPanel adopt={adopt} genePools={genePools} colorPools={colorPools} onSubmitted={reloadAdopt} />)
         },
         {
             id: "adopt-layers-tab",
@@ -108,12 +106,11 @@ export default function AdoptDetailPage() {
                 genePools={genePools} 
                 colorPools={colorPools} 
                 onSubmitted={reloadGenePools} 
-                onGenePoolLoaded={() => popLoader("gene_pool_detail")} 
             />)
         },
     ]
 
-    return !adopt ? ((<div className="p-8">Loading...</div>)) : (
+    return !adopt || !colorPools || !genePools ? ((<div className="p-8">Loading...</div>)) : (
         <div className="w-full bg-white border rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
             <ul className="flex flex-wrap items-stretch text-sm font-medium text-center text-gray-500 border-b border-gray-200 rounded-t-lg bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:bg-gray-800" id="defaultTab" data-tabs-toggle="#defaultTabContent" role="tablist">
                 {tabs.map((tab, key) => (
