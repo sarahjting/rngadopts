@@ -30,7 +30,6 @@ export default function AdoptBasicsPanel({adopt, genePools, colorPools, onSubmit
     }
 
     function preview() {
-        console.log(formGenes);
         const url = window.APP_URL 
             + "/gen/" 
             + slugify(adopt.short_name) 
@@ -46,6 +45,9 @@ export default function AdoptBasicsPanel({adopt, genePools, colorPools, onSubmit
     function randomize() {
         setIsLoading(true);
         axios.post(`adopt-gen/${adopt.id}`).then(data => {
+            if (data.data.url === currentGen?.url) {
+                setIsLoading(false);
+            }
             setCurrentGen(data.data);
             setFormGenes(data.data.dict.gene_colors.map(gc => {
                 const gene_pool = genePools.find(x => x.id === gc.gene.gene_pool_id);
