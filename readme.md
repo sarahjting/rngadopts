@@ -13,9 +13,8 @@ Web-based admin panel paired with a Discord bot for daily use.
 - Discord bot integration
 
 # Screenshots
-| | | | |
-|-|-|-|-|
 | ![Admin panel screenshot](https://user-images.githubusercontent.com/58196030/210177857-7e2732cb-bb6e-4e04-83f8-b4fc2f43b149.png)  | ![Admin panel screenshot](https://user-images.githubusercontent.com/58196030/210177927-f1e7ab8b-e6bf-4cd5-abcf-4cb0714218b4.png) | ![Color pool dashboard screenshot](https://user-images.githubusercontent.com/58196030/210177866-fbbfad2d-a74b-4e97-8bed-9805a80cc407.png)  | 
+|-|-|-|
 | ![Discord screenshot](https://user-images.githubusercontent.com/58196030/210177879-8ab3cf10-1840-43a5-8697-ec0dca4f36c4.png) | ![Admin panel screenshot](https://user-images.githubusercontent.com/58196030/210177953-23e49140-4f29-4c41-bb15-5d5ef799bef8.png) | ![Gene screenshot](https://user-images.githubusercontent.com/58196030/210177875-752eae3b-9801-4f93-ae2d-08230c38f5cd.png) |
 
 
