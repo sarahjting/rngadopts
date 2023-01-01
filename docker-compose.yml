@@ -3,7 +3,7 @@ services:
     build: 
       context: .
       dockerfile: ./docker/web/Dockerfile
-    command: python manage.py runserver 0.0.0.0:8000
+    command: python manage.py runserver 0.0.0.0:8000 --insecure
     volumes:
       - .:/code
     ports:

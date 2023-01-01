@@ -28,7 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG')
+DEBUG = os.environ.get('DEBUG', 1) == '1'
 
 ALLOWED_HOSTS = [
     'localhost',
@@ -183,7 +183,7 @@ REST_FRAMEWORK = {
 
 # App-specific settings
 RNGADOPTS_ADOPT_CREATION_ENABLED = os.environ.get(
-    'RNGADOPTS_ADOPT_CREATION_ENABLED', '1') == '1',
+    'RNGADOPTS_ADOPT_CREATION_ENABLED', '1') == '1'
 
 # Discord
 DISCORDBOT_TOKEN = os.environ.get('DISCORDBOT_TOKEN')

@@ -7,6 +7,6 @@ def index(request, *args, **kwargs):
     return render(request, 'frontend/index.html', context={
         'app_url': settings.APP_URL,
         'app_flags': json.dumps({
-            'adopts_creation': settings.RNGADOPTS_ADOPT_CREATION_ENABLED[0],
+            'adopts_creation': settings.RNGADOPTS_ADOPT_CREATION_ENABLED,
         }),
     })
