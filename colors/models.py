@@ -96,8 +96,8 @@ class Color:
         colors = []
         lines = data.split('\n')
         for i in range(0, len(lines)):
-            d = deque([x for x in [x.strip(' ')
-                      for x in lines[i].split(' ')] if x])
+            d = deque([x for x in [x.strip()
+                      for x in lines[i].split()] if x])
 
             assert len(
                 d) > 0 and d[0][0] != '#', 'Line %d: Missing color name' % (i + 1)
