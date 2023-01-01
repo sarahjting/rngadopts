@@ -40,11 +40,9 @@ export default function GenePoolsPanelGene({adopt, colorPools, genePools, genePo
     }
 
     const genes = genePools.map((pool) => pool.genes).flat(1);
-    console.log(genes);
 
     function geneLayerRow(geneLayer, key) {
         const requiredGene = genes.find(x => x.id === geneLayer.required_gene_id);
-        console.log(geneLayer, gene)
         return (
             <tr key={key} className="border-b border-gray-100">
                 <td className="py-4 px-6">
