@@ -6,6 +6,7 @@ from genes.models import GeneLayer, GenePool, Gene
 from rest_framework import status, generics
 from rest_framework.response import Response
 from users.mixins import ApiLoginRequiredMixin
+from django.db.models import Prefetch
 
 
 class GenePoolApiView(ApiLoginRequiredMixin, generics.ListCreateAPIView):
@@ -13,7 +14,11 @@ class GenePoolApiView(ApiLoginRequiredMixin, generics.ListCreateAPIView):
     permission_classes = [IsAdoptMod]
 
     def get_queryset(self):
-        return GenePool.objects.active().filter(adopt_id=self.kwargs.get('adopt_id')).order_by('name')
+        return (GenePool.objects.active().filter(adopt_id=self.kwargs.get("adopt_id"))
+                .prefetch_related("color_pool")
+                .prefetch_related(Prefetch("genes", queryset=Gene.objects.active().order_by("name"),))
+                .prefetch_related("genes__color_pool")
+                .order_by("name"))
 
     def post(self, request, adopt_id):
         serializer = GenePoolSerializer(

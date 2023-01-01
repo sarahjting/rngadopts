@@ -35,7 +35,7 @@ class GeneQuerySet(models.QuerySet, mixins.queryset.SoftDeletes):
 
 
 class Gene(models.Model):
-    objects = GenePoolQuerySet.as_manager()
+    objects = GeneQuerySet.as_manager()
 
     adopt = models.ForeignKey(
         'adopts.Adopt', on_delete=models.RESTRICT, related_name='genes')
@@ -85,3 +85,5 @@ class GeneLayer(models.Model):
     )
     color_key = models.IntegerField(null=True)
     sort = models.IntegerField(default=0)
+    required_gene_id = models.ForeignKey(
+        Gene, on_delete=models.RESTRICT, related_name='dependent_gene_layers', null=True)
