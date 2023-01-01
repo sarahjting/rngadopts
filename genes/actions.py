@@ -67,9 +67,9 @@ def delete_gene(gene):
     gene.save()
 
 
-def create_gene_layer(adopt, gene, image, type, color_key=None, sort=0):
+def create_gene_layer(adopt, gene, image, type, required_gene=None, color_key=None, sort=0):
     gene_layer = models.GeneLayer(
-        adopt=adopt, gene=gene, image=image, type=type, color_key=color_key, sort=sort)
+        adopt=adopt, gene=gene, image=image, type=type, color_key=color_key, sort=sort, required_gene=required_gene)
     gene_layer.save()
     return gene_layer
 
