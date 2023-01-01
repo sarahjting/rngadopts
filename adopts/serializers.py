@@ -9,9 +9,11 @@ from django.core.validators import RegexValidator
 class AdoptListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Adopt
-        fields = ['id', 'name', 'short_name', 'logs_count', 'date_updated']
+        fields = ['id', 'name', 'short_name', 'logs_count',
+                  'current_display_id', 'date_updated']
     id = serializers.ReadOnlyField()
     logs_count = serializers.ReadOnlyField()
+    current_display_id = serializers.ReadOnlyField()
 
 
 class AdoptLayerSerializer(serializers.ModelSerializer):
@@ -43,8 +45,8 @@ class AdoptLayerSerializer(serializers.ModelSerializer):
 class AdoptSerializer(serializers.ModelSerializer):
     class Meta:
         model = Adopt
-        fields = ['id', 'name', 'short_name', 'width', 'height',
-                  'logs_count', 'layers_count', 'colors_count', 'genes_count', 'date_updated', 'adopt_layers']
+        fields = ['id', 'name', 'short_name', 'width', 'height', 'logs_count', 'current_display_id',
+                  'layers_count', 'colors_count', 'genes_count', 'date_updated', 'adopt_layers', 'gen_caption']
     id = serializers.ReadOnlyField()
     short_name = serializers.SlugField(
         validators=[UniqueValidator(queryset=Adopt.objects), RegexValidator(
@@ -56,3 +58,4 @@ class AdoptSerializer(serializers.ModelSerializer):
     genes_count = serializers.ReadOnlyField()
     colors_count = serializers.ReadOnlyField()
     adopt_layers = AdoptLayerSerializer(read_only=True, many=True)
+    gen_caption = serializers.CharField(allow_blank=True)

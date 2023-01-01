@@ -72,6 +72,8 @@ class AdoptApiCreateTests(TestCase):
             'short_name': 'foo',
             'width': 100,
             'height': 100,
+            'gen_caption': '',
+            'current_display_id': 1,
         } | data)
 
     def test_fails_when_unauthenticated(self):
@@ -147,6 +149,8 @@ class AdoptApiUpdateTests(TestCase):
             'short_name': 'foo',
             'width': 101,
             'height': 101,
+            'gen_caption': '',
+            'current_display_id': 1,
         } | data)
 
     def test_fails_when_unauthenticated(self):

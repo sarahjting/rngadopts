@@ -173,12 +173,15 @@ class AdoptGenerator:
         # we can't have these in the url strings
         return slugify(str).replace("-", "").replace("_", "")
 
-    def to_data_string(self):
-        return "-".join([self.clean_slugify(self.adopt.short_name)] + sorted(["_".join([
-            self.clean_slugify(gc['gene'].gene_pool.name),
-            self.clean_slugify(gc['gene'].name),
-            self.clean_slugify(gc['color'].name)
-        ]) for gc in self.gene_colors]))
+    def to_data_string(self, display_id=False):
+        return "-".join(
+            [self.clean_slugify(self.adopt.short_name)] +
+            ([] if display_id == False else [str(display_id) if not isinstance(
+                display_id, bool) else str(self.adopt.current_display_id)]) +
+            sorted(["_".join([
+                self.clean_slugify(gc['gene'].gene_pool.name),
+                self.clean_slugify(gc['gene'].name),
+                self.clean_slugify(gc['color'].name)]) for gc in self.gene_colors]))
 
     def from_data_string(self, data_string):
         raw_gene_colors = [x.split("_") for x in data_string.split("-")]

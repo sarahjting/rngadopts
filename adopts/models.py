@@ -21,6 +21,7 @@ class Adopt(models.Model):
     height = models.IntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(800)])
     logs_count = models.IntegerField(default=0)
+    current_display_id = models.IntegerField(default=1)
     layers_count = models.IntegerField(default=0)
     colors_count = models.IntegerField(default=0)
     genes_count = models.IntegerField(default=0)
@@ -31,6 +32,8 @@ class Adopt(models.Model):
     mods = models.ManyToManyField(
         User, through='AdoptMod', related_name='adopts'
     )
+
+    gen_caption = models.TextField(default="")
 
     def __str__(self):
         return f"{self.name} ({self.short_name})"
@@ -62,13 +65,23 @@ class AdoptLog(models.Model):
         Adopt, on_delete=models.RESTRICT, related_name='adopt_logs')
     mod = models.ForeignKey(
         User, on_delete=models.RESTRICT, related_name='adopt_logs')
-    discord_user_id = models.IntegerField(null=True, db_index=True)
-    discord_guild_id = models.IntegerField(null=True, db_index=True)
-    discord_channel_id = models.IntegerField(null=True, db_index=True)
-    discord_message_id = models.IntegerField(null=True, db_index=True)
-    image_url = models.CharField(max_length=120)
+
+    discord_user_id = models.CharField(max_length=64, null=True, db_index=True)
+    discord_guild_id = models.CharField(
+        max_length=64, null=True, db_index=True)
+    discord_channel_id = models.CharField(
+        max_length=64, null=True, db_index=True)
+    discord_message_id = models.CharField(
+        max_length=64, null=True, db_index=True)
+
+    # non-unique false id for user display
+    display_id = models.IntegerField(db_index=True)
+    image_code = models.CharField(max_length=516)
+    image_url = models.CharField(max_length=516)
+
     command = models.TextField()  # command that triggered the generation
-    result = models.JSONField()  # stores the raw result of the generation
+    result = models.JSONField()  # raw result of the generation
+    date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"Adopt Log #{self.id}"

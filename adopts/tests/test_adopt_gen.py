@@ -51,6 +51,18 @@ class AdoptGeneratorTest(TestCase):
         gen.randomize()
         self.assertEqual("test-a_foo_baz-b_bar_baz", gen.to_data_string())
 
+    def test_to_data_string_with_implicit_id(self):
+        gen = AdoptGenerator(self.adopt)
+        gen.randomize()
+        self.assertEqual("test-1-a_foo_baz-b_bar_baz",
+                         gen.to_data_string(True))
+
+    def test_to_data_string_with_explicit_id(self):
+        gen = AdoptGenerator(self.adopt)
+        gen.randomize()
+        self.assertEqual("test-10-a_foo_baz-b_bar_baz",
+                         gen.to_data_string(10))
+
     def test_from_data_string(self):
         gen = AdoptGenerator(self.adopt)
         gen.from_data_string("a_foo_baz-b_bar_baz")
