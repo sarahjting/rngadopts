@@ -28,7 +28,7 @@ class Adopt(models.Model):
 
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
-    date_deleted = models.DateTimeField(null=True)
+    date_deleted = models.DateTimeField(null=True, blank=True)
     mods = models.ManyToManyField(
         User, through='AdoptMod', related_name='adopts'
     )
