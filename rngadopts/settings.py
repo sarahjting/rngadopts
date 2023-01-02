@@ -238,3 +238,6 @@ else:
 USE_X_FORWARDED_HOST = True
 DEFAULT_HTTP_PROTOCOL = "https"
 HTTPS = "on"
+
+FOOTER_CREDITS = [x.split(':') for x in os.environ.get(
+    'FOOTER_CREDITS', '').split('|')]

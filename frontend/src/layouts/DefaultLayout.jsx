@@ -53,6 +53,18 @@ export default function DefaultLayout({children}) {
           {children}
       </div>
 
+      {
+        window.FOOTER && (
+          <div className="m-auto lg:w-1/2 text-xs text-gray-300 flex justify-center gap-4 mt-2 mb-4">
+            {window.FOOTER.map((credit, key) => (
+              <div key={key}>
+                <span className="text-gray-200 mr-1">{credit[0]}</span>
+                {credit[1] ?? credit[1]}
+              </div>))}
+          </div>
+        )
+      }
+
       {toastWidget}
     </>
   ) : (<div className="p-8">Loading...</div>);

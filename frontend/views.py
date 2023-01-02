@@ -9,4 +9,5 @@ def index(request, *args, **kwargs):
         'app_flags': json.dumps({
             'adopts_creation': settings.RNGADOPTS_ADOPT_CREATION_ENABLED,
         }),
+        'footer': settings.FOOTER_CREDITS,
     })
