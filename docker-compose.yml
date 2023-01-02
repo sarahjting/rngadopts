@@ -3,11 +3,11 @@ services:
     build: 
       context: .
       dockerfile: ./docker/web/Dockerfile
-    command: python manage.py runserver 0.0.0.0:8000 --insecure
+    command: python manage.py runserver 0.0.0.0:8888 --insecure
     volumes:
       - .:/code
-    ports:
-      - "8000:8000"
+    expose:
+      - 8888
     environment:
       - POSTGRES_NAME=rngadopts
       - POSTGRES_USER=postgres
@@ -18,6 +18,20 @@ services:
       db:
         condition: service_healthy
         # https://stackoverflow.com/questions/35069027/docker-wait-for-postgresql-to-be-running
+    networks:
+      - web
+  nginx:
+    image: nginx:1.15-alpine
+    ports:
+      - 8000:8000
+    restart: always
+    volumes:
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+      - ./frontend/dist:/home/staticfiles/static
+      - ./static/public:/home/staticfiles/public
+      - ./static/uploads:/home/staticfiles/uploads
+    depends_on:
+      - web
     networks:
       - web
       - expose
@@ -55,7 +69,7 @@ services:
       - 'host.docker.internal:host-gateway'
     profiles:
       - donotstart
-    command: share web:8000 --server-host=${EXPOSE_SERVER_HOST:-sharedwithexpose.com} --server-port=${EXPOSE_SERVER_PORT:-443} --subdomain=${EXPOSE_SUBDOMAIN:-rngadopts} --auth=${EXPOSE_TOKEN}
+    command: share nginx:8000 --server-host=${EXPOSE_SERVER_HOST:-sharedwithexpose.com} --server-port=${EXPOSE_SERVER_PORT:-443} --subdomain=${EXPOSE_SUBDOMAIN:-rngadopts} --auth=${EXPOSE_TOKEN}
     networks:
       - expose
 networks:
