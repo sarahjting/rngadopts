@@ -54,8 +54,8 @@ export default function DefaultLayout({children}) {
       </div>
 
       {
-        window.FOOTER && (
-          <div className="m-auto lg:w-1/2 text-xs text-gray-300 flex justify-center gap-4 mt-2 mb-4">
+        window.FOOTER && window.FOOTER.length && (
+          <div className="m-auto lg:w-1/2 text-xs text-gray-300 flex justify-center gap-4 mt-2">
             {window.FOOTER.map((credit, key) => (
               <div key={key}>
                 <span className="text-gray-200 mr-1">{credit[0]}</span>
@@ -64,6 +64,9 @@ export default function DefaultLayout({children}) {
           </div>
         )
       }
+      <div className="m-auto lg:w-1/2 text-xs text-gray-400 flex justify-center gap-4 mt-2 mb-4">
+        <a href="https://bloom-steel-03a.notion.site/RNGAdopts-Client-Guide-a3703a9899064d8d907c2acf04b06dcd">client usage guide</a>
+      </div>
 
       {toastWidget}
     </>
