@@ -5,9 +5,12 @@ import GeneralModal from "components/modals/GeneralModal";
 import FormSelect from "components/form/FormSelect";
 import FormFile from "components/form/FormFile";
 import FormTextInput from "components/form/FormTextInput";
+import DeleteButton from "components/button/DeleteButton";
+import SubmitButton from "components/button/SubmitButton";
 
 export default function GeneLayerFormModal({adopt, genePools, genePool, gene, show, onSubmitted, onClose, geneLayer = null}) {
     const {pushToast} = useContext(AppContext);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [errors, setErrors] = useState({});
     const [form, setForm] = useState({});
 
@@ -38,6 +41,12 @@ export default function GeneLayerFormModal({adopt, genePools, genePool, gene, sh
     };
     
     function create() {
+        if (isSubmitting) {
+            return;
+        }
+
+        setIsSubmitting(true);
+
         const formData = new FormData();
         formData.append('gene_id', gene.id);
         formData.append('image', form.image);
@@ -57,10 +66,14 @@ export default function GeneLayerFormModal({adopt, genePools, genePool, gene, sh
                 } else {
                     throw err;
                 }
-            });
+            }).finally(() => setIsSubmitting(false));
     }
 
     function update() {
+        if (isSubmitting) {
+            return;
+        }
+        setIsSubmitting(true);
         axios.put(`adopts/${adopt.id}/gene-layers/${geneLayer.id}`, {
             type: form.type, 
             sort: form.sort,
@@ -77,11 +90,15 @@ export default function GeneLayerFormModal({adopt, genePools, genePool, gene, sh
                 } else {
                     throw err;
                 }
-            });
+            }).finally(() => setIsSubmitting(false));
     }
 
     function deleteLayer()
     {
+        if (isSubmitting) {
+            return;
+        }
+        setIsSubmitting(true);
         axios.delete(`adopts/${adopt.id}/gene-layers/${geneLayer.id}`)
             .then(() => {
                 pushToast('Gene layer deleted.', 'success');
@@ -93,7 +110,7 @@ export default function GeneLayerFormModal({adopt, genePools, genePool, gene, sh
                 } else {
                     throw err;
                 }
-            });
+            }).finally(() => setIsSubmitting(false));
     }
 
     return (
@@ -103,8 +120,8 @@ export default function GeneLayerFormModal({adopt, genePools, genePool, gene, sh
             onClose={onClose} 
             footer={(
                 <div className="flex w-full gap-3">
-                    {geneLayer && (<button className="text-white bg-red-500 hover:bg-red-600 font-medium rounded-lg text-sm px-5 py-2.5 text-center" onClick={deleteLayer}>Delete</button>)}
-                    <button className="grow text-white bg-blue-500 hover:bg-blue-600 font-medium rounded-lg text-sm px-5 py-2.5 text-center" onClick={geneLayer ? update : create}>{geneLayer ? 'Update' : 'Create'}</button>
+                    {geneLayer && (<DeleteButton disabled={isSubmitting} onClick={deleteLayer}>Delete</DeleteButton>)}
+                    <SubmitButton disabled={isSubmitting} onClick={geneLayer ? update : create}>{geneLayer ? 'Update' : 'Create'}</SubmitButton>
                 </div>
             )}
         >

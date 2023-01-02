@@ -4,6 +4,8 @@ import AppContext from "context";
 import GeneralModal from "components/modals/GeneralModal";
 import FormTextInput from "components/form/FormTextInput";
 import FormTextarea from "components/form/FormTextarea";
+import DeleteButton from "components/button/DeleteButton";
+import SubmitButton from "components/button/SubmitButton";
 
 export default function ColorPoolFormModal({adopt, show, onSubmitted, onClose, colorPool = null}) {
     const {pushToast} = useContext(AppContext);
@@ -11,6 +13,7 @@ export default function ColorPoolFormModal({adopt, show, onSubmitted, onClose, c
     const [form, setForm] = useState({});
     const [colorPoolDetail, setColorPoolDetail] = useState(null);
     const [isPreviewMode, setIsPreviewMode] = useState(true);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     function submitted() {
         setForm({name: "", colors: ""});
@@ -42,6 +45,12 @@ export default function ColorPoolFormModal({adopt, show, onSubmitted, onClose, c
     }, [colorPool])
     
     function submit() {
+        if (isSubmitting) {
+            return;
+        }
+
+        setIsSubmitting(true);
+
         const fn = colorPool?.id ? axios.put : axios.post;
         fn(`adopts/${adopt.id}/color-pools${colorPool ? "/" + colorPool.id : ""}`, form)
             .then(() => {
@@ -54,11 +63,17 @@ export default function ColorPoolFormModal({adopt, show, onSubmitted, onClose, c
                 } else {
                     throw err;
                 }
-            });
+            }).finally(() => setIsSubmitting(false));
     }
 
     function deleteColorPool()
     {
+        if (isSubmitting) {
+            return;
+        }
+
+        setIsSubmitting(true);
+
         axios.delete(`adopts/${adopt.id}/color-pools/${colorPool.id}`)
             .then(() => {
                 pushToast('Color pool deleted.', 'success');
@@ -70,7 +85,7 @@ export default function ColorPoolFormModal({adopt, show, onSubmitted, onClose, c
                 } else {
                     throw err;
                 }
-            });
+            }).finally(() => setIsSubmitting(false));
     }
 
     const colorsCount = form.colors ? form.colors.split('\n').length : 0;
@@ -179,8 +194,8 @@ export default function ColorPoolFormModal({adopt, show, onSubmitted, onClose, c
             onClose={onClose} 
             footer={(
                 <div className="flex w-full gap-3">
-                    {colorPool && (<button className="text-white bg-red-500 hover:bg-red-600 font-medium rounded-lg text-sm px-5 py-2.5 text-center" onClick={deleteColorPool}>Delete</button>)}
-                    <button className="grow text-white bg-blue-500 hover:bg-blue-600 font-medium rounded-lg text-sm px-5 py-2.5 text-center" onClick={submit}>{colorPool ? 'Update' : 'Create'}</button>
+                    {colorPool && (<DeleteButton disabled={isSubmitting} onClick={deleteColorPool}></DeleteButton> )}
+                    <SubmitButton disabled={isSubmitting} onClick={submit}>{colorPool ? 'Update' : 'Create'}</SubmitButton>
                 </div>
             )}
         >

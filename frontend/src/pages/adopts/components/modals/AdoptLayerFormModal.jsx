@@ -5,9 +5,12 @@ import GeneralModal from "components/modals/GeneralModal";
 import FormSelect from "components/form/FormSelect";
 import FormFile from "components/form/FormFile";
 import FormTextInput from "components/form/FormTextInput";
+import DeleteButton from "components/button/DeleteButton";
+import SubmitButton from "components/button/SubmitButton";
 
 export default function AdoptLayerFormModal({adopt, genePools, show, onSubmitted, onClose, adoptLayer = null}) {
     const {pushToast} = useContext(AppContext);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [errors, setErrors] = useState({});
     const [form, setForm] = useState({});
 
@@ -32,6 +35,12 @@ export default function AdoptLayerFormModal({adopt, genePools, show, onSubmitted
     }, [adoptLayer])
     
     function create() {
+        if (isSubmitting) {
+            return;
+        }
+
+        setIsSubmitting(true);
+
         const formData = new FormData();
         formData.append('type', form.type)
         formData.append('sort', form.sort)
@@ -53,10 +62,14 @@ export default function AdoptLayerFormModal({adopt, genePools, show, onSubmitted
                 } else {
                     throw err;
                 }
-            });
+            }).finally(() => setIsSubmitting(false));
     }
 
     function update() {
+        if (isSubmitting) {
+            return;
+        }
+        setIsSubmitting(true);
         const data = {type: form.type, sort: form.sort};
         if (form.type === "gene") {
             data.gene_pool_id = form.gene_pool_id;
@@ -72,11 +85,15 @@ export default function AdoptLayerFormModal({adopt, genePools, show, onSubmitted
                 } else {
                     throw err;
                 }
-            });
+            }).finally(() => setIsSubmitting(false));
     }
 
     function deleteLayer()
     {
+        if (isSubmitting) {
+            return;
+        }
+        setIsSubmitting(true);
         axios.delete(`adopts/${adopt.id}/layers/${adoptLayer.id}`)
             .then(() => {
                 pushToast('Adopt base layer deleted.', 'success');
@@ -88,7 +105,7 @@ export default function AdoptLayerFormModal({adopt, genePools, show, onSubmitted
                 } else {
                     throw err;
                 }
-            });
+            }).finally(() => setIsSubmitting(false));
     }
 
 
@@ -99,8 +116,8 @@ export default function AdoptLayerFormModal({adopt, genePools, show, onSubmitted
             onClose={onClose} 
             footer={(
                 <div className="flex w-full gap-3">
-                    {adoptLayer && (<button className="text-white bg-red-500 hover:bg-red-600 font-medium rounded-lg text-sm px-5 py-2.5 text-center" onClick={deleteLayer}>Delete</button>)}
-                    <button className="grow text-white bg-blue-500 hover:bg-blue-600 font-medium rounded-lg text-sm px-5 py-2.5 text-center" onClick={adoptLayer ? update : create}>{adoptLayer ? 'Update' : 'Create'}</button>
+                    {adoptLayer && (<DeleteButton disabled={isSubmitting} onClick={deleteLayer}>Delete</DeleteButton>)}
+                    <SubmitButton disabled={isSubmitting} onClick={adoptLayer ? update : create}>{adoptLayer ? 'Update' : 'Create'}</SubmitButton>
                 </div>
             )}
         >

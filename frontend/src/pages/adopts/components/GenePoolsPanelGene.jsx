@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import GeneLayerFormModal from "pages/adopts/components/modals/GeneLayerFormModal";
 import { SCREENS } from "pages/adopts/components/GenePoolsPanel";
 import GeneFormModal from "pages/adopts/components/modals/GeneFormModal";
@@ -14,12 +14,18 @@ const MODALS = {
 export default function GenePoolsPanelGene({adopt, colorPools, genePools, genePool, gene, onSwitchScreen, onSubmitted = (() => {})}) {
     const [modal, setModal] = useState(null);
     const [currentGeneLayer, setCurrentGeneLayer] = useState(null);
+    const [isInvalidated, setIsInvalidated] = useState(false);
 
     function submitted() {
         setModal(null);
         setCurrentGeneLayer(null);
         onSubmitted();
+        setIsInvalidated(true);
     }
+
+    useEffect(() => {
+        setIsInvalidated(false);
+    }, [adopt]);
 
     function pushUpdateGeneModal() {
         setModal(MODALS.UPDATE_GENE);
@@ -67,6 +73,10 @@ export default function GenePoolsPanelGene({adopt, colorPools, genePools, genePo
                 </td>
             </tr>
         );
+    }
+
+    if (isInvalidated) {
+        return <div className="p-8">Loading...</div>;
     }
 
     return (

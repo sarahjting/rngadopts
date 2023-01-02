@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect, useMemo } from "react";
+import { useState, useContext, useEffect } from "react";
 import AppContext from "context";
 import GenePoolsPanelDetail from "./GenePoolsPanelDetail";
 import GenePoolsPanelIndex from "./GenePoolsPanelIndex";
@@ -19,13 +19,21 @@ export default function GenePoolsPanel({adopt, colorPools, genePools, onSubmitte
 
     useEffect(() => {
         if (currentGenePool) {
-            setCurrentGenePool(genePools.find(x => x.id === currentGenePool.id));
+            const updatedGenePool = genePools.find(x => x.id === currentGenePool.id);
+            setCurrentGenePool(updatedGenePool);
+            if (!updatedGenePool) {
+                setCurrentScreen(SCREENS.GENE_POOLS_INDEX);
+            }
         }
     }, [genePools]);
 
-    useMemo(() => {
+    useEffect(() => {
         if (currentGene) {
-            setCurrentGene(currentGenePool.genes.find(x => x.id === currentGene.id));
+            const updatedGene = currentGenePool.genes.find(x => x.id === currentGene.id);
+            setCurrentGene(updatedGene);
+            if (!updatedGene) {
+                setCurrentScreen(SCREENS.GENE_POOLS_DETAIL);
+            }
         }
     }, [currentGenePool]);
 
@@ -55,14 +63,14 @@ export default function GenePoolsPanel({adopt, colorPools, genePools, onSubmitte
     // this is so the user gets taken back to the screen that they were just on with their existing settings after they submit a form
     return (<>
         <div>
-            {currentScreen === SCREENS.GENE_POOLS_DETAIL && (<GenePoolsPanelDetail
+            {currentScreen === SCREENS.GENE_POOLS_DETAIL && currentGenePool && (<GenePoolsPanelDetail
                 adopt={adopt}
                 colorPools={colorPools}
                 genePool={currentGenePool}
                 onSubmitted={onSubmitted}
                 onSwitchScreen={switchScreen}
             ></GenePoolsPanelDetail>)}
-            {currentScreen === SCREENS.GENES_DETAIL && (<GenePoolsPanelGene
+            {currentScreen === SCREENS.GENES_DETAIL && currentGenePool && (<GenePoolsPanelGene
                 adopt={adopt}
                 colorPools={colorPools}
                 genePools={genePools}

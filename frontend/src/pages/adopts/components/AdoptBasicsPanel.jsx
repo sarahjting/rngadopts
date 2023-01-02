@@ -51,13 +51,16 @@ export default function AdoptBasicsPanel({adopt, genePools, colorPools, onSubmit
             setCurrentGen(data.data);
             setFormGenes(data.data.dict.gene_colors.map(gc => {
                 const gene_pool = genePools.find(x => x.id === gc.gene.gene_pool_id);
+                if (!gene_pool) {
+                    return null;
+                }
                 return {
                     gene_pool,
                     gene: gene_pool.genes.find(x => x.id === gc.gene.id),
                     color: gc.color.name,
                     enabled: true,
                 };
-            }));
+            }).filter((x) => x));
         })
     }
 
@@ -85,10 +88,10 @@ export default function AdoptBasicsPanel({adopt, genePools, colorPools, onSubmit
             <td>
             <FormSelect 
                 value={formGenes.find(x => x.gene_pool.id === genePool.id)?.gene.id}
-                options={genePool.genes.reduce((a, b) => ({
+                options={genePool?.genes.reduce((a, b) => ({
                     ...a,
                     [b.id]: b.name,
-                }), {})}
+                }), {}) ?? {}}
                 onChange={(e) => setFormGene(genePool, genePool.genes.find(x => `${x.id}` === `${e.target.value}`))}
             ></FormSelect>
             </td>
@@ -96,11 +99,11 @@ export default function AdoptBasicsPanel({adopt, genePools, colorPools, onSubmit
             <FormSelect 
                 value={formGenes.find(x => x.gene_pool.id === genePool.id)?.color}
                 options={colorPools.find(x => x.id === (formGenes.find(x => x.gene_pool.id === genePool.id)?.gene.color_pool?.id ?? genePool.color_pool.id))
-                    .colors_dict
-                    .reduce((a, b) => ({
+                    ?.colors_dict
+                    ?.reduce((a, b) => ({
                         ...a,
                         [b.name]: b.name,
-                    }), {})}
+                    }), {}) ?? {}}
                 onChange={(e) => setFormGene(genePool, null, e.target.value)}
             ></FormSelect>
             </td>
@@ -148,7 +151,7 @@ export default function AdoptBasicsPanel({adopt, genePools, colorPools, onSubmit
                 {!currentGen && (<>Loading...</>)}
                 {currentGen && (<>
                     <div className="flex justify-center mb-4">
-                        <img src={currentGen.url} onLoad={loaded} />
+                        <img height={adopt.height} width={adopt.width} key={currentGen.url} src={currentGen.url} onLoad={loaded} />
                     </div>
                     <div className="flex gap-2 mb-4">
                         <button 

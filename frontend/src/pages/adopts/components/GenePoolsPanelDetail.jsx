@@ -4,6 +4,7 @@ import { SCREENS } from "pages/adopts/components/GenePoolsPanel";
 import GeneFormModal from "pages/adopts/components/modals/GeneFormModal";
 import CaretLeftIcon from "components/icons/CaretLeftIcon";
 import PencilIcon from "components/icons/PencilIcon";
+import { useEffect } from "react";
 
 const MODALS = {
     UPDATE_GENE_POOL: 'UPDATE_GENE_POOL',
@@ -11,18 +12,28 @@ const MODALS = {
     UPDATE_GENE: 'UPDATE_GENE',
 };
 
-export default function GenePoolsPanelIndex({adopt, colorPools, genePool, onSwitchScreen, onSubmitted = (() => {})}) {
+export default function GenePoolsPanelDetail({adopt, colorPools, genePool, onSwitchScreen, onSubmitted = (() => {})}) {
     const [modal, setModal] = useState(null);
     const [currentGene, setCurrentGene] = useState(null);
+    const [isInvalidated, setIsInvalidated] = useState(false);
 
     function submitted() {
         setModal(null);
         onSubmitted();
+        setIsInvalidated(true);
     }
+
+    useEffect(() => {
+        setIsInvalidated(false); 
+    }, [adopt]);
 
     function pushModal(modalType, gene = null) {
         setModal(modalType);
         setCurrentGene(gene);
+    }
+
+    if (isInvalidated) {
+        return <div className="p-8">Loading...</div>;
     }
 
     return (

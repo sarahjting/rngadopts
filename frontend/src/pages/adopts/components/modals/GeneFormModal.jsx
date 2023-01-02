@@ -4,11 +4,14 @@ import AppContext from "context";
 import GeneralModal from "components/modals/GeneralModal";
 import FormSelect from "components/form/FormSelect";
 import FormTextInput from "components/form/FormTextInput";
+import DeleteButton from "components/button/DeleteButton";
+import SubmitButton from "components/button/SubmitButton";
 
 export default function GeneFormModal({adopt, colorPools, genePool, show, onSubmitted, onClose, gene = null}) {
     const {pushToast} = useContext(AppContext);
     const [errors, setErrors] = useState({});
     const [form, setForm] = useState({});
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     function submitted() {
         setForm({
@@ -29,6 +32,12 @@ export default function GeneFormModal({adopt, colorPools, genePool, show, onSubm
     }, [gene])
     
     function submit() {
+        if (isSubmitting) {
+            return;
+        }
+
+        setIsSubmitting(true);
+
         const fn = gene ? axios.put : axios.post;
         fn(`adopts/${adopt.id}/gene-pools/${genePool.id}/genes${gene ? "/" + gene.id : ""}`, form)
             .then(() => {
@@ -41,11 +50,17 @@ export default function GeneFormModal({adopt, colorPools, genePool, show, onSubm
                 } else {
                     throw err;
                 }
-            });
+            }).finally(() => setIsSubmitting(false));
     }
 
     function deleteGene()
     {
+        if (isSubmitting) {
+            return;
+        }
+
+        setIsSubmitting(true);
+        
         axios.delete(`adopts/${adopt.id}/gene-pools/${genePool.id}/genes/${gene.id}`)
             .then(() => {
                 pushToast('Gene deleted.', 'success');
@@ -57,7 +72,7 @@ export default function GeneFormModal({adopt, colorPools, genePool, show, onSubm
                 } else {
                     throw err;
                 }
-            });
+            }).finally(() => setIsSubmitting(false));
     }
 
 
@@ -68,8 +83,8 @@ export default function GeneFormModal({adopt, colorPools, genePool, show, onSubm
             onClose={onClose} 
             footer={(
                 <div className="flex w-full gap-3">
-                    {gene && (<button className="text-white bg-red-500 hover:bg-red-600 font-medium rounded-lg text-sm px-5 py-2.5 text-center" onClick={deleteGene}>Delete</button>)}
-                    <button className="grow text-white bg-blue-500 hover:bg-blue-600 font-medium rounded-lg text-sm px-5 py-2.5 text-center" onClick={submit}>{gene ? 'Update' : 'Create'}</button>
+                    {gene && (<DeleteButton disabled={isSubmitting} onClick={deleteGene}>Delete</DeleteButton>)}
+                    <SubmitButton disabled={isSubmitting} onClick={submit}>{gene ? 'Update' : 'Create'}</SubmitButton>
                 </div>
             )}
         >
