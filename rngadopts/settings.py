@@ -148,11 +148,11 @@ VITE_APP_DIR = BASE_DIR / "frontend"
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = "/static/"
+STATIC_URL = "/public/"
 STATICFILES_DIRS = [
     VITE_APP_DIR / "dist",
 ]
-# STATIC_ROOT = BASE_DIR / "static/static"
+STATIC_ROOT = BASE_DIR / "static/public"
 
 # Uploads
 MEDIA_ROOT = BASE_DIR / "static/uploads/"
