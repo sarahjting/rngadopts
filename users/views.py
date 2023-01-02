@@ -10,6 +10,9 @@ from .forms import UserCreationForm
 
 
 class RegisterView(CreateView):
+    """
+    This is deprecated now since all our auth is done through Discord, but I guess there's no harm having a password login/register available just in case.
+    """
     form_class = UserCreationForm
     success_url = reverse_lazy("login")
     template_name = "registration/register.html"

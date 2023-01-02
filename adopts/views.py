@@ -16,8 +16,6 @@ from rngadopts.decorators import find_or_fail
 
 class AdoptGenView(View, ApiLoginRequiredMixin):
     def get(self, request, file_name):
-        # this is supposed to return an image but there are many reasons it would break (permission error or malformed data)
-        # TODO: for now we just return a 400 and empty response, but we could build messages into error images too
         try:
             data = file_name.split("-", 1)
             adopt = request.user.adopts.get(short_name=data[0])
@@ -35,7 +33,7 @@ class AdoptGenView(View, ApiLoginRequiredMixin):
             image.pil.save(response, "PNG")
             return response
         except Exception as e:
-            raise e
+            # TODO: for now we just return a 400 and empty response, but we could build messages into error images too
             return HttpResponse("", status=status.HTTP_400_BAD_REQUEST)
 
 
