@@ -47,6 +47,12 @@ class AdoptGeneratorImage:
         res = [gc for gc in self.gen.gene_colors if gc["gene"].id == gene_id]
         return res[0] if len(res) > 0 else None
 
+    def _find_gene_pool(self, gene_pool_id):
+        """
+        Return a list with all gene colors belonging to the gene pool.
+        """
+        return [gc for gc in self.gen.gene_colors if gc["gene"].gene_pool_id == gene_pool_id]
+
     def _build_light_level(self, adopt_layers, light_level):
         """
         Generates either a base, shading, or highlight image and returns a PIL Image
@@ -64,6 +70,14 @@ class AdoptGeneratorImage:
                     required_gc = self._find_gene(gene_layer.required_gene_id)
                     if required_gc:
                         color = required_gc["color"]
+                    else:
+                        return
+
+                if gene_layer.required_gene_pool_id:
+                    required_gcs = self._find_gene_pool(
+                        gene_layer.required_gene_pool_id)
+                    if len(required_gcs) > 0:
+                        color = required_gcs[0]["color"]
                     else:
                         return
 
@@ -118,6 +132,10 @@ class AdoptGeneratorImage:
                     for gene_layer in reversed(gene_color["gene"].gene_layers.all()):
                         # check for required gene
                         if gene_layer.required_gene_id and not self._find_gene(gene_layer.required_gene_id):
+                            continue
+
+                        # check for required gene_pool
+                        if gene_layer.required_gene_pool_id and len(self._find_gene_pool(gene_layer.required_gene_pool_id)) == 0:
                             continue
 
                         # check if we're at the correct depth to draw this

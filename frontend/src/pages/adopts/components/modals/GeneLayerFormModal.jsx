@@ -14,8 +14,10 @@ export default function GeneLayerFormModal({adopt, genePools, genePool, gene, sh
     const [errors, setErrors] = useState({});
     const [form, setForm] = useState({});
 
-    const requiredGene = form?.required_gene_id ? genePools.map(x => x.genes).flat(1).find(x => x.id === form.required_gene_id) : null;
-    const requiredGenePool = requiredGene ? genePools.find(x => !!x.genes.find(x => x.id === requiredGene.id)) : null;
+    const requiredGene = form?.required_gene_id ? genePools.map(x => x.genes).flat(1).find(x => `${x.id}` === `${form.required_gene_id}`) : null;
+    const requiredGenePool = requiredGene ? 
+        genePools.find(x => !!x.genes.find(x => `${x.id}` === `${requiredGene.id}`)) : 
+        (form?.required_gene_pool_id ? genePools.find(x => `${x.id}` === `${form.required_gene_pool_id}`) : null);
     const colorPool = requiredGene?.color_pool ?? requiredGenePool?.color_pool ?? gene.color_pool ?? genePool.color_pool;
 
     useEffect(() => {
@@ -26,6 +28,7 @@ export default function GeneLayerFormModal({adopt, genePools, genePool, gene, sh
             color_key: geneLayer?.color_key ?? "1",
             sort: geneLayer?.sort ?? "0",
             required_gene_id: geneLayer?.required_gene_id ?? "",
+            required_gene_pool_id: geneLayer?.required_gene_pool_id ?? "",
         });
     }, [geneLayer])
 
@@ -36,6 +39,7 @@ export default function GeneLayerFormModal({adopt, genePools, genePool, gene, sh
             color_key: "1",
             sort: "0",
             required_gene_id: "",
+            required_gene_pool_id: "",
         });
         onSubmitted();
     };
@@ -54,6 +58,7 @@ export default function GeneLayerFormModal({adopt, genePools, genePool, gene, sh
         formData.append('color_key', form.color_key);
         formData.append('sort', form.sort);
         formData.append('required_gene_id', form.required_gene_id);
+        formData.append('required_gene_pool_id', form.required_gene_pool_id);
 
         axios.post(`adopts/${adopt.id}/gene-layers`, formData)
             .then(() => {
@@ -79,6 +84,7 @@ export default function GeneLayerFormModal({adopt, genePools, genePool, gene, sh
             sort: form.sort,
             color_key: form.color_key,
             required_gene_id: form.required_gene_id,
+            required_gene_pool_id: form.required_gene_pool_id,
         })
             .then(() => {
                 pushToast('Gene layer updated.', 'success');
@@ -169,22 +175,42 @@ export default function GeneLayerFormModal({adopt, genePools, genePool, gene, sh
                         </ul>
                     </div>
 
-                    <FormSelect 
-                        name="required_gene_id"
-                        errors={errors}
-                        label="Required gene"
-                        value={form.required_gene_id}
-                        options={genePools.reduce((a, b) => ({
-                            ...a,
-                            [b.name]: b.genes.reduce((aa, bb) => ({
-                                ...aa,
-                                [bb.id]: bb.name,
-                            }), {}),
-                        }), {"": ""})}
-                        onChange={(e) => setForm({...form, required_gene_id: e.target.value})}
-                    ></FormSelect>
-                    <div className="text-xs text-gray-600 mb-3">
-                        <p>Advanced setting: Ignore if you don't know what this is.</p>
+                    <div class="flex gap-3">
+                        <div class="grow">
+                            <FormSelect 
+                                name="required_gene_pool_id"
+                                errors={errors}
+                                label="Required gene pool"
+                                value={form.required_gene_pool_id}
+                                options={genePools.reduce((a, b) => (b.type === "basic" ? {
+                                    ...a,
+                                    [b.id]: b.name,
+                                } : a), {"": ""})}
+                                onChange={(e) => setForm({...form, required_gene_pool_id: e.target.value, required_gene_id: ""})}
+                            ></FormSelect>
+                            <div className="text-xs text-gray-600 mb-3">
+                                <p>Advanced: Ignore if you don't know what this is.</p>
+                            </div>
+                        </div>
+                        <div class="grow">
+                            <FormSelect 
+                                name="required_gene_id"
+                                errors={errors}
+                                label="Required gene"
+                                value={form.required_gene_id}
+                                options={genePools.reduce((a, b) => ({
+                                    ...a,
+                                    [b.name]: b.genes.reduce((aa, bb) => ({
+                                        ...aa,
+                                        [bb.id]: bb.name,
+                                    }), {}),
+                                }), {"": ""})}
+                                onChange={(e) => setForm({...form, required_gene_id: e.target.value, required_gene_pool_id: ""})}
+                            ></FormSelect>
+                            <div className="text-xs text-gray-600 mb-3">
+                                <p>Advanced: Ignore if you don't know what this is.</p>
+                            </div>
+                        </div>
                     </div>
 
                     {
@@ -198,8 +224,8 @@ export default function GeneLayerFormModal({adopt, genePools, genePool, gene, sh
                                     onChange={(e) => setForm({...form, color_key: e.target.value})}
                                 ></FormTextInput>
                                 <div className="text-xs text-gray-600 mb-3">
-                                    {requiredGene && (<p>
-                                        <span class="text-orange-500">You have selected a required gene. The color of this layer will be taken from <strong>{requiredGene.name} ({requiredGenePool.name})</strong>.</span> 
+                                    {requiredGenePool && (<p>
+                                        <span class="text-orange-500">You have selected a required gene. The color of this layer will be taken from <strong>{requiredGene && requiredGene.name} ({requiredGenePool.name})</strong>.</span> 
                                     </p>)}
                                     <p>The color pool for this gene is <strong>{colorPool.name}</strong>.</p>
                                     {

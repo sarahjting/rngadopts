@@ -49,6 +49,7 @@ export default function GenePoolsPanelGene({adopt, colorPools, genePools, genePo
 
     function geneLayerRow(geneLayer, key) {
         const requiredGene = genes.find(x => x.id === geneLayer.required_gene_id);
+        const requiredGenePool = genePools.find(x => x.id === geneLayer.required_gene_pool_id);
         return (
             <tr key={key} className="border-b border-gray-100">
                 <td className="py-4 px-6">
@@ -60,6 +61,9 @@ export default function GenePoolsPanelGene({adopt, colorPools, genePools, genePo
                 <td className="py-4 px-6">
                     {requiredGene && (<>
                         <span className="bg-orange-300 text-white py-2 px-2 mb-2 rounded-md text-center mr-2">Requires {requiredGene.name}</span>
+                    </>)}
+                    {requiredGenePool && (<>
+                        <span className="bg-orange-300 text-white py-2 px-2 mb-2 rounded-md text-center mr-2">Requires {requiredGenePool.name}</span>
                     </>)}
                     {geneLayer.type.substring(0, 5) === "color" ? `Palette ${geneLayer.color_key}` : "--"}
                 </td>
