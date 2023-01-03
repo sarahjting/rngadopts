@@ -80,64 +80,57 @@ export default function AdoptBasicsPanel({adopt, genePools, colorPools, onSubmit
         ]);
     }
 
-    const genePoolTable = genePools.map((genePool, key) => genePool.type === "basic" ? (
+    function renderGenePoolRow(key, genePool, gene = null) {
+        return (
         <tr key={key}>
             <td className="text-sm text-right pr-3">
                 {genePool.name}
             </td>
+            {gene && (
+                <td className="text-sm text-right pr-3">
+                    <label htmlFor={`gene-${gene.id}`} className="mr-2 text-sm font-medium text-gray-900 dark:text-gray-300">{gene.name}</label>
+                    <input 
+                        id={`gene-${gene.id}`} 
+                        type="checkbox" 
+                        checked={formGenes.find(x => x.gene_pool.id === genePool.id && x.gene.id === gene.id)?.enabled} 
+                        className="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 focus:ring-2" 
+                        onChange={(e) => setFormGene(genePool, gene, null, e.target.checked)}
+                    />
+                </td>
+            )}
+            {!gene && (
+                <td>
+                    <FormSelect 
+                        value={formGenes.find(x => x.gene_pool.id === genePool.id)?.gene.id}
+                        options={genePool?.genes.reduce((a, b) => ({
+                            ...a,
+                            [b.id]: b.name,
+                        }), {}) ?? {}}
+                        onChange={(e) => setFormGene(genePool, genePool.genes.find(x => `${x.id}` === `${e.target.value}`))}
+                    ></FormSelect>
+                </td>
+            )}
             <td>
-            <FormSelect 
-                value={formGenes.find(x => x.gene_pool.id === genePool.id)?.gene.id}
-                options={genePool?.genes.reduce((a, b) => ({
-                    ...a,
-                    [b.id]: b.name,
-                }), {}) ?? {}}
-                onChange={(e) => setFormGene(genePool, genePool.genes.find(x => `${x.id}` === `${e.target.value}`))}
-            ></FormSelect>
-            </td>
-            <td>
-            <FormSelect 
-                value={formGenes.find(x => x.gene_pool.id === genePool.id)?.color}
-                options={colorPools.find(x => x.id === (formGenes.find(x => x.gene_pool.id === genePool.id)?.gene.color_pool?.id ?? genePool.color_pool.id))
-                    ?.colors_dict
-                    ?.reduce((a, b) => ({
-                        ...a,
-                        [b.slug]: b.name,
-                    }), {}) ?? {}}
-                onChange={(e) => setFormGene(genePool, null, e.target.value)}
-            ></FormSelect>
+                <FormSelect 
+                    value={formGenes.find(x => x.gene_pool.id === genePool.id && (gene === null || x.gene.id === gene.id))?.color}
+                    options={colorPools.find(x => x.id === (formGenes.find(x => x.gene_pool.id === genePool.id)?.gene.color_pool?.id ?? genePool.color_pool.id))
+                        ?.colors_dict
+                        ?.reduce((a, b) => ({
+                            ...a,
+                            [b.slug]: b.name,
+                        }), {}) ?? {}}
+                    onChange={(e) => setFormGene(genePool, gene, e.target.value)}
+                ></FormSelect>
             </td>
         </tr>
-    ) : genePool.genes.map((gene, key) => (
-        <tr key={key}>
-            <td className="text-sm text-right pr-3">
-                {genePool.name}
-            </td>
-            <td className="text-sm text-right pr-3">
-                <label htmlFor={`gene-${gene.id}`} className="mr-2 text-sm font-medium text-gray-900 dark:text-gray-300">{gene.name}</label>
-                <input 
-                    id={`gene-${gene.id}`} 
-                    type="checkbox" 
-                    checked={formGenes.find(x => x.gene_pool.id === genePool.id && x.gene.id === gene.id)?.enabled} 
-                    className="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 focus:ring-2" 
-                    onChange={(e) => setFormGene(genePool, gene, null, e.target.checked)}
-                />
-            </td>
-            <td>
-            <FormSelect 
-                value={formGenes.find(x => x.gene_pool.id === genePool.id && x.gene.id === gene.id)?.color}
-                options={colorPools.find(x => x.id === (formGenes.find(x => x.gene_pool.id === genePool.id)?.gene.color_pool?.id ?? genePool.color_pool.id))
-                    .colors_dict
-                    .reduce((a, b) => ({
-                        ...a,
-                        [b.name]: b.name,
-                    }), {})}
-                onChange={(e) => setFormGene(genePool, gene, e.target.value)}
-            ></FormSelect>
-            </td>
-        </tr>
-    )))
+        );
+    }
 
+    const genePoolTable = genePools.map(
+            (genePool, k) => genePool.type === "basic" ? [renderGenePoolRow(k, genePool)] 
+                : genePool.genes.map((gene, kk) => renderGenePoolRow(`${k}-${kk}`, genePool, gene))
+        ).flat();
+        
     return (
         <div className="flex">
             <div className="border-r p-8">
