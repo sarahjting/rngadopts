@@ -18,6 +18,7 @@ export default function GenePoolsPanelIndex({adopt, colorPools, genePools, onSwi
                     <thead className="text-xs text-gray-700 uppercase bg-gray-100 border-b border-gray-50">
                         <tr>
                             <th className="py-3 px-6">Gene pool</th>
+                            <th className="py-3 px-6">Slug</th>
                             <th className="py-3 px-6">Type</th>
                             <th className="py-3 px-6">Color pool</th>
                         </tr>
@@ -32,6 +33,9 @@ export default function GenePoolsPanelIndex({adopt, colorPools, genePools, onSwi
                                         {genePool.genes_count}
                                     </span>
                                 </button>
+                            </td>
+                            <td className="py-4 px-6">
+                                {genePool.slug}
                             </td>
                             <td className="py-4 px-6">
                                 {genePool.type}

@@ -34,7 +34,7 @@ export default function AdoptBasicsPanel({adopt, genePools, colorPools, onSubmit
             + "/gen/" 
             + slugify(adopt.short_name) 
             + "-" 
-            + formGenes.filter(gc => gc.enabled).map(gc => `${slugify(gc.gene_pool.name)}_${slugify(gc.gene.name)}_${slugify(gc.color)}`).sort().join("-") 
+            + formGenes.filter(gc => gc.enabled).map(gc => `${gc.gene_pool.slug}_${gc.gene.slug}_${slugify(gc.color)}`).sort().join("-") 
             + ".png";
         if (url !== currentGen.url) {
             setIsLoading(true);

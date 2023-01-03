@@ -6,6 +6,7 @@ import FormSelect from "components/form/FormSelect";
 import FormTextInput from "components/form/FormTextInput";
 import DeleteButton from "components/button/DeleteButton";
 import SubmitButton from "components/button/SubmitButton";
+import slugify from "../../../../utils/slugify";
 
 export default function GenePoolFormModal({adopt, colorPools, show, onSubmitted, onClose, genePool = null}) {
     const {pushToast} = useContext(AppContext);
@@ -16,6 +17,7 @@ export default function GenePoolFormModal({adopt, colorPools, show, onSubmitted,
     function submitted() {
         setForm({
             name: "",
+            slug: "",
             type: "basic",
             color_pool_id: "",
         });
@@ -26,6 +28,7 @@ export default function GenePoolFormModal({adopt, colorPools, show, onSubmitted,
         setErrors({});
         setForm({
             name: genePool?.name ?? "",
+            slug: genePool?.slug ?? "",
             type: genePool?.type ?? "basic",
             color_pool_id: genePool?.color_pool?.id ?? colorPools[0].id,
         });
@@ -101,7 +104,19 @@ export default function GenePoolFormModal({adopt, colorPools, show, onSubmitted,
                         errors={errors}
                         label="Name"
                         value={form.name}
-                        onChange={(e) => setForm({...form, name: e.target.value})}
+                        onChange={(e) => setForm({
+                            ...form, 
+                            name: e.target.value, 
+                            slug: form.slug === slugify(form.name) ? slugify(e.target.value) : form.slug,
+                        })}
+                    ></FormTextInput>
+                    <FormTextInput 
+                        name="slug"
+                        errors={errors}
+                        label="Slug"
+                        helperText="how the gene shows in the image URL"
+                        value={form.slug}
+                        onChange={(e) => setForm({...form, slug: e.target.value})}
                     ></FormTextInput>
 
                     <FormSelect 

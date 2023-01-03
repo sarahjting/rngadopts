@@ -6,6 +6,7 @@ import FormSelect from "components/form/FormSelect";
 import FormTextInput from "components/form/FormTextInput";
 import DeleteButton from "components/button/DeleteButton";
 import SubmitButton from "components/button/SubmitButton";
+import slugify from "../../../../utils/slugify";
 
 export default function GeneFormModal({adopt, colorPools, genePool, show, onSubmitted, onClose, gene = null}) {
     const {pushToast} = useContext(AppContext);
@@ -16,6 +17,7 @@ export default function GeneFormModal({adopt, colorPools, genePool, show, onSubm
     function submitted() {
         setForm({
             name: "",
+            slug: "",
             weight: "1",
             color_pool_id: "",
         });
@@ -26,6 +28,7 @@ export default function GeneFormModal({adopt, colorPools, genePool, show, onSubm
         setErrors({});
         setForm({
             name: gene?.name ?? "",
+            slug: gene?.slug ?? "",
             weight: gene?.weight ?? "1",
             color_pool_id: gene?.color_pool?.id ?? "",
         });
@@ -75,7 +78,6 @@ export default function GeneFormModal({adopt, colorPools, genePool, show, onSubm
             }).finally(() => setIsSubmitting(false));
     }
 
-
     return (
         <GeneralModal 
             show={show}
@@ -95,7 +97,20 @@ export default function GeneFormModal({adopt, colorPools, genePool, show, onSubm
                         errors={errors}
                         label="Name"
                         value={form.name}
-                        onChange={(e) => setForm({...form, name: e.target.value})}
+                        onChange={(e) => setForm({
+                            ...form, 
+                            name: e.target.value, 
+                            slug: form.slug === slugify(form.name) ? slugify(e.target.value) : form.slug,
+                        })}
+                    ></FormTextInput>
+
+                    <FormTextInput 
+                        name="slug"
+                        errors={errors}
+                        label="Slug"
+                        helperText="how the gene shows in the image URL"
+                        value={form.slug}
+                        onChange={(e) => setForm({...form, slug: e.target.value})}
                     ></FormTextInput>
 
                     <FormTextInput 

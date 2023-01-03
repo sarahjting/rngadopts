@@ -15,6 +15,7 @@ class GenePool(models.Model):
         'adopts.Adopt', on_delete=models.RESTRICT, related_name='gene_pools')
     color_pool = models.ForeignKey(ColorPool, on_delete=models.RESTRICT)
     name = models.CharField(max_length=40)
+    slug = models.CharField(max_length=40)
     type = models.CharField(
         max_length=10,
         choices=[('basic', 'Basic'), ('multi', 'Multi')]
@@ -42,7 +43,9 @@ class Gene(models.Model):
     gene_pool = models.ForeignKey(
         GenePool, on_delete=models.RESTRICT, related_name='genes')
     name = models.CharField(max_length=40)
+    slug = models.CharField(max_length=40)
     has_lines = models.BooleanField(default=False)
+    has_color = models.BooleanField(default=True)
     color_pool = models.ForeignKey(
         ColorPool, null=True, on_delete=models.RESTRICT
     )

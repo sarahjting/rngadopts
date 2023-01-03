@@ -55,6 +55,7 @@ export default function GenePoolsPanelDetail({adopt, colorPools, genePool, onSwi
                     <thead className="text-xs text-gray-700 uppercase bg-gray-100 border-b border-gray-50">
                         <tr>
                             <th className="py-2 px-2">Name</th>
+                            <th className="py-2 px-2">Slug</th>
                             <th className="py-2 px-2">Weight</th>
                             <th className="py-2 px-2">Color pool override</th>
                             <th className="py-2 px-2">Layers</th>
@@ -69,6 +70,9 @@ export default function GenePoolsPanelDetail({adopt, colorPools, genePool, onSwi
                                 <button className="ml-2 text-blue-500" onClick={() => onSwitchScreen(SCREENS.GENES_DETAIL, genePool, gene)}>
                                     {gene.name}
                                 </button>
+                            </td>
+                            <td className="py-2 px-2">
+                                {gene.slug}
                             </td>
                             <td className="py-2 px-2">
                                 {gene.weight}

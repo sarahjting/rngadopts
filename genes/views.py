@@ -21,16 +21,15 @@ class GenePoolApiView(ApiLoginRequiredMixin, generics.ListCreateAPIView):
                 .order_by("name"))
 
     def post(self, request, adopt_id):
+        adopt = Adopt.objects.get(id=adopt_id)
+
         serializer = GenePoolSerializer(
-            data=request.data, context={'adopt_id': adopt_id})
+            data=request.data, context={'adopt': adopt})
 
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        gene_pool = create_gene_pool(
-            adopt=Adopt.objects.get(id=adopt_id),
-            **serializer.validated_data,
-        )
+        gene_pool = create_gene_pool(adopt=adopt, **serializer.validated_data)
 
         return Response(GenePoolSerializer(gene_pool).data, status=status.HTTP_201_CREATED)
 
@@ -58,17 +57,17 @@ class GeneApiView(ApiLoginRequiredMixin, generics.ListCreateAPIView):
         return Gene.objects.active().filter(gene_pool_id=self.kwargs.get('gene_pool_id')).order_by('name')
 
     def post(self, request, adopt_id, gene_pool_id):
+        adopt = Adopt.objects.get(id=adopt_id)
+        gene_pool = GenePool.objects.get(id=gene_pool_id)
+
         serializer = GeneSerializer(
-            data=request.data, context={'adopt_id': adopt_id})
+            data=request.data, context={"adopt": adopt, "gene_pool": gene_pool})
 
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        gene = create_gene(
-            adopt=Adopt.objects.get(id=adopt_id),
-            gene_pool=GenePool.objects.get(id=gene_pool_id),
-            **serializer.validated_data,
-        )
+        gene = create_gene(adopt=adopt, gene_pool=gene_pool,
+                           **serializer.validated_data)
 
         return Response(GeneSerializer(gene).data, status=status.HTTP_201_CREATED)
 

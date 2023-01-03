@@ -202,8 +202,8 @@ class AdoptGenerator:
             ([] if display_id == False else [str(display_id) if not isinstance(
                 display_id, bool) else str(self.adopt.current_display_id)]) +
             sorted(["_".join([
-                self.clean_slugify(gc['gene'].gene_pool.name),
-                self.clean_slugify(gc['gene'].name),
+                self.clean_slugify(gc['gene'].gene_pool.slug),
+                self.clean_slugify(gc['gene'].slug),
                 self.clean_slugify(gc['color'].name)]) for gc in self.gene_colors]))
 
     def from_data_string(self, data_string):
@@ -214,10 +214,9 @@ class AdoptGenerator:
         for raw_gc in raw_gene_colors:
             # TODO: add a slug column on the db instead of this lol
             try:
-                gene_pool, = [x for x in gene_pools if self.clean_slugify(
-                    x.name) == raw_gc[0]]
-                gene, = [x for x in gene_pool.genes.all() if self.clean_slugify(
-                    x.name) == raw_gc[1]]
+                gene_pool, = [x for x in gene_pools if x.slug == raw_gc[0]]
+                gene, = [x for x in gene_pool.genes.all() if x.slug ==
+                         raw_gc[1]]
                 color_pool = gene.color_pool or gene_pool.color_pool
                 color, = [x for x in color_pool.colors_obj if self.clean_slugify(
                     x.name) == raw_gc[2]]

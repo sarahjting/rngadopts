@@ -9,34 +9,35 @@ from django.urls import reverse
 from django.utils import timezone
 from genes.factories import GenePoolFactory
 from genes.models import GenePool
-from genes.serializers import GeneListSerializer, GenePoolSerializer, GenePoolListSerializer
+from genes.serializers import GenePoolSerializer, GenePoolListSerializer
 from rest_framework.test import APIClient
 from users.factories import UserFactory
 
 
 def gene_pool_endpoint(obj):
     if isinstance(obj, Adopt):
-        return reverse('genes:pool_api', kwargs={'adopt_id': obj.id})
+        return reverse("genes:pool_api", kwargs={"adopt_id": obj.id})
     elif isinstance(obj, GenePool):
-        return reverse('genes:pool_api', kwargs={'adopt_id': obj.adopt_id, 'pk': obj.id})
+        return reverse("genes:pool_api", kwargs={"adopt_id": obj.adopt_id, "pk": obj.id})
     else:
-        raise ValueError('Invalid gene pool endpoint.')
+        raise ValueError("Invalid gene pool endpoint.")
 
 
 class GenePoolSerializerTests(TestCase):
     def test_serializes(self):
         gene_pool = GenePoolFactory()
         self.assertEqual(GenePoolSerializer(gene_pool).data, {
-            'id': gene_pool.id,
-            'color_pool_id': gene_pool.color_pool_id,
-            'color_pool': ColorPoolListSerializer(gene_pool.color_pool).data,
-            'name': gene_pool.name,
-            'type': gene_pool.type,
-            'genes': [],
-            'genes_count': gene_pool.genes_count,
-            'genes_weight_total': gene_pool.genes_weight_total,
-            'date_updated': gene_pool.date_updated.strftime(settings.DATETIME_FORMAT),
-            'adopt': AdoptListSerializer(gene_pool.adopt).data,
+            "id": gene_pool.id,
+            "color_pool_id": gene_pool.color_pool_id,
+            "color_pool": ColorPoolListSerializer(gene_pool.color_pool).data,
+            "name": gene_pool.name,
+            "slug": gene_pool.slug,
+            "type": gene_pool.type,
+            "genes": [],
+            "genes_count": gene_pool.genes_count,
+            "genes_weight_total": gene_pool.genes_weight_total,
+            "date_updated": gene_pool.date_updated.strftime(settings.DATETIME_FORMAT),
+            "adopt": AdoptListSerializer(gene_pool.adopt).data,
         })
 
 
@@ -44,14 +45,15 @@ class GenePoolListSerializerTests(TestCase):
     def test_serializes(self):
         gene_pool = GenePoolFactory()
         self.assertEqual(GenePoolListSerializer(gene_pool).data, {
-            'id': gene_pool.id,
-            'color_pool': ColorPoolListSerializer(gene_pool.color_pool).data,
-            'name': gene_pool.name,
-            'type': gene_pool.type,
-            'genes': [],
-            'genes_count': gene_pool.genes_count,
-            'genes_weight_total': gene_pool.genes_weight_total,
-            'date_updated': gene_pool.date_updated.strftime(settings.DATETIME_FORMAT),
+            "id": gene_pool.id,
+            "color_pool": ColorPoolListSerializer(gene_pool.color_pool).data,
+            "name": gene_pool.name,
+            "slug": gene_pool.slug,
+            "type": gene_pool.type,
+            "genes": [],
+            "genes_count": gene_pool.genes_count,
+            "genes_weight_total": gene_pool.genes_weight_total,
+            "date_updated": gene_pool.date_updated.strftime(settings.DATETIME_FORMAT),
         })
 
 
@@ -81,8 +83,8 @@ class GenePoolApiIndexTests(TestCase):
         client = APIClient()
         client.force_login(user)
 
-        gene_pool_2 = GenePoolFactory(name='Z', adopt=adopt)
-        gene_pool_1 = GenePoolFactory(name='A', adopt=adopt)
+        gene_pool_2 = GenePoolFactory(name="Z", adopt=adopt)
+        gene_pool_1 = GenePoolFactory(name="A", adopt=adopt)
         gene_pool_deleted = GenePoolFactory(
             adopt=adopt, date_deleted=timezone.now())
 
@@ -108,33 +110,52 @@ class GenePoolApiIndexTests(TestCase):
 
 class GenePoolApiCreateTests(TestCase):
 
+    def _post(self, user, adopt, data={}):
+        client = APIClient()
+
+        if user:
+            client.force_login(user)
+
+        return client.post(gene_pool_endpoint(adopt), {
+            "name": "Foo",
+            "slug": "foo",
+            "type": "basic",
+            "adopt_id": adopt.id,
+            "color_pool_id": None if "color_pool" in data else ColorPoolFactory(adopt=adopt).id,
+        } | data)
+
     def test_fails_when_unauthenticated(self):
         adopt = AdoptFactory()
-
-        client = APIClient()
-        response = client.post(gene_pool_endpoint(adopt))
-
-        self.assertEqual(response.status_code, 403)
+        res = self._post(None, adopt)
+        self.assertEqual(res.status_code, 403)
 
     def test_creates_gene_pool(self):
         user = UserFactory()
         adopt = AdoptFactory(mods=(user,))
-        color_pool = ColorPoolFactory(adopt=adopt)
 
-        client = APIClient()
-        client.force_login(user)
+        res = self._post(user, adopt)
 
-        response = client.post(gene_pool_endpoint(adopt), {
-            'name': 'Foo',
-            'type': 'basic',
-            'adopt_id': adopt.id,
-            'color_pool_id': color_pool.id,
-        })
-
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(res.status_code, 201)
         gene_pool = GenePool.objects.filter(
-            name='Foo', adopt_id=adopt.id, type='basic', color_pool_id=color_pool.id).get()
-        self.assertEqual(response.data, GenePoolSerializer(gene_pool).data)
+            name="Foo", adopt_id=adopt.id, type="basic").get()
+        self.assertEqual(res.data, GenePoolSerializer(gene_pool).data)
+
+    def test_fails_with_non_unique_slug(self):
+        user = UserFactory()
+        adopt = AdoptFactory(mods=(user,))
+        other_gene_pool = GenePoolFactory(adopt=adopt, slug="foo")
+
+        res = self._post(user, adopt, data={"slug": "foo"})
+
+        self.assertEqual(res.status_code, 400)
+
+    def test_creates_with_unique_slug_within_adopt(self):
+        user = UserFactory()
+        adopt = AdoptFactory(mods=(user,))
+        other_gene_pool = GenePoolFactory(slug="foo")
+
+        res = self._post(user, adopt, data={"slug": "foo"})
+        self.assertEqual(res.status_code, 201)
 
 
 class GenePoolApiUpdateTests(TestCase):
@@ -146,9 +167,10 @@ class GenePoolApiUpdateTests(TestCase):
             client.force_login(user)
 
         return client.put(gene_pool_endpoint(gene_pool), {
-            'name': 'Foo',
-            'type': 'multi',
-            'color_pool_id': gene_pool.color_pool_id,
+            "name": "Foo",
+            "slug": "foo",
+            "type": "multi",
+            "color_pool_id": gene_pool.color_pool_id,
         } | data)
 
     def test_fails_when_unauthenticated(self):
@@ -169,10 +191,10 @@ class GenePoolApiUpdateTests(TestCase):
         self.assertEqual(response.status_code, 200)
 
         gene_pool = GenePool.objects.filter(
-            id=gene_pool.id, adopt_id=adopt.id, name='Foo', type='multi', color_pool_id=color_pool.id).get()
+            id=gene_pool.id, adopt_id=adopt.id, name="Foo", slug="foo", type="multi", color_pool_id=color_pool.id).get()
         self.assertEqual(response.data, GenePoolSerializer(gene_pool).data)
 
-    def test_does_not_update_invalid_color_pool(self):
+    def test_fails_with_invalid_color_pool(self):
         user = UserFactory()
         adopt = AdoptFactory(mods=(user,))
         color_pool = ColorPoolFactory(adopt=adopt)
@@ -180,13 +202,13 @@ class GenePoolApiUpdateTests(TestCase):
 
         invalid_color_pool = ColorPoolFactory()
         response = self._update(gene_pool, user=user, data={
-                                'color_pool_id': invalid_color_pool.id})
+                                "color_pool_id": invalid_color_pool.id})
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(adopt.gene_pools.filter(
-            id=gene_pool.id, name='Foo').exists(), False)
+            id=gene_pool.id, name="Foo").exists(), False)
 
-    def test_does_not_update_when_unauthorized(self):
+    def test_fails_when_unauthorized(self):
         user = UserFactory()
         adopt = AdoptFactory()
         color_pool = ColorPoolFactory(adopt=adopt)
@@ -196,7 +218,31 @@ class GenePoolApiUpdateTests(TestCase):
 
         self.assertEqual(response.status_code, 403)
         self.assertEqual(adopt.gene_pools.filter(
-            id=gene_pool.id, name='Foo').exists(), False)
+            id=gene_pool.id, name="Foo").exists(), False)
+
+    def test_fails_with_non_unique_slug(self):
+        user = UserFactory()
+        adopt = AdoptFactory(mods=(user,))
+        color_pool = ColorPoolFactory(adopt=adopt)
+        gene_pool = GenePoolFactory(adopt=adopt, color_pool=color_pool)
+
+        other_gene_pool = GenePoolFactory(adopt=adopt, slug="foo")
+
+        res = self._update(gene_pool, user=user, data={"slug": "foo"})
+
+        self.assertEqual(res.status_code, 400)
+
+    def test_updates_with_unique_slug_within_adopt(self):
+        user = UserFactory()
+        adopt = AdoptFactory(mods=(user,))
+        color_pool = ColorPoolFactory(adopt=adopt)
+        gene_pool = GenePoolFactory(adopt=adopt, color_pool=color_pool)
+
+        other_gene_pool = GenePoolFactory(slug="foo")
+
+        res = self._update(gene_pool, user=user, data={"slug": "foo"})
+
+        self.assertEqual(res.status_code, 200)
 
 
 class GenePoolApiDeleteTests(TestCase):
