@@ -94,7 +94,8 @@ class ColorPoolApiCreateTests(TestCase):
         })
 
         self.assertEqual(response.status_code, 201)
-        color_pool = adopt.color_pools.filter(name='Foo', colors='foo').get()
+        color_pool = adopt.color_pools.filter(
+            name='Foo', colors='foo foo').get()
         self.assertEqual(response.data, ColorPoolSerializer(color_pool).data)
 
 
@@ -125,7 +126,7 @@ class ColorPoolApiUpdateTests(TestCase):
         self.assertEqual(response.status_code, 200)
 
         color_pool = adopt.color_pools.filter(
-            id=color_pool.id, name='Foo', colors='foo').get()
+            id=color_pool.id, name='Foo', colors='foo foo').get()
         self.assertEqual(response.data, ColorPoolSerializer(color_pool).data)
 
     def test_fails_when_unauthorized(self):
@@ -137,7 +138,7 @@ class ColorPoolApiUpdateTests(TestCase):
 
         self.assertEqual(response.status_code, 403)
         self.assertEqual(adopt.color_pools.filter(
-            id=color_pool.id, name='Foo', colors='foo').exists(), False)
+            id=color_pool.id, name='Foo').exists(), False)
 
 
 class ColorPoolApiDeleteTests(TestCase):

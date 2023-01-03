@@ -34,7 +34,7 @@ export default function AdoptBasicsPanel({adopt, genePools, colorPools, onSubmit
             + "/gen/" 
             + slugify(adopt.short_name) 
             + "-" 
-            + formGenes.filter(gc => gc.enabled).map(gc => `${gc.gene_pool.slug}_${gc.gene.slug}_${slugify(gc.color)}`).sort().join("-") 
+            + formGenes.filter(gc => gc.enabled).map(gc => `${gc.gene_pool.slug}_${gc.gene.slug}_${gc.color}`).sort().join("-") 
             + ".png";
         if (url !== currentGen.url) {
             setIsLoading(true);
@@ -57,7 +57,7 @@ export default function AdoptBasicsPanel({adopt, genePools, colorPools, onSubmit
                 return {
                     gene_pool,
                     gene: gene_pool.genes.find(x => x.id === gc.gene.id),
-                    color: gc.color.name,
+                    color: gc.color.slug,
                     enabled: true,
                 };
             }).filter((x) => x));
@@ -74,7 +74,7 @@ export default function AdoptBasicsPanel({adopt, genePools, colorPools, onSubmit
             {
                 gene_pool: genePool,
                 gene: gene ?? existingGc?.gene,
-                color: color ?? existingGc?.color ?? colorPools.find(x => x.id === (formGenes.find(x => x.gene_pool.id === genePool.id)?.gene.color_pool?.id ?? genePool.color_pool.id)).colors_dict[0].name,
+                color: color ?? existingGc?.color ?? colorPools.find(x => x.id === (formGenes.find(x => x.gene_pool.id === genePool.id)?.gene.color_pool?.id ?? genePool.color_pool.id)).colors_dict[0].slug,
                 enabled: isEnabled,
             },
         ]);
@@ -102,7 +102,7 @@ export default function AdoptBasicsPanel({adopt, genePools, colorPools, onSubmit
                     ?.colors_dict
                     ?.reduce((a, b) => ({
                         ...a,
-                        [b.name]: b.name,
+                        [b.slug]: b.name,
                     }), {}) ?? {}}
                 onChange={(e) => setFormGene(genePool, null, e.target.value)}
             ></FormSelect>

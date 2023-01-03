@@ -35,9 +35,9 @@ class AdoptGeneratorTest(TestCase):
             "adopt_id": self.adopt.id,
             "gene_colors": [
                 {"gene": {"id": self.genes[0].id, "name": self.genes[0].name, "gene_pool_id": self.gene_pools[0].id},
-                 "color": {"name": "Baz", "color_pool_id": self.color_pool.id}},
+                 "color": {"name": "Baz", "slug": "baz", "color_pool_id": self.color_pool.id}},
                 {"gene": {"id": self.genes[1].id, "name": self.genes[1].name, "gene_pool_id": self.gene_pools[1].id},
-                 "color": {"name": "Baz", "color_pool_id": self.color_pool.id}},
+                 "color": {"name": "Baz", "slug": "baz", "color_pool_id": self.color_pool.id}},
             ]
         }, gen.to_dict())
 

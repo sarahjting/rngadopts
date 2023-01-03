@@ -106,16 +106,18 @@ export default function ColorPoolFormModal({adopt, show, onSubmitted, onClose, c
                 <tbody>
                     {form.colors.split('\n').map((line, lineKey) => {
                         const lineData = line.split(/[\s,]+/);
+                        const slug = lineData[1][0] === '#' ? null : lineData[1];
+                        const colors = lineData.slice(lineData[1][0] === '#' ? 1 : 2)
                         return lineData.length > 0 && (
                             <tr key={lineKey}>
                                 <td>
-                                    {lineData[0]}
+                                    {lineData[0]} {slug && `(${slug})`}
                                 </td>
                                 {[...Array(palettesCount).keys()].map(i => (
                                     <td key={i}>
-                                        <div title="Base" style={{display: "inline-block", width: "20px", height: "15px", backgroundColor: lineData[1 + i * 3]}}></div>
-                                        <div title="Shading" style={{display: "inline-block", width: "20px", height: "15px", backgroundColor: lineData[2 + i * 3]}}></div>
-                                        <div title="Highlight" style={{display: "inline-block", width: "20px", height: "15px", backgroundColor: lineData[3 + i * 3]}}></div>
+                                        <div title="Base" style={{display: "inline-block", width: "20px", height: "15px", backgroundColor: colors[i * 3]}}></div>
+                                        <div title="Shading" style={{display: "inline-block", width: "20px", height: "15px", backgroundColor: colors[1 + i * 3]}}></div>
+                                        <div title="Highlight" style={{display: "inline-block", width: "20px", height: "15px", backgroundColor: colors[2 + i * 3]}}></div>
                                     </td>
                                 ))}
                             </tr>

@@ -3,6 +3,7 @@ from collections import deque
 import json
 import re
 from rngadopts import mixins
+from django.utils.text import slugify
 
 
 class ColorQuerySet(models.QuerySet, mixins.queryset.SoftDeletes):
@@ -66,17 +67,18 @@ class ColorPool(models.Model):
 
 
 class Color:
-    def __init__(self, name, palettes):
+    def __init__(self, name, slug, palettes):
         assert isinstance(name, str)
         assert isinstance(palettes, list)
         for i in range(0, len(palettes)):
             assert isinstance(palettes[i], ColorPalette)
 
         self.name = name
+        self.slug = slug
         self.palettes = palettes
 
     def __str__(self):
-        return ' '.join([self.name] + [x.__str__() for x in self.palettes])
+        return ' '.join([self.name, self.slug] + [x.__str__() for x in self.palettes])
 
     def get_palette(self, palette_key):
         if palette_key < 0 or palette_key >= len(self.palettes):
@@ -103,6 +105,8 @@ class Color:
                 d) > 0 and d[0][0] != '#', 'Line %d: Missing color name' % (i + 1)
 
             name = d.popleft()
+            slug = d.popleft() if len(d) > 0 and d[0][0] != '#' else slugify(
+                name).replace("-", "").replace("_", "")
             palettes = []
             while len(d) >= 3:
                 try:
@@ -112,11 +116,11 @@ class Color:
                     raise AssertionError(
                         'Line {}, color {}: Has invalid hex code formatting. Refer to some sample imports.'.format(name, i + 1))
 
-            colors.append(Color(name, palettes))
+            colors.append(Color(name, slug, palettes))
         return colors
 
     def to_dict(self):
-        return {'name': self.name, 'palettes': [x.to_dict() for x in self.palettes]}
+        return {'name': self.name, 'slug': self.slug, 'palettes': [x.to_dict() for x in self.palettes]}
 
 
 class ColorPalette:

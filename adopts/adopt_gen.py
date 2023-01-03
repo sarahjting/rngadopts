@@ -185,7 +185,7 @@ class AdoptGenerator:
             "adopt_id": self.adopt.id,
             "gene_colors": [{
                 "gene": {"id": gene_color["gene"].id, "name": gene_color["gene"].name, "gene_pool_id": gene_color["gene"].gene_pool_id},
-                "color": {"name": gene_color["color"].name, "color_pool_id": gene_color["color_pool"].id},
+                "color": {"name": gene_color["color"].name, "slug": gene_color["color"].slug, "color_pool_id": gene_color["color_pool"].id},
             } for gene_color in self.gene_colors]
         }
 
@@ -201,10 +201,7 @@ class AdoptGenerator:
             [self.clean_slugify(self.adopt.short_name)] +
             ([] if display_id == False else [str(display_id) if not isinstance(
                 display_id, bool) else str(self.adopt.current_display_id)]) +
-            sorted(["_".join([
-                self.clean_slugify(gc['gene'].gene_pool.slug),
-                self.clean_slugify(gc['gene'].slug),
-                self.clean_slugify(gc['color'].name)]) for gc in self.gene_colors]))
+            sorted(["_".join([gc['gene'].gene_pool.slug, gc['gene'].slug, gc['color'].slug]) for gc in self.gene_colors]))
 
     def from_data_string(self, data_string):
         raw_gene_colors = [x.split("_") for x in data_string.split("-")]
@@ -218,8 +215,8 @@ class AdoptGenerator:
                 gene, = [x for x in gene_pool.genes.all() if x.slug ==
                          raw_gc[1]]
                 color_pool = gene.color_pool or gene_pool.color_pool
-                color, = [x for x in color_pool.colors_obj if self.clean_slugify(
-                    x.name) == raw_gc[2]]
+                color, = [
+                    x for x in color_pool.colors_obj if x.slug == raw_gc[2]]
                 self.gene_colors.append(
                     {"gene": gene, "color_pool": color_pool, "color": color, })
             except ValueError:
