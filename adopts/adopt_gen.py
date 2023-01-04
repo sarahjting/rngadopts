@@ -81,6 +81,9 @@ class AdoptGeneratorImage:
                     else:
                         return
 
+                if color == None:
+                    return
+
                 self._draw_file_color(pil, gene_layer.image.path, color.get_hex(
                     gene_layer.color_key - 1, light_level))
 
@@ -203,7 +206,7 @@ class AdoptGenerator:
             "adopt_id": self.adopt.id,
             "gene_colors": [{
                 "gene": {"id": gene_color["gene"].id, "name": gene_color["gene"].name, "gene_pool_id": gene_color["gene"].gene_pool_id},
-                "color": {"name": gene_color["color"].name, "slug": gene_color["color"].slug, "color_pool_id": gene_color["color_pool"].id},
+                "color": {"name": gene_color["color"].name, "slug": gene_color["color"].slug, "color_pool_id": gene_color["color_pool"].id} if gene_color["color"] else None,
             } for gene_color in self.gene_colors]
         }
 
@@ -219,7 +222,12 @@ class AdoptGenerator:
             [self.clean_slugify(self.adopt.short_name)] +
             ([] if display_id == False else [str(display_id) if not isinstance(
                 display_id, bool) else str(self.adopt.current_display_id)]) +
-            sorted(["_".join([gc['gene'].gene_pool.slug, gc['gene'].slug, gc['color'].slug]) for gc in self.gene_colors]))
+            sorted([
+                "_".join([
+                    gc['gene'].gene_pool.slug,
+                    gc['gene'].slug,
+                ] + ([gc['color'].slug] if gc['gene'].get_has_color() else [])) for gc in self.gene_colors
+            ]))
 
     def from_data_string(self, data_string):
         raw_gene_colors = [x.split("_") for x in data_string.split("-")]
@@ -227,16 +235,15 @@ class AdoptGenerator:
 
         self.gene_colors = []
         for raw_gc in raw_gene_colors:
-            # TODO: add a slug column on the db instead of this lol
             try:
                 gene_pool, = [x for x in gene_pools if x.slug == raw_gc[0]]
                 gene, = [x for x in gene_pool.genes.all() if x.slug ==
                          raw_gc[1]]
                 color_pool = gene.color_pool or gene_pool.color_pool
-                color, = [
-                    x for x in color_pool.colors_obj if x.slug == raw_gc[2]]
+                color, = [x for x in color_pool.colors_obj if x.slug ==
+                          raw_gc[2]] if len(raw_gc) == 3 else (None,)
                 self.gene_colors.append(
-                    {"gene": gene, "color_pool": color_pool, "color": color, })
+                    {"gene": gene, "color_pool": color_pool, "color": color})
             except ValueError:
                 pass
 

@@ -57,6 +57,9 @@ class Gene(models.Model):
     def __str__(self):
         return self.name
 
+    def get_has_color(self):
+        return len([x for x in self.gene_layers.all() if x.type[0:6] == "color_" and x.required_gene_id is None and x.required_gene_pool_id is None]) > 0
+
 
 def gene_layer_to_image_path(obj, filename):
     return f'adopts/{obj.adopt_id}/genes/{obj.gene_id}/{obj.id}{splitext(filename)[1]}'

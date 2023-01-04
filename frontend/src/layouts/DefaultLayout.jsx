@@ -48,14 +48,14 @@ export default function DefaultLayout({children}) {
         </div>
       </nav>
 
-      <div className="m-auto py-2 px-4 lg:w-1/2">
+      <div className="m-auto py-2 px-4 lg:w-2/3">
           <GeneralBreadcrumbs></GeneralBreadcrumbs>
           {children}
       </div>
 
       {
         window.FOOTER && window.FOOTER.length && (
-          <div className="m-auto lg:w-1/2 text-xs text-gray-300 flex justify-center gap-4 mt-2">
+          <div className="m-auto lg:w-2/3 text-xs text-gray-300 flex justify-center gap-4 mt-2">
             {window.FOOTER.map((credit, key) => (
               <div key={key}>
                 <span className="text-gray-200 mr-1">{credit[0]}</span>

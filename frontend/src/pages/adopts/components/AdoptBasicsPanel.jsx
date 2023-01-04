@@ -81,13 +81,14 @@ export default function AdoptBasicsPanel({adopt, genePools, colorPools, onSubmit
     }
 
     function renderGenePoolRow(key, genePool, gene = null) {
+        const selectedGene = gene ?? formGenes.find(x => x.gene_pool.id === genePool.id).gene
         return (
         <tr key={key}>
             <td className="text-sm text-right pr-3">
                 {genePool.name}
             </td>
             {gene && (
-                <td className="text-sm text-right pr-3">
+                <td className="text-sm text-right pr-3" colspan={selectedGene.has_color ? 1 : 2}>
                     <label htmlFor={`gene-${gene.id}`} className="mr-2 text-sm font-medium text-gray-900 dark:text-gray-300">{gene.name}</label>
                     <input 
                         id={`gene-${gene.id}`} 
@@ -99,7 +100,7 @@ export default function AdoptBasicsPanel({adopt, genePools, colorPools, onSubmit
                 </td>
             )}
             {!gene && (
-                <td>
+                <td colspan={selectedGene.has_color ? 1 : 2}>
                     <FormSelect 
                         value={formGenes.find(x => x.gene_pool.id === genePool.id)?.gene.id}
                         options={genePool?.genes.reduce((a, b) => ({
@@ -110,6 +111,7 @@ export default function AdoptBasicsPanel({adopt, genePools, colorPools, onSubmit
                     ></FormSelect>
                 </td>
             )}
+            {selectedGene.has_color && (
             <td>
                 <FormSelect 
                     value={formGenes.find(x => x.gene_pool.id === genePool.id && (gene === null || x.gene.id === gene.id))?.color}
@@ -122,6 +124,7 @@ export default function AdoptBasicsPanel({adopt, genePools, colorPools, onSubmit
                     onChange={(e) => setFormGene(genePool, gene, e.target.value)}
                 ></FormSelect>
             </td>
+            )}
         </tr>
         );
     }

@@ -40,11 +40,15 @@ class GeneListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Gene
         fields = ['id', 'color_pool', 'name', 'slug',
-                  'weight', 'date_updated', 'gene_layers']
+                  'weight', 'date_updated', 'gene_layers', 'has_color']
 
     id = serializers.ReadOnlyField()
     gene_layers = GeneLayerSerializer(read_only=True, many=True)
     color_pool = ColorPoolListSerializer(read_only=True, allow_null=True)
+    has_color = serializers.SerializerMethodField()
+
+    def get_has_color(self, obj):
+        return obj.get_has_color()
 
 
 class GenePoolListSerializer(serializers.ModelSerializer):
