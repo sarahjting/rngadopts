@@ -175,8 +175,8 @@ export default function GeneLayerFormModal({adopt, genePools, genePool, gene, sh
                         </ul>
                     </div>
 
-                    <div class="flex gap-3">
-                        <div class="grow">
+                    <div className="flex gap-3">
+                        <div className="grow">
                             <FormSelect 
                                 name="required_gene_pool_id"
                                 errors={errors}
@@ -192,7 +192,7 @@ export default function GeneLayerFormModal({adopt, genePools, genePool, gene, sh
                                 <p>Advanced: Ignore if you don't know what this is.</p>
                             </div>
                         </div>
-                        <div class="grow">
+                        <div className="grow">
                             <FormSelect 
                                 name="required_gene_id"
                                 errors={errors}
@@ -225,7 +225,7 @@ export default function GeneLayerFormModal({adopt, genePools, genePool, gene, sh
                                 ></FormTextInput>
                                 <div className="text-xs text-gray-600 mb-3">
                                     {requiredGenePool && (<p>
-                                        <span class="text-orange-500">You have selected a required gene. The color of this layer will be taken from <strong>{requiredGene && requiredGene.name} ({requiredGenePool.name})</strong>.</span> 
+                                        <span className="text-orange-500">You have selected a required gene. The color of this layer will be taken from <strong>{requiredGene && requiredGene.name} ({requiredGenePool.name})</strong>.</span> 
                                     </p>)}
                                     <p>The color pool for this gene is <strong>{colorPool.name}</strong>.</p>
                                     {
